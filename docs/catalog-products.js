@@ -1,4 +1,4 @@
-module.exports = [
+window.FVB_PRODUCTS = [
   {
     "name": "ALICATE CORTE DIAGONAL 6\" FLEX 60/6",
     "priceCents": 1778,

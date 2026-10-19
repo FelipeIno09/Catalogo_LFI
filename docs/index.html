@@ -3,122 +3,533 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f5f4ee">
-  <meta name="description" content="Conheça o projeto do catálogo online da FVB Materiais para lojas de construção.">
-  <title>FVB Materiais — catálogo online</title>
+  <meta name="theme-color" content="#f4f5f3">
+  <meta name="description" content="Ferragens, ferramentas e materiais para abastecer sua loja. Consulte a FVB Materiais pelo WhatsApp.">
+  <title>FVB Materiais — catálogo para lojistas</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       color-scheme: light;
-      font-family: "Segoe UI", Arial, sans-serif;
-      color: #26342b;
-      background: #f5f4ee;
+      font-family: "DM Sans", sans-serif;
+      background: #f8f7f4;
+      color: #242823;
       font-synthesis: none;
       text-rendering: optimizeLegibility;
-      -webkit-font-smoothing: antialiased;
-      --green: #315b45;
-      --muted: #637167;
-      --border: #e1e5dd;
-      --orange: #d58b58;
     }
 
     * { box-sizing: border-box; }
     body { margin: 0; min-width: 320px; }
-    a { color: inherit; }
-    .wrap { width: min(1080px, calc(100% - 40px)); margin-inline: auto; }
-    header { padding: 22px 0; }
-    .brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; }
-    .brand-mark { display: grid; width: 42px; height: 42px; place-items: center; border-radius: 15px; background: var(--green); color: white; font-weight: 800; }
-    .brand-name { font-weight: 800; letter-spacing: -.04em; }
-    .brand-sub { display: block; margin-top: 2px; color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
-    main { padding: 42px 0 72px; }
-    .hero { position: relative; overflow: hidden; padding: clamp(28px, 7vw, 76px); border: 1px solid #e0e7df; border-radius: 30px; background: linear-gradient(125deg, #e8eee7, #f0eee5); }
-    .hero::after { position: absolute; top: -140px; right: -70px; width: 380px; height: 380px; border: 1px solid #cbd7ca; border-radius: 50%; content: ""; }
-    .hero-content { position: relative; z-index: 1; max-width: 650px; }
-    .eyebrow { display: inline-flex; align-items: center; gap: 9px; padding: 8px 12px; border-radius: 999px; background: #ffffffb8; color: var(--green); font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
-    .eyebrow::before { width: 7px; height: 7px; border-radius: 50%; background: var(--orange); content: ""; }
-    h1 { margin: 22px 0 14px; font-size: clamp(38px, 7vw, 68px); line-height: 1.02; letter-spacing: -.065em; }
-    .intro { max-width: 570px; color: var(--muted); font-size: clamp(16px, 2vw, 19px); line-height: 1.7; }
-    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
-    .button { display: inline-flex; min-height: 46px; align-items: center; justify-content: center; padding: 0 18px; border: 1px solid var(--green); border-radius: 999px; background: var(--green); color: #fff; font-size: 14px; font-weight: 700; text-decoration: none; transition: transform .18s ease, background .18s ease; }
-    .button:hover { transform: translateY(-2px); background: #264a38; }
-    .button.secondary { background: transparent; color: var(--green); }
-    .button.secondary:hover { background: #ffffffa8; }
-    section { margin-top: 56px; }
-    h2 { margin: 0; font-size: clamp(25px, 4vw, 34px); letter-spacing: -.04em; }
-    .section-intro { max-width: 650px; margin: 10px 0 0; color: var(--muted); line-height: 1.7; }
-    .features { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 22px; }
-    .feature { padding: 22px; border: 1px solid var(--border); border-radius: 20px; background: #fffefa; }
-    .feature-number { color: var(--orange); font-size: 12px; font-weight: 800; letter-spacing: .1em; }
-    .feature h3 { margin: 14px 0 8px; font-size: 18px; }
-    .feature p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.65; }
-    .notice { padding: 22px 24px; border-left: 4px solid var(--orange); border-radius: 4px 16px 16px 4px; background: #f0ede3; color: #4f5c51; line-height: 1.7; }
-    .notice strong { color: #26342b; }
-    footer { padding: 24px 0 36px; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
-    @media (max-width: 700px) {
-      main { padding-top: 20px; }
-      .features { grid-template-columns: 1fr; }
-      .hero::after { top: -220px; right: -230px; }
-      section { margin-top: 42px; }
+    button, input, textarea { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+    .font-display { font-family: "Manrope", sans-serif; }
+    .safe-bottom { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+    .no-scrollbar { scrollbar-width: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+
+    .product-card {
+      animation: appear .35s ease both;
+      transition: transform .2s ease, box-shadow .2s ease;
     }
+    .product-card:hover { transform: translateY(-3px); box-shadow: 0 16px 35px -24px #29332966; }
+    .image-zoom img { transition: transform .45s ease; }
+    .product-card:hover .image-zoom img { transform: scale(1.045); }
+    .drawer-panel { animation: slide-in .28s ease both; }
+    .overlay-enter { animation: fade-in .2s ease both; }
+    @keyframes appear { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slide-in { from { transform: translateX(100%); } to { transform: translateX(0); } }
+    @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
     }
   </style>
 </head>
 <body>
-  <header class="wrap">
-    <a class="brand" href="#" aria-label="FVB Materiais, início">
-      <span class="brand-mark" aria-hidden="true">FVB</span>
-      <span><span class="brand-name">FVB Materiais</span><span class="brand-sub">Ferragens &amp; ferramentas</span></span>
-    </a>
+  <header class="sticky top-0 z-30 border-b border-[#e2e5e1] bg-[#f4f5f3]/95 backdrop-blur-md">
+    <div class="mx-auto flex h-[68px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <a href="#" class="flex items-center gap-2.5" aria-label="FVB Materiais, início">
+        <span class="grid h-10 w-10 place-items-center rounded-2xl bg-[#344c40] text-white">
+          <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" aria-hidden="true">
+            <path d="m14.5 4.5 5 5m-2-7 4 4-3.5 3.5-4-4m-1 1L5 15.5l3.5 3.5L16.5 11m-10 3L4 12l-2 2 6 6 2-2-2-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span>
+          <span class="font-display block text-[17px] font-extrabold leading-5 tracking-[-.04em]">FVB <span class="text-[#d58b58]">Materiais</span></span>
+          <span class="block text-[10px] font-semibold uppercase tracking-[.16em] text-[#737b74]">ferragens & ferramentas</span>
+        </span>
+      </a>
+      <button id="open-cart" type="button" class="relative flex h-11 items-center gap-2 rounded-full border border-[#e7e5de] bg-white px-4 text-sm font-semibold text-[#343a33] shadow-sm transition hover:border-[#315b45] hover:text-[#315b45]" aria-label="Abrir carrinho, 0 itens">
+        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" aria-hidden="true">
+          <path d="M3.5 4.5h2l2.1 10.1a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4l1.3-6.3H6.3M10 20a.8.8 0 1 0 0-1.6.8.8 0 0 0 0 1.6ZM17 20a.8.8 0 1 0 0-1.6.8.8 0 0 0 0 1.6Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="hidden sm:inline">Meu carrinho</span>
+        <span id="cart-count" class="grid h-5 min-w-5 place-items-center rounded-full bg-[#d58b58] px-1 text-[11px] font-bold text-white">0</span>
+      </button>
+      <a href="https://wa.me/5514991622498" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-10 items-center whitespace-nowrap rounded-full bg-[#344c40] px-4 text-xs font-bold text-white transition hover:bg-[#26392f]">Fale conosco</a>
+    </div>
   </header>
 
-  <main class="wrap">
-    <section class="hero" aria-labelledby="page-title">
-      <div class="hero-content">
-        <span class="eyebrow">Projeto de catálogo online</span>
-        <h1 id="page-title">Mais opções para abastecer sua loja.</h1>
-        <p class="intro">Um catálogo digital da FVB Materiais pensado para lojas de construção: encontre produtos, consulte itens e encaminhe pedidos com praticidade.</p>
-        <div class="actions">
-          <a class="button" href="https://github.com/GrupoTCC-jacob/Catalogo_FVB">Ver projeto no GitHub</a>
-          <a class="button secondary" href="https://github.com/GrupoTCC-jacob/Catalogo_FVB#executar-com-docker">Como executar o catálogo</a>
+  <main>
+    <section class="mx-auto max-w-7xl px-4 pb-8 pt-8 sm:px-6 sm:pt-12 lg:px-8 lg:pb-12">
+      <div class="relative overflow-hidden rounded-[28px] bg-[#e8ece8] px-6 py-8 sm:px-10 sm:py-11 lg:px-14 lg:py-14">
+        <div class="relative z-10 max-w-xl">
+          <span class="mb-3 inline-flex items-center gap-2 rounded-full bg-white/75 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[.14em] text-[#54735d]">
+            <span class="h-1.5 w-1.5 rounded-full bg-[#d58b58]"></span>
+            Fornecimento para lojas de construção
+          </span>
+          <h1 class="font-display max-w-lg text-[34px] font-extrabold leading-[1.08] tracking-[-.055em] text-[#28362d] sm:text-5xl">
+            Mais opções para<br class="hidden sm:block"> abastecer sua loja.
+          </h1>
+          <p class="mt-3 max-w-md text-sm leading-6 text-[#637167] sm:mt-4 sm:text-base">
+            Encontre produtos de fixação, ferramentas, hidráulica, elétrica e abrasivos das marcas que a FVB trabalha.
+          </p>
+          <a href="#catalogo" class="mt-5 inline-flex min-h-11 items-center gap-2 rounded-full bg-[#315b45] px-5 text-sm font-semibold text-white transition hover:bg-[#264a38]">
+            Ver catálogo
+            <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+        <div class="pointer-events-none absolute -right-16 -top-24 h-72 w-72 rounded-full border-[1px] border-[#c7d2c9] sm:right-8 sm:top-[-120px] sm:h-[390px] sm:w-[390px]"></div>
+        <div class="pointer-events-none absolute -right-6 -top-14 h-56 w-56 rounded-full border-[1px] border-[#d0d8d1] sm:right-20 sm:top-[-52px] sm:h-[250px] sm:w-[250px]"></div>
+        <div class="pointer-events-none absolute -bottom-20 right-16 h-44 w-44 rounded-full bg-[#dce3dc] sm:bottom-[-100px] sm:right-52 sm:h-64 sm:w-64"></div>
+        <div class="absolute bottom-5 right-5 hidden h-32 w-32 rotate-6 items-center justify-center rounded-[28px] bg-[#d58b58] text-white shadow-lg shadow-[#8b6a4b]/15 sm:flex lg:bottom-10 lg:right-24 lg:h-40 lg:w-40">
+          <div class="text-center">
+            <svg viewBox="0 0 48 48" class="mx-auto mb-2 h-9 w-9" fill="none" aria-hidden="true"><path d="M11 35 31 15m-5-5 7-3 8 8-3 7-7-7-7 7m-14 9 8 8 5-5-8-8-5 5Z" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="font-display text-sm font-extrabold leading-4">parceria que<br>constrói</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <section aria-labelledby="features-title">
-      <h2 id="features-title">O que o projeto oferece</h2>
-      <p class="section-intro">A aplicação completa reúne a experiência de consulta do catálogo e ferramentas para a equipe administrar produtos e pedidos.</p>
-      <div class="features">
-        <article class="feature">
-          <span class="feature-number">01 / CATÁLOGO</span>
-          <h3>Encontre produtos</h3>
-          <p>Pesquise por nome, marca, categoria ou código e navegue pelo catálogo em diferentes dispositivos.</p>
-        </article>
-        <article class="feature">
-          <span class="feature-number">02 / PEDIDOS</span>
-          <h3>Monte uma solicitação</h3>
-          <p>Organize os itens desejados e envie uma solicitação para continuar a negociação com a equipe.</p>
-        </article>
-        <article class="feature">
-          <span class="feature-number">03 / ADMINISTRAÇÃO</span>
-          <h3>Gerencie o catálogo</h3>
-          <p>Uma área protegida permite à equipe administrar produtos e acompanhar os pedidos registrados.</p>
-        </article>
+    <section id="catalogo" class="mx-auto max-w-7xl scroll-mt-24 px-4 pb-16 sm:px-6 lg:px-8">
+      <div class="mb-5 flex flex-col gap-4 sm:mb-7 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[.16em] text-[#b7794d]">Linha de produtos</p>
+          <h2 class="font-display mt-1 text-2xl font-extrabold tracking-[-.04em] text-[#28362d] sm:text-3xl">Materiais para o seu negócio</h2>
+        </div>
+        <label class="relative block w-full sm:max-w-[300px]">
+          <span class="sr-only">Buscar produtos</span>
+          <svg viewBox="0 0 24 24" class="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-[#85877f]" fill="none" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3" stroke="currentColor" stroke-width="1.7"/><path d="m15.5 15.5 4.2 4.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          <input id="search-input" type="search" placeholder="Buscar produto ou marca..." class="h-12 w-full rounded-2xl border border-[#e2e5e1] bg-white pl-11 pr-4 text-sm text-[#343a33] outline-none transition placeholder:text-[#a2a39c] focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
+        </label>
       </div>
-    </section>
-
-    <section aria-labelledby="demo-title">
-      <h2 id="demo-title">Sobre esta demonstração</h2>
-      <p class="section-intro">Esta página apresenta o projeto e pode ser publicada gratuitamente pelo GitHub Pages.</p>
-      <div class="notice">
-        <strong>Importante:</strong> GitHub Pages hospeda somente páginas estáticas. O catálogo interativo, login, pedidos e painel administrativo precisam do servidor Node.js e do banco SQLite; essas funções não estão disponíveis nesta demonstração. Consulte o repositório para executar a aplicação completa.
+      <div id="category-filters" class="no-scrollbar mb-6 flex gap-2 overflow-x-auto pb-1" aria-label="Filtrar por categoria"></div>
+      <div class="mb-4">
+        <p class="mb-2 text-[10px] font-bold uppercase tracking-[.14em] text-[#85877f]">Marcas</p>
+        <div id="brand-filters" class="no-scrollbar flex flex-wrap gap-2" aria-label="Filtrar por marca"></div>
       </div>
+      <p id="catalog-result-count" class="mb-3 text-xs text-[#737b74]" aria-live="polite"></p>
+      <p class="mb-4 flex items-center gap-2 text-xs leading-5 text-[#737b74]">
+        <span class="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#f5ecd9] text-[11px] font-bold text-[#a56d1c]">i</span>
+        Preços importados da tabela comercial são referências: confirme embalagem, disponibilidade e valor atualizado pelo WhatsApp.
+      </p>
+      <div id="product-grid" class="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4" aria-live="polite"></div>
+      <p id="empty-state" class="hidden rounded-2xl border border-dashed border-[#d9d8d0] py-14 text-center text-sm text-[#777b73]">Nenhum produto encontrado. Tente outra busca ou categoria.</p>
+      <button id="load-more-products" type="button" class="mx-auto mt-8 hidden min-h-11 rounded-full border border-[#d8ded8] bg-white px-5 text-sm font-semibold text-[#344c40] transition hover:border-[#344c40] hover:bg-[#f3f6f2]">Mostrar mais produtos</button>
     </section>
   </main>
 
-  <footer>
-    <div class="wrap">FVB Materiais · Projeto de catálogo online</div>
+  <footer class="border-t border-[#e2e5e1] bg-white/70">
+    <div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 text-center text-xs text-[#85877f] sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:text-left lg:px-8">
+      <span class="font-display font-bold text-[#344c40]">FVB Materiais<span class="text-[#d58b58]">.</span> <span class="font-normal">Fabio Vicente Bezerra</span></span>
+      <span>Atendimento para lojas físicas de materiais de construção. Peça ou consulte pelo WhatsApp.</span>
+    </div>
   </footer>
+
+  <div id="cart-overlay" class="overlay-enter fixed inset-0 z-40 hidden bg-[#17211b]/45" aria-hidden="true"></div>
+  <aside id="cart-drawer" class="fixed inset-y-0 right-0 z-50 flex w-full max-w-[440px] translate-x-full flex-col bg-[#fbfaf8] shadow-2xl transition-transform duration-300" role="dialog" aria-modal="true" aria-labelledby="cart-title" aria-hidden="true">
+    <div class="flex items-center justify-between border-b border-[#e9e7e0] px-5 py-4 sm:px-6">
+      <div>
+        <h2 id="cart-title" class="font-display text-xl font-extrabold tracking-[-.04em] text-[#28362d]">Seu pedido</h2>
+        <p id="cart-subtitle" class="mt-0.5 text-xs text-[#85877f]">Monte sua consulta de produtos</p>
+      </div>
+      <button id="close-cart" type="button" class="grid h-10 w-10 place-items-center rounded-full text-[#73776f] transition hover:bg-[#eeede7] hover:text-[#28362d]" aria-label="Fechar carrinho">
+        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div id="cart-content" class="no-scrollbar flex-1 overflow-y-auto px-5 py-4 sm:px-6"></div>
+    <div class="safe-bottom border-t border-[#e9e7e0] bg-white px-5 pt-4 sm:px-6">
+      <div class="mb-4 space-y-3">
+        <label class="block">
+          <span class="mb-1.5 block text-xs font-semibold text-[#555c53]">Seu nome / loja <span class="font-normal text-[#999b94]">(opcional)</span></span>
+          <input id="customer-name" type="text" maxlength="80" autocomplete="name" placeholder="Seu nome ou nome da loja" class="h-11 w-full rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3.5 text-sm outline-none transition placeholder:text-[#a2a39c] focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
+        </label>
+        <label class="block">
+          <span class="mb-1.5 block text-xs font-semibold text-[#555c53]">Cidade / entrega / observações <span class="font-normal text-[#999b94]">(opcional)</span></span>
+          <textarea id="customer-notes" rows="2" maxlength="500" placeholder="Cidade, endereço ou detalhes do pedido..." class="w-full resize-none rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3.5 py-2.5 text-sm outline-none transition placeholder:text-[#a2a39c] focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]"></textarea>
+        </label>
+      </div>
+      <div class="flex items-center justify-between border-t border-dashed border-[#e4e2dc] py-3.5">
+        <span id="cart-total-label" class="text-sm font-semibold text-[#555c53]">Total do pedido</span>
+        <strong id="cart-total" class="font-display text-xl font-extrabold tracking-[-.03em] text-[#28362d]">R$ 0,00</strong>
+      </div>
+      <p id="cart-price-note" class="pb-2 text-center text-[10px] text-[#96988f]">Preços e disponibilidade serão confirmados no atendimento.</p>
+      <button id="checkout-button" type="button" class="flex min-h-[50px] w-full items-center justify-center gap-2 rounded-2xl bg-[#20a464] px-4 text-sm font-bold text-white shadow-lg shadow-[#20a464]/15 transition hover:bg-[#168b53] disabled:cursor-not-allowed disabled:bg-[#aab8ae] disabled:shadow-none">
+        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" aria-hidden="true"><path d="M20 11.5a8 8 0 0 1-11.8 7l-4.2 1.2 1.3-4.1a8 8 0 1 1 14.7-4.1Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 8.5c.2-.4.4-.4.7-.4h.4c.2 0 .3.1.4.4l.6 1.5c.1.2.1.4-.1.6l-.5.6c-.2.2-.2.3 0 .6.4.7 1 1.3 1.7 1.7.3.2.4.2.6 0l.6-.5c.2-.2.4-.2.6-.1l1.5.7c.3.1.4.2.4.4 0 .3-.1 1.1-.7 1.5-.6.5-1.4.7-2.2.4-1.1-.3-2.5-1.1-3.7-2.3-1.1-1.1-1.9-2.6-2.1-3.6-.2-.9.1-1.6.5-2Z" fill="currentColor"/></svg>
+        Enviar pedido pelo WhatsApp
+      </button>
+      <p class="pb-3 pt-2 text-center text-[10px] text-[#96988f]">Itens sem preço cadastrado serão cotados pelo WhatsApp.</p>
+    </div>
+  </aside>
+  <div id="toast" class="pointer-events-none fixed bottom-5 left-1/2 z-[60] hidden -translate-x-1/2 rounded-full bg-[#28362d] px-4 py-2.5 text-sm font-medium text-white shadow-lg" role="status" aria-live="polite"></div>
+
+  <script src="./catalog-products.js"></script>
+  <script>
+    // Configure aqui o WhatsApp do vendedor, com código do país e DDD, sem espaços ou símbolos.
+    const WHATSAPP_NUMBER = "5514991622498";
+
+    const STORAGE_KEY = "fvb-materiais-cart-v1";
+    const money = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+    let produtos = [];
+    const productById = new Map();
+    const grid = document.getElementById("product-grid");
+    const filterContainer = document.getElementById("category-filters");
+    const brandFilterContainer = document.getElementById("brand-filters");
+    const resultCount = document.getElementById("catalog-result-count");
+    const loadMoreButton = document.getElementById("load-more-products");
+    const cartDrawer = document.getElementById("cart-drawer");
+    const cartOverlay = document.getElementById("cart-overlay");
+    const cartContent = document.getElementById("cart-content");
+    const cartCount = document.getElementById("cart-count");
+    const cartTotal = document.getElementById("cart-total");
+    const cartTotalLabel = document.getElementById("cart-total-label");
+    const cartPriceNote = document.getElementById("cart-price-note");
+    const cartSubtitle = document.getElementById("cart-subtitle");
+    const emptyState = document.getElementById("empty-state");
+    let selectedCategory = "Todos";
+    let selectedBrand = "Todas";
+    let searchTerm = "";
+    let visibleProductLimit = 48;
+    const productPageSize = 48;
+    let toastTimeout;
+    let cart = [];
+
+    function loadCart() {
+      try {
+        const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        if (!Array.isArray(stored)) return [];
+        return stored
+          .filter((item) => item && productById.has(Number(item.id)) && Number.isInteger(item.quantity) && item.quantity > 0)
+          .map((item) => ({ id: Number(item.id), quantity: item.quantity }));
+      } catch (error) {
+        console.error("Não foi possível ler o carrinho salvo:", error);
+        return [];
+      }
+    }
+
+    function saveCart() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
+      } catch (error) {
+        console.error("Não foi possível salvar o carrinho:", error);
+        showToast("Não foi possível salvar o carrinho neste dispositivo.");
+      }
+    }
+
+    function renderFilters() {
+      const categories = ["Todos", ...new Set(produtos.map((produto) => produto.categoria).sort((a, b) => a.localeCompare(b, "pt-BR")))];
+      filterContainer.innerHTML = categories.map((category) => `
+        <button type="button" data-category="${escapeHtml(category)}" aria-pressed="${selectedCategory === category}"
+          class="shrink-0 rounded-full px-4 py-2.5 text-xs font-semibold transition sm:text-sm ${selectedCategory === category
+            ? "bg-[#344c40] text-white shadow-sm"
+              : "border border-[#e2e5e1] bg-white text-[#666b62] hover:border-[#b8c7b8] hover:text-[#344c40]"}">${escapeHtml(category)}</button>
+      `).join("");
+    }
+
+    function renderBrandFilters() {
+      const brands = ["Todas", ...new Set(produtos.map((produto) => produto.marca).sort((a, b) => a.localeCompare(b, "pt-BR")))];
+      brandFilterContainer.innerHTML = brands.map((brand) => `
+        <button type="button" data-brand="${escapeHtml(brand)}" aria-pressed="${selectedBrand === brand}"
+          class="shrink-0 rounded-full px-3 py-2 text-[11px] font-semibold transition ${selectedBrand === brand
+            ? "bg-[#e8ece8] text-[#344c40] ring-1 ring-[#aebdaf]"
+            : "border border-[#e2e5e1] bg-white text-[#666b62] hover:border-[#b8c7b8] hover:text-[#344c40]"}">${escapeHtml(brand)}</button>
+      `).join("");
+    }
+
+    function formatPrice(price) {
+      return price === null ? "Sob consulta" : money.format(price);
+    }
+
+    function renderProducts() {
+      const identifiedBrandCount = new Set(produtos.map((produto) => produto.marca)).size;
+      const matchingProducts = produtos.filter((produto) => {
+        const matchesCategory = selectedCategory === "Todos" || produto.categoria === selectedCategory;
+        const matchesBrand = selectedBrand === "Todas" || produto.marca === selectedBrand;
+        const matchesSearch = `${produto.nome} ${produto.sku} ${produto.marca} ${produto.descricao} ${produto.categoria}`.toLocaleLowerCase("pt-BR").includes(searchTerm);
+        return matchesCategory && matchesBrand && matchesSearch;
+      });
+      const visibleProducts = matchingProducts.slice(0, visibleProductLimit);
+
+      emptyState.classList.toggle("hidden", matchingProducts.length > 0);
+      resultCount.textContent = `${matchingProducts.length.toLocaleString("pt-BR")} produtos encontrados · ${identifiedBrandCount} marcas identificadas`;
+      loadMoreButton.classList.toggle("hidden", visibleProducts.length >= matchingProducts.length);
+      grid.innerHTML = visibleProducts.map((produto) => `
+        <article class="product-card overflow-hidden rounded-[20px] border border-[#eceae4] bg-white shadow-[0_5px_18px_-15px_#29332955]">
+          <div class="image-zoom relative aspect-[1/1] overflow-hidden bg-[#eeede7]">
+            <img src="${escapeHtml(produto.imagem)}" alt="${escapeHtml(produto.nome)}" loading="lazy" class="h-full w-full object-cover">
+            <span class="absolute left-2.5 top-2.5 rounded-full bg-white/90 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[.1em] text-[#54735d] backdrop-blur sm:left-3 sm:top-3 sm:text-[10px]">${escapeHtml(produto.categoria)}</span>
+          </div>
+          <div class="p-3 sm:p-4">
+            <h3 class="font-display min-h-[38px] text-[13px] font-bold leading-[1.4] tracking-[-.02em] text-[#28362d] sm:min-h-0 sm:text-base">${escapeHtml(produto.nome)}</h3>
+            <p class="mt-1 text-[10px] font-bold uppercase tracking-[.12em] text-[#b7794d]">${escapeHtml(produto.marca)}</p>
+            ${produto.sku ? `<p class="mt-1 text-[10px] text-[#92948d]">Cód. ${escapeHtml(produto.sku)}</p>` : ""}
+            <p class="mt-1.5 hidden min-h-[40px] text-xs leading-5 text-[#85877f] sm:block">${escapeHtml(produto.descricao)}</p>
+            <div class="mt-2.5 flex items-center justify-between gap-1 sm:mt-3">
+              <span class="font-display text-sm font-extrabold tracking-[-.03em] text-[#344c40] sm:text-base">${formatPrice(produto.preco)}</span>
+              <button type="button" data-add="${produto.id}" class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#edf1ed] text-[#344c40] transition hover:bg-[#344c40] hover:text-white focus:outline-none focus:ring-4 focus:ring-[#344c40]/15 sm:flex sm:h-9 sm:w-auto sm:gap-1.5 sm:px-3" aria-label="Adicionar ${escapeHtml(produto.nome)} ao carrinho">
+                <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" aria-hidden="true"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                <span class="hidden text-xs font-bold sm:inline">Adicionar</span>
+              </button>
+            </div>
+            <p class="mt-2 line-clamp-2 text-[10px] leading-4 text-[#92948d] sm:hidden">${escapeHtml(produto.descricao)}</p>
+          </div>
+        </article>
+      `).join("");
+      applyImageFallbacks(grid);
+    }
+
+    function renderCart() {
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      const cartProducts = cart.map((item) => productById.get(item.id));
+      const hasQuoteItems = cartProducts.some((produto) => produto.preco === null);
+      const total = cart.reduce((sum, item) => sum + (productById.get(item.id).preco || 0) * item.quantity, 0);
+      cartCount.textContent = String(totalItems);
+      document.getElementById("open-cart").setAttribute("aria-label", `Abrir carrinho, ${totalItems} ${totalItems === 1 ? "item" : "itens"}`);
+      cartTotal.textContent = hasQuoteItems && total === 0 ? "Sob consulta" : money.format(total);
+      cartTotalLabel.textContent = hasQuoteItems ? "Subtotal conhecido" : "Total do pedido";
+      cartPriceNote.textContent = hasQuoteItems
+        ? "Itens sem preço cadastrado serão cotados pelo WhatsApp."
+        : "Preços e disponibilidade serão confirmados no atendimento.";
+      cartSubtitle.textContent = totalItems === 0 ? "Monte sua consulta de produtos" : `${totalItems} ${totalItems === 1 ? "item selecionado" : "itens selecionados"}`;
+      document.getElementById("checkout-button").disabled = totalItems === 0;
+
+      if (cart.length === 0) {
+        cartContent.innerHTML = `
+          <div class="flex h-full min-h-[260px] flex-col items-center justify-center text-center">
+            <span class="mb-4 grid h-16 w-16 place-items-center rounded-full bg-[#eff3ed] text-[#78947e]">
+              <svg viewBox="0 0 24 24" class="h-8 w-8" fill="none" aria-hidden="true"><path d="M3.5 4.5h2l2.1 10.1a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4l1.3-6.3H6.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <p class="font-display text-base font-bold text-[#3a473d]">Seu pedido está vazio</p>
+            <p class="mt-1 max-w-[230px] text-xs leading-5 text-[#85877f]">Adicione produtos para montar sua consulta para a FVB Materiais.</p>
+            <button type="button" data-close-cart class="mt-4 rounded-full bg-[#344c40] px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-[#26392f]">Ver catálogo</button>
+          </div>`;
+        return;
+      }
+
+      cartContent.innerHTML = `<div class="space-y-4">${cart.map((item) => {
+        const produto = productById.get(item.id);
+        return `
+          <article class="flex gap-3 border-b border-[#eeede7] pb-4">
+            <img src="${escapeHtml(produto.imagem)}" alt="" class="h-[76px] w-[76px] shrink-0 rounded-2xl bg-[#eeede7] object-cover">
+            <div class="min-w-0 flex-1">
+              <div class="flex items-start justify-between gap-2">
+                <div class="min-w-0">
+                  <h3 class="font-display truncate text-sm font-bold text-[#303a32]">${escapeHtml(produto.nome)}</h3>
+                  <p class="mt-1 text-xs font-semibold text-[#54735d]">${formatPrice(produto.preco)}</p>
+                </div>
+                <button type="button" data-remove="${produto.id}" class="grid h-8 w-8 shrink-0 place-items-center rounded-full text-[#a1a29c] transition hover:bg-[#f8ece8] hover:text-[#ae5d48]" aria-label="Remover ${escapeHtml(produto.nome)} do carrinho">
+                  <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" aria-hidden="true"><path d="M4 6h12M8 6V4h4v2m-6 0 1 10h6l1-10m-5 3v4m3-4v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+              </div>
+              <div class="mt-2.5 flex items-center justify-between">
+                <div class="inline-flex h-8 items-center rounded-lg border border-[#e7e5de] bg-white">
+                  <button type="button" data-quantity="${produto.id}" data-delta="-1" class="grid h-8 w-8 place-items-center text-[#666b62] transition hover:text-[#315b45]" aria-label="Diminuir quantidade de ${escapeHtml(produto.nome)}"><span aria-hidden="true">−</span></button>
+                  <span class="w-6 text-center text-xs font-bold text-[#343a33]">${item.quantity}</span>
+                  <button type="button" data-quantity="${produto.id}" data-delta="1" class="grid h-8 w-8 place-items-center text-[#666b62] transition hover:text-[#315b45]" aria-label="Aumentar quantidade de ${escapeHtml(produto.nome)}"><span aria-hidden="true">+</span></button>
+                </div>
+                <span class="text-xs font-bold text-[#4a5149]">${produto.preco === null ? "Sob consulta" : money.format(produto.preco * item.quantity)}</span>
+              </div>
+            </div>
+          </article>`;
+      }).join("")}</div>`;
+      applyImageFallbacks(cartContent);
+    }
+
+    function addToCart(id) {
+      const item = cart.find((entry) => entry.id === id);
+      if (item) item.quantity += 1;
+      else cart.push({ id, quantity: 1 });
+      updateCart();
+      const produto = productById.get(id);
+      showToast(`${produto.nome} adicionado ao carrinho`);
+    }
+
+    function updateCart() {
+      saveCart();
+      renderCart();
+    }
+
+    function openCart() {
+      cartOverlay.classList.remove("hidden");
+      cartDrawer.classList.remove("translate-x-full");
+      cartDrawer.setAttribute("aria-hidden", "false");
+      cartOverlay.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+      document.getElementById("close-cart").focus();
+    }
+
+    function closeCart() {
+      cartOverlay.classList.add("hidden");
+      cartDrawer.classList.add("translate-x-full");
+      cartDrawer.setAttribute("aria-hidden", "true");
+      cartOverlay.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+      document.getElementById("open-cart").focus();
+    }
+
+    function checkout() {
+      if (cart.length === 0) return;
+      if (!/^\d{10,15}$/.test(WHATSAPP_NUMBER)) {
+        showToast("Configure um número de WhatsApp válido no código.");
+        return;
+      }
+      const customerName = document.getElementById("customer-name").value.trim() || "Cliente";
+      const notes = document.getElementById("customer-notes").value.trim();
+      const items = cart.map((item) => ({
+        product: productById.get(item.id),
+        quantity: item.quantity
+      }));
+      const total = items.reduce((sum, item) => sum + (item.product.preco || 0) * item.quantity, 0);
+      const hasQuoteItems = items.some((item) => item.product.preco === null);
+      const lines = [
+        `*Pedido para FVB Materiais — ${customerName}*`,
+        "----------------------------------",
+        ...items.map(({ product, quantity }) => `• ${quantity}x ${product.nome} (${product.marca}) - ${product.preco === null ? "sob consulta" : money.format(product.preco * quantity)}`),
+        "----------------------------------",
+        `${hasQuoteItems ? "*Subtotal dos itens com preço:*" : "*Total:*"} ${money.format(total)}`,
+        `*Cidade/Endereço/Obs:* ${notes || "Não informado"}`
+      ];
+      const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`;
+      const whatsappWindow = window.open(whatsappUrl, "_blank");
+      if (whatsappWindow) whatsappWindow.opener = null;
+      else window.location.assign(whatsappUrl);
+      cart = [];
+      updateCart();
+      closeCart();
+      showToast("Pedido preparado no WhatsApp. Confira e envie a mensagem.");
+    }
+
+    function applyImageFallbacks(container) {
+      container.querySelectorAll("img").forEach((image) => {
+        image.addEventListener("error", () => {
+          if (image.dataset.fallbackApplied) return;
+          image.dataset.fallbackApplied = "true";
+          const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600"><rect width="600" height="600" fill="#e8ece8"/><path d="M210 360 300 210l90 150H210Z" fill="none" stroke="#344c40" stroke-width="18" stroke-linejoin="round"/><text x="300" y="420" text-anchor="middle" font-family="Arial,sans-serif" font-size="26" fill="#344c40">FVB MATERIAIS</text></svg>';
+          image.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+        }, { once: true });
+      });
+    }
+
+    function initializeCatalog() {
+      try {
+        produtos = window.FVB_PRODUCTS.map((produto, index) => ({
+          id: index + 1,
+          nome: produto.name,
+          preco: produto.priceCents === null ? null : produto.priceCents / 100,
+          marca: produto.brand,
+          categoria: produto.category,
+          imagem: produto.image.replace(/^\/+/, "./"),
+          descricao: produto.description,
+          sku: produto.sku
+        }));
+        productById.clear();
+        produtos.forEach((produto) => productById.set(produto.id, produto));
+        cart = loadCart();
+        renderFilters();
+        renderBrandFilters();
+        renderProducts();
+        renderCart();
+      } catch (error) {
+        console.error("Falha ao carregar o catálogo:", error);
+        emptyState.textContent = "Não foi possível carregar os produtos. Tente atualizar a página.";
+        emptyState.classList.remove("hidden");
+      }
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (character) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[character]);
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.remove("hidden");
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => toast.classList.add("hidden"), 2400);
+    }
+
+    filterContainer.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-category]");
+      if (!button) return;
+      selectedCategory = button.dataset.category;
+      visibleProductLimit = productPageSize;
+      renderFilters();
+      renderProducts();
+    });
+
+    brandFilterContainer.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-brand]");
+      if (!button) return;
+      selectedBrand = button.dataset.brand;
+      visibleProductLimit = productPageSize;
+      renderBrandFilters();
+      renderProducts();
+    });
+
+    grid.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-add]");
+      if (button) addToCart(Number(button.dataset.add));
+    });
+
+    loadMoreButton.addEventListener("click", () => {
+      visibleProductLimit += productPageSize;
+      renderProducts();
+    });
+
+    cartContent.addEventListener("click", (event) => {
+      if (event.target.closest("[data-close-cart]")) {
+        closeCart();
+        return;
+      }
+      const quantityButton = event.target.closest("[data-quantity]");
+      if (quantityButton) {
+        const id = Number(quantityButton.dataset.quantity);
+        const item = cart.find((entry) => entry.id === id);
+        if (!item) return;
+        item.quantity += Number(quantityButton.dataset.delta);
+        if (item.quantity <= 0) cart = cart.filter((entry) => entry.id !== id);
+        updateCart();
+        return;
+      }
+      const removeButton = event.target.closest("[data-remove]");
+      if (removeButton) {
+        cart = cart.filter((entry) => entry.id !== Number(removeButton.dataset.remove));
+        updateCart();
+      }
+    });
+
+    document.getElementById("search-input").addEventListener("input", (event) => {
+      searchTerm = event.target.value.trim().toLocaleLowerCase("pt-BR");
+      visibleProductLimit = productPageSize;
+      renderProducts();
+    });
+    document.getElementById("open-cart").addEventListener("click", openCart);
+    document.getElementById("close-cart").addEventListener("click", closeCart);
+    cartOverlay.addEventListener("click", closeCart);
+    document.getElementById("checkout-button").addEventListener("click", checkout);
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !cartDrawer.classList.contains("translate-x-full")) closeCart();
+    });
+
+    initializeCatalog();
+  </script>
 </body>
 </html>
