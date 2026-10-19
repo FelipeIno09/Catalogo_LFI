@@ -1,0 +1,22 @@
+{
+  "name": "fvb-materiais-catalogo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Catálogo online com login, pedidos e painel administrativo para a FVB Materiais.",
+  "scripts": {
+    "start": "node server.js",
+    "admin:create": "node scripts/create-admin.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.2.0",
+    "dotenv": "^16.6.1",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.0.1",
+    "express-session": "^1.18.2",
+    "helmet": "^8.1.0"
+  }
+}

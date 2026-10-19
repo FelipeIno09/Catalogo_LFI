@@ -1,0 +1,11 @@
+.git
+.env
+.env.*
+!.env.docker.example
+node_modules
+npm-debug.log*
+data
+coverage
+tests
+Extras
+*.xlsx
