@@ -59,6 +59,17 @@ Edite `.env`:
 
 O catálogo **não funciona abrindo o arquivo HTML diretamente**: a autenticação, o banco e os pedidos dependem do servidor Node.js.
 
+## Apresentação no GitHub Pages
+
+O projeto inclui uma página estática de apresentação em `docs/`, que pode ser publicada pelo GitHub Pages. Essa apresentação não substitui a aplicação: login, pedidos, painel e catálogo conectado ao banco precisam do servidor Node.js.
+
+Para ativar a página no repositório:
+
+1. Abra **Settings → Pages** no GitHub.
+2. Em **Build and deployment**, selecione **Deploy from a branch**.
+3. Escolha a branch `main` e a pasta `/docs`, depois clique em **Save**.
+4. Aguarde o deploy indicado em **Actions**. O endereço será `https://grupotcc-jacob.github.io/Catalogo_FVB/`.
+
 ## Executar com Docker
 
 Requisitos: Docker Desktop (com Docker Compose) ou Docker Engine com o plugin Compose.

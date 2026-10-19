@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f4ee">
+  <meta name="description" content="Conheça o projeto do catálogo online da FVB Materiais para lojas de construção.">
+  <title>FVB Materiais — catálogo online</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: #26342b;
+      background: #f5f4ee;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      --green: #315b45;
+      --muted: #637167;
+      --border: #e1e5dd;
+      --orange: #d58b58;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 320px; }
+    a { color: inherit; }
+    .wrap { width: min(1080px, calc(100% - 40px)); margin-inline: auto; }
+    header { padding: 22px 0; }
+    .brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; }
+    .brand-mark { display: grid; width: 42px; height: 42px; place-items: center; border-radius: 15px; background: var(--green); color: white; font-weight: 800; }
+    .brand-name { font-weight: 800; letter-spacing: -.04em; }
+    .brand-sub { display: block; margin-top: 2px; color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+    main { padding: 42px 0 72px; }
+    .hero { position: relative; overflow: hidden; padding: clamp(28px, 7vw, 76px); border: 1px solid #e0e7df; border-radius: 30px; background: linear-gradient(125deg, #e8eee7, #f0eee5); }
+    .hero::after { position: absolute; top: -140px; right: -70px; width: 380px; height: 380px; border: 1px solid #cbd7ca; border-radius: 50%; content: ""; }
+    .hero-content { position: relative; z-index: 1; max-width: 650px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 9px; padding: 8px 12px; border-radius: 999px; background: #ffffffb8; color: var(--green); font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .eyebrow::before { width: 7px; height: 7px; border-radius: 50%; background: var(--orange); content: ""; }
+    h1 { margin: 22px 0 14px; font-size: clamp(38px, 7vw, 68px); line-height: 1.02; letter-spacing: -.065em; }
+    .intro { max-width: 570px; color: var(--muted); font-size: clamp(16px, 2vw, 19px); line-height: 1.7; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .button { display: inline-flex; min-height: 46px; align-items: center; justify-content: center; padding: 0 18px; border: 1px solid var(--green); border-radius: 999px; background: var(--green); color: #fff; font-size: 14px; font-weight: 700; text-decoration: none; transition: transform .18s ease, background .18s ease; }
+    .button:hover { transform: translateY(-2px); background: #264a38; }
+    .button.secondary { background: transparent; color: var(--green); }
+    .button.secondary:hover { background: #ffffffa8; }
+    section { margin-top: 56px; }
+    h2 { margin: 0; font-size: clamp(25px, 4vw, 34px); letter-spacing: -.04em; }
+    .section-intro { max-width: 650px; margin: 10px 0 0; color: var(--muted); line-height: 1.7; }
+    .features { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 22px; }
+    .feature { padding: 22px; border: 1px solid var(--border); border-radius: 20px; background: #fffefa; }
+    .feature-number { color: var(--orange); font-size: 12px; font-weight: 800; letter-spacing: .1em; }
+    .feature h3 { margin: 14px 0 8px; font-size: 18px; }
+    .feature p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.65; }
+    .notice { padding: 22px 24px; border-left: 4px solid var(--orange); border-radius: 4px 16px 16px 4px; background: #f0ede3; color: #4f5c51; line-height: 1.7; }
+    .notice strong { color: #26342b; }
+    footer { padding: 24px 0 36px; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
+    @media (max-width: 700px) {
+      main { padding-top: 20px; }
+      .features { grid-template-columns: 1fr; }
+      .hero::after { top: -220px; right: -230px; }
+      section { margin-top: 42px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="wrap">
+    <a class="brand" href="#" aria-label="FVB Materiais, início">
+      <span class="brand-mark" aria-hidden="true">FVB</span>
+      <span><span class="brand-name">FVB Materiais</span><span class="brand-sub">Ferragens &amp; ferramentas</span></span>
+    </a>
+  </header>
+
+  <main class="wrap">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-content">
+        <span class="eyebrow">Projeto de catálogo online</span>
+        <h1 id="page-title">Mais opções para abastecer sua loja.</h1>
+        <p class="intro">Um catálogo digital da FVB Materiais pensado para lojas de construção: encontre produtos, consulte itens e encaminhe pedidos com praticidade.</p>
+        <div class="actions">
+          <a class="button" href="https://github.com/GrupoTCC-jacob/Catalogo_FVB">Ver projeto no GitHub</a>
+          <a class="button secondary" href="https://github.com/GrupoTCC-jacob/Catalogo_FVB#executar-com-docker">Como executar o catálogo</a>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="features-title">
+      <h2 id="features-title">O que o projeto oferece</h2>
+      <p class="section-intro">A aplicação completa reúne a experiência de consulta do catálogo e ferramentas para a equipe administrar produtos e pedidos.</p>
+      <div class="features">
+        <article class="feature">
+          <span class="feature-number">01 / CATÁLOGO</span>
+          <h3>Encontre produtos</h3>
+          <p>Pesquise por nome, marca, categoria ou código e navegue pelo catálogo em diferentes dispositivos.</p>
+        </article>
+        <article class="feature">
+          <span class="feature-number">02 / PEDIDOS</span>
+          <h3>Monte uma solicitação</h3>
+          <p>Organize os itens desejados e envie uma solicitação para continuar a negociação com a equipe.</p>
+        </article>
+        <article class="feature">
+          <span class="feature-number">03 / ADMINISTRAÇÃO</span>
+          <h3>Gerencie o catálogo</h3>
+          <p>Uma área protegida permite à equipe administrar produtos e acompanhar os pedidos registrados.</p>
+        </article>
+      </div>
+    </section>
+
+    <section aria-labelledby="demo-title">
+      <h2 id="demo-title">Sobre esta demonstração</h2>
+      <p class="section-intro">Esta página apresenta o projeto e pode ser publicada gratuitamente pelo GitHub Pages.</p>
+      <div class="notice">
+        <strong>Importante:</strong> GitHub Pages hospeda somente páginas estáticas. O catálogo interativo, login, pedidos e painel administrativo precisam do servidor Node.js e do banco SQLite; essas funções não estão disponíveis nesta demonstração. Consulte o repositório para executar a aplicação completa.
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">FVB Materiais · Projeto de catálogo online</div>
+  </footer>
+</body>
+</html>
