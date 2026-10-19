@@ -6,6 +6,7 @@ const { test } = require("node:test");
 
 const siteDirectory = path.join(__dirname, "..", "docs");
 const html = fs.readFileSync(path.join(siteDirectory, "index.html"), "utf8");
+const rootPage = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
 
 test("static catalog assets and product data are ready for GitHub Pages", () => {
   const productsContext = { window: {} };
@@ -26,6 +27,7 @@ test("static catalog assets and product data are ready for GitHub Pages", () => 
   ));
   assert.match(html, /src="\.\/catalog-products\.js"/);
   assert.ok(fs.existsSync(path.join(siteDirectory, "product-placeholder.svg")));
+  assert.match(rootPage, /url=\.\/docs\//);
 });
 
 test("catalog has no server or account dependencies and builds WhatsApp orders", () => {
