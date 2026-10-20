@@ -38,6 +38,9 @@ test("static catalog routes load the Supabase app without publishing a price cat
   assert.ok(!fs.existsSync(path.join(siteDirectory, "catalog-products.js")));
   assert.ok(fs.existsSync(path.join(siteDirectory, "product-placeholder.svg")));
   assert.ok(fs.existsSync(path.join(siteDirectory, "images", "products", "generic.svg")));
+  assert.ok(fs.existsSync(path.join(siteDirectory, "images", "default-avatar.svg")));
+  assert.match(html, /id="account-avatar-fallback" src="\.\/images\/default-avatar\.svg"/);
+  assert.match(html, /id="profile-avatar-fallback" src="\.\/images\/default-avatar\.svg"/);
   assert.match(rootPage, /url=\.\/docs\//);
 });
 

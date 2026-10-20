@@ -141,7 +141,7 @@
       <div class="flex items-center gap-2">
         <a id="admin-link" href="?rota=admin" hidden class="hidden min-h-10 items-center whitespace-nowrap rounded-full border border-[#d8ded8] bg-white px-3 text-xs font-bold text-[#344c40] transition hover:border-[#344c40]">Painel</a>
         <a id="account-link" href="?rota=conta" hidden class="hidden min-h-10 items-center gap-2 whitespace-nowrap rounded-full border border-[#d8ded8] bg-white py-1 pl-1 pr-3 text-xs font-bold text-[#344c40] transition hover:border-[#344c40]">
-          <span id="account-avatar-fallback" class="grid h-8 w-8 place-items-center overflow-hidden rounded-full bg-[#e8ece8] text-[11px] font-extrabold text-[#344c40]">LF</span>
+          <img id="account-avatar-fallback" src="./images/default-avatar.svg" alt="" class="h-8 w-8 shrink-0 rounded-full object-cover">
           <img id="account-avatar" alt="" hidden class="h-8 w-8 rounded-full object-cover">
           <span id="account-name">Minha conta</span>
         </a>
@@ -294,7 +294,7 @@
       <div id="account-error" class="mb-5 hidden rounded-xl border border-[#efd7ce] bg-[#fbf1ed] p-4 text-sm leading-6 text-[#8c4131]" role="alert"></div>
       <form id="account-form" class="rounded-[24px] border border-[#e2e5e1] bg-white p-5 shadow-sm sm:p-8">
         <div class="flex flex-col items-center gap-5 border-b border-[#eeede7] pb-6 text-center sm:flex-row sm:items-center sm:text-left">
-          <span id="profile-avatar-fallback" class="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-full bg-[#e8ece8] font-display text-xl font-extrabold text-[#344c40] ring-4 ring-[#eff3ed]">LF</span>
+          <img id="profile-avatar-fallback" src="./images/default-avatar.svg" alt="Imagem padrão do perfil" class="block h-20 w-20 shrink-0 rounded-full object-cover ring-4 ring-[#eff3ed]">
           <img id="profile-avatar" alt="Foto do perfil" hidden class="block h-20 w-20 shrink-0 rounded-full object-cover object-center ring-4 ring-[#eff3ed]">
           <div class="flex-1 text-center sm:text-left">
             <h3 class="font-display text-lg font-extrabold text-[#28362d]">Foto do perfil</h3>
