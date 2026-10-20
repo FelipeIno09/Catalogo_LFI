@@ -7,4 +7,5 @@ data/
 *.sqlite-*
 *.db
 *.db-*
+__pycache__/
 npm-debug.log*

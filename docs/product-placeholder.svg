@@ -1,7 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Imagem de produto FVB Materiais">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Cachorro minimalista LFI">
   <rect width="600" height="600" fill="#e8ece8"/>
-  <circle cx="300" cy="265" r="132" fill="#dce5dc"/>
-  <path d="m267 208 36 36-96 96-36-36 96-96Zm48-26 35-13 81 81-13 35-41 18-80-80 18-41Zm-163 163 44 44-49 49-44-44 49-49Z" fill="none" stroke="#344c40" stroke-linecap="round" stroke-linejoin="round" stroke-width="17"/>
-  <text x="300" y="485" fill="#344c40" font-family="Arial,sans-serif" font-size="28" font-weight="700" text-anchor="middle">FVB MATERIAIS</text>
-  <text x="300" y="520" fill="#78847a" font-family="Arial,sans-serif" font-size="16" text-anchor="middle">foto em breve</text>
+  <circle cx="300" cy="275" r="188" fill="#dce5dc"/>
+  <path d="M218 212c-38-49-78-44-82-5-5 44 21 78 70 82m176-77c38-49 78-44 82-5 5 44-21 78-70 82" fill="#d58b58" stroke="#344c40" stroke-linecap="round" stroke-linejoin="round" stroke-width="13"/>
+  <path d="M205 223c17-52 55-78 95-78s78 26 95 78c16 51-1 117-38 151-16 15-36 23-57 23s-41-8-57-23c-37-34-54-100-38-151Z" fill="#f8f7f4" stroke="#344c40" stroke-linejoin="round" stroke-width="13"/>
+  <path d="M246 262v2m108-2v2" fill="none" stroke="#344c40" stroke-linecap="round" stroke-width="17"/>
+  <path d="M268 318c10-12 22-18 32-18s22 6 32 18c-5 24-17 37-32 37s-27-13-32-37Z" fill="#d58b58" stroke="#344c40" stroke-linejoin="round" stroke-width="10"/>
+  <path d="M287 312c4-5 9-7 13-7s9 2 13 7c-2 9-7 13-13 13s-11-4-13-13Z" fill="#344c40"/>
+  <path d="M300 325v18m0 0c-8 10-18 12-27 5m27-5c8 10 18 12 27 5" fill="none" stroke="#344c40" stroke-linecap="round" stroke-linejoin="round" stroke-width="8"/>
+  <text x="300" y="492" fill="#344c40" font-family="Arial,sans-serif" font-size="54" font-weight="700" letter-spacing="8" text-anchor="middle">LFI</text>
+  <text x="300" y="526" fill="#78847a" font-family="Arial,sans-serif" font-size="18" text-anchor="middle">foto do produto em breve</text>
 </svg>

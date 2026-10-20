@@ -50,41 +50,47 @@
 <body>
   <header class="sticky top-0 z-30 border-b border-[#e2e5e1] bg-[#f4f5f3]/95 backdrop-blur-md">
     <div class="mx-auto flex h-[68px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-      <a href="#" class="flex items-center gap-2.5" aria-label="FVB Materiais, início">
+      <a href="#" class="flex items-center gap-2.5" aria-label="LFI Tools, início">
         <span class="grid h-10 w-10 place-items-center rounded-2xl bg-[#344c40] text-white">
           <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" aria-hidden="true">
             <path d="m14.5 4.5 5 5m-2-7 4 4-3.5 3.5-4-4m-1 1L5 15.5l3.5 3.5L16.5 11m-10 3L4 12l-2 2 6 6 2-2-2-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </span>
         <span>
-          <span class="font-display block text-[17px] font-extrabold leading-5 tracking-[-.04em]">FVB <span class="text-[#d58b58]">Materiais</span></span>
+          <span class="font-display block text-[17px] font-extrabold leading-5 tracking-[-.04em]">LFI <span class="text-[#d58b58]">Tools</span></span>
           <span class="block text-[10px] font-semibold uppercase tracking-[.16em] text-[#737b74]">ferragens & ferramentas</span>
         </span>
       </a>
-      <button id="open-cart" type="button" class="relative flex h-11 items-center gap-2 rounded-full border border-[#e7e5de] bg-white px-4 text-sm font-semibold text-[#343a33] shadow-sm transition hover:border-[#315b45] hover:text-[#315b45]" aria-label="Abrir carrinho, 0 itens">
+      <button id="open-cart" type="button" hidden class="hidden relative flex h-11 items-center gap-2 rounded-full border border-[#e7e5de] bg-white px-4 text-sm font-semibold text-[#343a33] shadow-sm transition hover:border-[#315b45] hover:text-[#315b45]" aria-label="Abrir carrinho, 0 itens">
         <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" aria-hidden="true">
           <path d="M3.5 4.5h2l2.1 10.1a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4l1.3-6.3H6.3M10 20a.8.8 0 1 0 0-1.6.8.8 0 0 0 0 1.6ZM17 20a.8.8 0 1 0 0-1.6.8.8 0 0 0 0 1.6Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <span class="hidden sm:inline">Meu carrinho</span>
         <span id="cart-count" class="grid h-5 min-w-5 place-items-center rounded-full bg-[#d58b58] px-1 text-[11px] font-bold text-white">0</span>
       </button>
+      <div class="flex items-center gap-2">
+        <a id="login-link" href="?rota=login" class="inline-flex min-h-10 items-center whitespace-nowrap rounded-full border border-[#d8ded8] bg-white px-4 text-xs font-bold text-[#344c40] transition hover:border-[#344c40]">Entrar</a>
+        <a id="admin-link" href="?rota=admin" hidden class="hidden inline-flex min-h-10 items-center whitespace-nowrap rounded-full border border-[#d8ded8] bg-white px-4 text-xs font-bold text-[#344c40] transition hover:border-[#344c40]">Painel</a>
+        <button id="logout-button" type="button" hidden class="hidden min-h-10 whitespace-nowrap rounded-full border border-[#d8ded8] bg-white px-4 text-xs font-bold text-[#344c40] transition hover:border-[#344c40]">Sair</button>
+      </div>
       <a href="https://wa.me/5514991622498" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-10 items-center whitespace-nowrap rounded-full bg-[#344c40] px-4 text-xs font-bold text-white transition hover:bg-[#26392f]">Fale conosco</a>
     </div>
   </header>
 
   <main>
+    <p id="app-notice" class="mx-auto mt-4 hidden max-w-7xl rounded-xl p-3 text-sm sm:mx-6 lg:mx-auto lg:px-4" role="status" aria-live="polite"></p>
     <section class="mx-auto max-w-7xl px-4 pb-8 pt-8 sm:px-6 sm:pt-12 lg:px-8 lg:pb-12">
       <div class="relative overflow-hidden rounded-[28px] bg-[#e8ece8] px-6 py-8 sm:px-10 sm:py-11 lg:px-14 lg:py-14">
         <div class="relative z-10 max-w-xl">
           <span class="mb-3 inline-flex items-center gap-2 rounded-full bg-white/75 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[.14em] text-[#54735d]">
             <span class="h-1.5 w-1.5 rounded-full bg-[#d58b58]"></span>
-            Fornecimento para lojas de construção
+            Fornecimento para lojas
           </span>
           <h1 class="font-display max-w-lg text-[34px] font-extrabold leading-[1.08] tracking-[-.055em] text-[#28362d] sm:text-5xl">
             Mais opções para<br class="hidden sm:block"> abastecer sua loja.
           </h1>
           <p class="mt-3 max-w-md text-sm leading-6 text-[#637167] sm:mt-4 sm:text-base">
-            Encontre produtos de fixação, ferramentas, hidráulica, elétrica e abrasivos das marcas que a FVB trabalha.
+            Encontre no catálogo os produtos que sua loja precisa.
           </p>
           <a href="#catalogo" class="mt-5 inline-flex min-h-11 items-center gap-2 rounded-full bg-[#315b45] px-5 text-sm font-semibold text-white transition hover:bg-[#264a38]">
             Ver catálogo
@@ -103,7 +109,8 @@
       </div>
     </section>
 
-    <section id="catalogo" class="mx-auto max-w-7xl scroll-mt-24 px-4 pb-16 sm:px-6 lg:px-8">
+    <section id="catalog-view" class="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
+    <div id="catalogo" class="scroll-mt-24">
       <div class="mb-5 flex flex-col gap-4 sm:mb-7 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p class="text-xs font-bold uppercase tracking-[.16em] text-[#b7794d]">Linha de produtos</p>
@@ -112,29 +119,87 @@
         <label class="relative block w-full sm:max-w-[300px]">
           <span class="sr-only">Buscar produtos</span>
           <svg viewBox="0 0 24 24" class="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-[#85877f]" fill="none" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3" stroke="currentColor" stroke-width="1.7"/><path d="m15.5 15.5 4.2 4.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
-          <input id="search-input" type="search" placeholder="Buscar produto ou marca..." class="h-12 w-full rounded-2xl border border-[#e2e5e1] bg-white pl-11 pr-4 text-sm text-[#343a33] outline-none transition placeholder:text-[#a2a39c] focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
+          <input id="search-input" type="search" placeholder="Buscar produto..." class="h-12 w-full rounded-2xl border border-[#e2e5e1] bg-white pl-11 pr-4 text-sm text-[#343a33] outline-none transition placeholder:text-[#a2a39c] focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
         </label>
-      </div>
-      <div id="category-filters" class="no-scrollbar mb-6 flex gap-2 overflow-x-auto pb-1" aria-label="Filtrar por categoria"></div>
-      <div class="mb-4">
-        <p class="mb-2 text-[10px] font-bold uppercase tracking-[.14em] text-[#85877f]">Marcas</p>
-        <div id="brand-filters" class="no-scrollbar flex flex-wrap gap-2" aria-label="Filtrar por marca"></div>
       </div>
       <p id="catalog-result-count" class="mb-3 text-xs text-[#737b74]" aria-live="polite"></p>
       <p class="mb-4 flex items-center gap-2 text-xs leading-5 text-[#737b74]">
-        <span class="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#f5ecd9] text-[11px] font-bold text-[#a56d1c]">i</span>
-        Preços importados da tabela comercial são referências: confirme embalagem, disponibilidade e valor atualizado pelo WhatsApp.
+        <!-- <span class="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#f5ecd9] text-[11px] font-bold text-[#a56d1c]">i</span>
+        Preços importados da tabela comercial são referências: confirme embalagem, disponibilidade e valor atualizado pelo WhatsApp.-->
       </p>
       <div id="product-grid" class="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4" aria-live="polite"></div>
-      <p id="empty-state" class="hidden rounded-2xl border border-dashed border-[#d9d8d0] py-14 text-center text-sm text-[#777b73]">Nenhum produto encontrado. Tente outra busca ou categoria.</p>
+      <p id="empty-state" class="hidden rounded-2xl border border-dashed border-[#d9d8d0] py-14 text-center text-sm text-[#777b73]">Nenhum produto encontrado. Tente outra busca.</p>
       <button id="load-more-products" type="button" class="mx-auto mt-8 hidden min-h-11 rounded-full border border-[#d8ded8] bg-white px-5 text-sm font-semibold text-[#344c40] transition hover:border-[#344c40] hover:bg-[#f3f6f2]">Mostrar mais produtos</button>
+    </div>
+    </section>
+
+    <section id="login-view" hidden class="mx-auto max-w-xl px-4 pb-16 sm:px-6 lg:px-8">
+      <div class="rounded-[24px] border border-[#e2e5e1] bg-white p-6 shadow-sm sm:p-9">
+        <p class="text-xs font-bold uppercase tracking-[.16em] text-[#b7794d]">Área do cliente</p>
+        <h2 id="auth-title" class="font-display mt-2 text-2xl font-extrabold tracking-[-.04em] text-[#28362d]">Entrar na sua conta</h2>
+        <p id="auth-description" class="mt-2 text-sm leading-6 text-[#737b74]">Entre para consultar preços e preparar pedidos.</p>
+        <form id="login-form" class="mt-6 space-y-4">
+          <label id="display-name-field" class="hidden block">
+            <span class="mb-1.5 block text-xs font-semibold text-[#555c53]">Seu nome / loja</span>
+            <input id="display-name-input" type="text" maxlength="100" autocomplete="name" class="h-11 w-full rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3.5 text-sm outline-none focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
+          </label>
+          <label class="block">
+            <span class="mb-1.5 block text-xs font-semibold text-[#555c53]">E-mail</span>
+            <input id="email-input" type="email" required maxlength="254" autocomplete="email" class="h-11 w-full rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3.5 text-sm outline-none focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
+          </label>
+          <label class="block">
+            <span class="mb-1.5 block text-xs font-semibold text-[#555c53]">Senha</span>
+            <input id="password-input" type="password" required minlength="8" autocomplete="current-password" class="h-11 w-full rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3.5 text-sm outline-none focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
+          </label>
+          <button id="auth-submit" type="submit" class="min-h-11 w-full rounded-xl bg-[#344c40] px-4 text-sm font-bold text-white transition hover:bg-[#26392f]">Entrar</button>
+        </form>
+        <p id="auth-message" class="mt-4 hidden rounded-xl bg-[#eff3ed] p-3 text-sm leading-5 text-[#344c40]" role="status" aria-live="polite"></p>
+        <p id="auth-error" class="mt-4 hidden rounded-xl bg-[#f8ece8] p-3 text-sm leading-5 text-[#8c4131]" role="alert"></p>
+        <p class="mt-5 text-center text-sm text-[#737b74]">
+          <span id="register-prompt">Ainda não tem conta?</span>
+          <a id="register-link" href="?rota=cadastro" class="font-bold text-[#315b45] underline underline-offset-2">Solicitar cadastro</a>
+          <a id="back-to-catalog" href="?rota=catalogo" class="hidden font-bold text-[#315b45] underline underline-offset-2">Voltar ao catálogo</a>
+        </p>
+      </div>
+    </section>
+
+    <section id="admin-view" hidden class="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
+      <div class="mb-8">
+        <p class="text-xs font-bold uppercase tracking-[.16em] text-[#b7794d]">Administração</p>
+        <h2 class="font-display mt-1 text-3xl font-extrabold tracking-[-.04em] text-[#28362d]">Clientes e produtos</h2>
+      </div>
+      <div id="admin-error" class="mb-5 hidden rounded-xl bg-[#f8ece8] p-3 text-sm text-[#8c4131]" role="alert"></div>
+      <div class="mb-10 rounded-[24px] border border-[#e2e5e1] bg-white p-5 shadow-sm sm:p-7">
+        <h3 class="font-display text-xl font-extrabold text-[#28362d]">Clientes cadastrados</h3>
+        <div id="customer-list" class="mt-4 space-y-3" aria-live="polite"></div>
+      </div>
+      <div class="rounded-[24px] border border-[#e2e5e1] bg-white p-5 shadow-sm sm:p-7">
+        <h3 class="font-display text-xl font-extrabold text-[#28362d]">Adicionar produto</h3>
+        <form id="product-create-form" class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <input name="name" required maxlength="200" placeholder="Nome do produto" aria-label="Nome do produto" class="h-11 rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3 text-sm">
+          <input name="sku" maxlength="80" placeholder="Referência (opcional)" aria-label="Referência" class="h-11 rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3 text-sm">
+          <input name="price" type="number" required min="0" step="0.01" placeholder="Preço em reais" aria-label="Preço em reais" class="h-11 rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3 text-sm">
+          <input name="image" maxlength="1000" placeholder="Imagem (URL ou caminho)" aria-label="Imagem" value="./product-placeholder.svg" class="h-11 rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3 text-sm">
+          <input name="description" maxlength="1000" placeholder="Descrição (opcional)" aria-label="Descrição" class="h-11 rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3 text-sm">
+          <button type="submit" class="min-h-11 rounded-xl bg-[#344c40] px-4 text-sm font-bold text-white transition hover:bg-[#26392f]">Adicionar produto</button>
+        </form>
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <label class="block w-full sm:max-w-[320px]">
+            <span class="sr-only">Buscar produto para editar</span>
+            <input id="admin-product-search" type="search" placeholder="Buscar produto para editar..." class="h-11 w-full rounded-xl border border-[#e2e5e1] px-3 text-sm">
+          </label>
+          <p id="admin-product-count" class="text-xs text-[#737b74]" aria-live="polite"></p>
+        </div>
+        <div id="product-admin-list" class="mt-4 space-y-4" aria-live="polite"></div>
+        <button id="admin-load-more" type="button" class="mx-auto mt-5 hidden min-h-10 rounded-full border border-[#d8ded8] px-4 text-sm font-semibold text-[#344c40]">Mostrar mais produtos</button>
+      </div>
     </section>
   </main>
 
   <footer class="border-t border-[#e2e5e1] bg-white/70">
     <div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 text-center text-xs text-[#85877f] sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:text-left lg:px-8">
       <span class="font-display font-bold text-[#344c40]">FVB Materiais<span class="text-[#d58b58]">.</span> <span class="font-normal">Fabio Vicente Bezerra</span></span>
-      <span>Atendimento para lojas físicas de materiais de construção. Peça ou consulte pelo WhatsApp.</span>
+      <span>Atendimento para lojas físicas de materiais de construção. Clientes aprovados consultam preços e enviam pedidos pelo WhatsApp.</span>
     </div>
   </footer>
 
@@ -175,361 +240,8 @@
   </aside>
   <div id="toast" class="pointer-events-none fixed bottom-5 left-1/2 z-[60] hidden -translate-x-1/2 rounded-full bg-[#28362d] px-4 py-2.5 text-sm font-medium text-white shadow-lg" role="status" aria-live="polite"></div>
 
-  <script src="./catalog-products.js"></script>
-  <script>
-    // Configure aqui o WhatsApp do vendedor, com código do país e DDD, sem espaços ou símbolos.
-    const WHATSAPP_NUMBER = "5514991622498";
-
-    const STORAGE_KEY = "fvb-materiais-cart-v1";
-    const money = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
-    let produtos = [];
-    const productById = new Map();
-    const grid = document.getElementById("product-grid");
-    const filterContainer = document.getElementById("category-filters");
-    const brandFilterContainer = document.getElementById("brand-filters");
-    const resultCount = document.getElementById("catalog-result-count");
-    const loadMoreButton = document.getElementById("load-more-products");
-    const cartDrawer = document.getElementById("cart-drawer");
-    const cartOverlay = document.getElementById("cart-overlay");
-    const cartContent = document.getElementById("cart-content");
-    const cartCount = document.getElementById("cart-count");
-    const cartTotal = document.getElementById("cart-total");
-    const cartTotalLabel = document.getElementById("cart-total-label");
-    const cartPriceNote = document.getElementById("cart-price-note");
-    const cartSubtitle = document.getElementById("cart-subtitle");
-    const emptyState = document.getElementById("empty-state");
-    let selectedCategory = "Todos";
-    let selectedBrand = "Todas";
-    let searchTerm = "";
-    let visibleProductLimit = 48;
-    const productPageSize = 48;
-    let toastTimeout;
-    let cart = [];
-
-    function loadCart() {
-      try {
-        const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-        if (!Array.isArray(stored)) return [];
-        return stored
-          .filter((item) => item && productById.has(Number(item.id)) && Number.isInteger(item.quantity) && item.quantity > 0)
-          .map((item) => ({ id: Number(item.id), quantity: item.quantity }));
-      } catch (error) {
-        console.error("Não foi possível ler o carrinho salvo:", error);
-        return [];
-      }
-    }
-
-    function saveCart() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
-      } catch (error) {
-        console.error("Não foi possível salvar o carrinho:", error);
-        showToast("Não foi possível salvar o carrinho neste dispositivo.");
-      }
-    }
-
-    function renderFilters() {
-      const categories = ["Todos", ...new Set(produtos.map((produto) => produto.categoria).sort((a, b) => a.localeCompare(b, "pt-BR")))];
-      filterContainer.innerHTML = categories.map((category) => `
-        <button type="button" data-category="${escapeHtml(category)}" aria-pressed="${selectedCategory === category}"
-          class="shrink-0 rounded-full px-4 py-2.5 text-xs font-semibold transition sm:text-sm ${selectedCategory === category
-            ? "bg-[#344c40] text-white shadow-sm"
-              : "border border-[#e2e5e1] bg-white text-[#666b62] hover:border-[#b8c7b8] hover:text-[#344c40]"}">${escapeHtml(category)}</button>
-      `).join("");
-    }
-
-    function renderBrandFilters() {
-      const brands = ["Todas", ...new Set(produtos.map((produto) => produto.marca).sort((a, b) => a.localeCompare(b, "pt-BR")))];
-      brandFilterContainer.innerHTML = brands.map((brand) => `
-        <button type="button" data-brand="${escapeHtml(brand)}" aria-pressed="${selectedBrand === brand}"
-          class="shrink-0 rounded-full px-3 py-2 text-[11px] font-semibold transition ${selectedBrand === brand
-            ? "bg-[#e8ece8] text-[#344c40] ring-1 ring-[#aebdaf]"
-            : "border border-[#e2e5e1] bg-white text-[#666b62] hover:border-[#b8c7b8] hover:text-[#344c40]"}">${escapeHtml(brand)}</button>
-      `).join("");
-    }
-
-    function formatPrice(price) {
-      return price === null ? "Sob consulta" : money.format(price);
-    }
-
-    function renderProducts() {
-      const identifiedBrandCount = new Set(produtos.map((produto) => produto.marca)).size;
-      const matchingProducts = produtos.filter((produto) => {
-        const matchesCategory = selectedCategory === "Todos" || produto.categoria === selectedCategory;
-        const matchesBrand = selectedBrand === "Todas" || produto.marca === selectedBrand;
-        const matchesSearch = `${produto.nome} ${produto.sku} ${produto.marca} ${produto.descricao} ${produto.categoria}`.toLocaleLowerCase("pt-BR").includes(searchTerm);
-        return matchesCategory && matchesBrand && matchesSearch;
-      });
-      const visibleProducts = matchingProducts.slice(0, visibleProductLimit);
-
-      emptyState.classList.toggle("hidden", matchingProducts.length > 0);
-      resultCount.textContent = `${matchingProducts.length.toLocaleString("pt-BR")} produtos encontrados · ${identifiedBrandCount} marcas identificadas`;
-      loadMoreButton.classList.toggle("hidden", visibleProducts.length >= matchingProducts.length);
-      grid.innerHTML = visibleProducts.map((produto) => `
-        <article class="product-card overflow-hidden rounded-[20px] border border-[#eceae4] bg-white shadow-[0_5px_18px_-15px_#29332955]">
-          <div class="image-zoom relative aspect-[1/1] overflow-hidden bg-[#eeede7]">
-            <img src="${escapeHtml(produto.imagem)}" alt="${escapeHtml(produto.nome)}" loading="lazy" class="h-full w-full object-cover">
-            <span class="absolute left-2.5 top-2.5 rounded-full bg-white/90 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[.1em] text-[#54735d] backdrop-blur sm:left-3 sm:top-3 sm:text-[10px]">${escapeHtml(produto.categoria)}</span>
-          </div>
-          <div class="p-3 sm:p-4">
-            <h3 class="font-display min-h-[38px] text-[13px] font-bold leading-[1.4] tracking-[-.02em] text-[#28362d] sm:min-h-0 sm:text-base">${escapeHtml(produto.nome)}</h3>
-            <p class="mt-1 text-[10px] font-bold uppercase tracking-[.12em] text-[#b7794d]">${escapeHtml(produto.marca)}</p>
-            ${produto.sku ? `<p class="mt-1 text-[10px] text-[#92948d]">Cód. ${escapeHtml(produto.sku)}</p>` : ""}
-            <p class="mt-1.5 hidden min-h-[40px] text-xs leading-5 text-[#85877f] sm:block">${escapeHtml(produto.descricao)}</p>
-            <div class="mt-2.5 flex items-center justify-between gap-1 sm:mt-3">
-              <span class="font-display text-sm font-extrabold tracking-[-.03em] text-[#344c40] sm:text-base">${formatPrice(produto.preco)}</span>
-              <button type="button" data-add="${produto.id}" class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#edf1ed] text-[#344c40] transition hover:bg-[#344c40] hover:text-white focus:outline-none focus:ring-4 focus:ring-[#344c40]/15 sm:flex sm:h-9 sm:w-auto sm:gap-1.5 sm:px-3" aria-label="Adicionar ${escapeHtml(produto.nome)} ao carrinho">
-                <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" aria-hidden="true"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-                <span class="hidden text-xs font-bold sm:inline">Adicionar</span>
-              </button>
-            </div>
-            <p class="mt-2 line-clamp-2 text-[10px] leading-4 text-[#92948d] sm:hidden">${escapeHtml(produto.descricao)}</p>
-          </div>
-        </article>
-      `).join("");
-      applyImageFallbacks(grid);
-    }
-
-    function renderCart() {
-      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-      const cartProducts = cart.map((item) => productById.get(item.id));
-      const hasQuoteItems = cartProducts.some((produto) => produto.preco === null);
-      const total = cart.reduce((sum, item) => sum + (productById.get(item.id).preco || 0) * item.quantity, 0);
-      cartCount.textContent = String(totalItems);
-      document.getElementById("open-cart").setAttribute("aria-label", `Abrir carrinho, ${totalItems} ${totalItems === 1 ? "item" : "itens"}`);
-      cartTotal.textContent = hasQuoteItems && total === 0 ? "Sob consulta" : money.format(total);
-      cartTotalLabel.textContent = hasQuoteItems ? "Subtotal conhecido" : "Total do pedido";
-      cartPriceNote.textContent = hasQuoteItems
-        ? "Itens sem preço cadastrado serão cotados pelo WhatsApp."
-        : "Preços e disponibilidade serão confirmados no atendimento.";
-      cartSubtitle.textContent = totalItems === 0 ? "Monte sua consulta de produtos" : `${totalItems} ${totalItems === 1 ? "item selecionado" : "itens selecionados"}`;
-      document.getElementById("checkout-button").disabled = totalItems === 0;
-
-      if (cart.length === 0) {
-        cartContent.innerHTML = `
-          <div class="flex h-full min-h-[260px] flex-col items-center justify-center text-center">
-            <span class="mb-4 grid h-16 w-16 place-items-center rounded-full bg-[#eff3ed] text-[#78947e]">
-              <svg viewBox="0 0 24 24" class="h-8 w-8" fill="none" aria-hidden="true"><path d="M3.5 4.5h2l2.1 10.1a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4l1.3-6.3H6.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </span>
-            <p class="font-display text-base font-bold text-[#3a473d]">Seu pedido está vazio</p>
-            <p class="mt-1 max-w-[230px] text-xs leading-5 text-[#85877f]">Adicione produtos para montar sua consulta para a FVB Materiais.</p>
-            <button type="button" data-close-cart class="mt-4 rounded-full bg-[#344c40] px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-[#26392f]">Ver catálogo</button>
-          </div>`;
-        return;
-      }
-
-      cartContent.innerHTML = `<div class="space-y-4">${cart.map((item) => {
-        const produto = productById.get(item.id);
-        return `
-          <article class="flex gap-3 border-b border-[#eeede7] pb-4">
-            <img src="${escapeHtml(produto.imagem)}" alt="" class="h-[76px] w-[76px] shrink-0 rounded-2xl bg-[#eeede7] object-cover">
-            <div class="min-w-0 flex-1">
-              <div class="flex items-start justify-between gap-2">
-                <div class="min-w-0">
-                  <h3 class="font-display truncate text-sm font-bold text-[#303a32]">${escapeHtml(produto.nome)}</h3>
-                  <p class="mt-1 text-xs font-semibold text-[#54735d]">${formatPrice(produto.preco)}</p>
-                </div>
-                <button type="button" data-remove="${produto.id}" class="grid h-8 w-8 shrink-0 place-items-center rounded-full text-[#a1a29c] transition hover:bg-[#f8ece8] hover:text-[#ae5d48]" aria-label="Remover ${escapeHtml(produto.nome)} do carrinho">
-                  <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" aria-hidden="true"><path d="M4 6h12M8 6V4h4v2m-6 0 1 10h6l1-10m-5 3v4m3-4v4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
-              </div>
-              <div class="mt-2.5 flex items-center justify-between">
-                <div class="inline-flex h-8 items-center rounded-lg border border-[#e7e5de] bg-white">
-                  <button type="button" data-quantity="${produto.id}" data-delta="-1" class="grid h-8 w-8 place-items-center text-[#666b62] transition hover:text-[#315b45]" aria-label="Diminuir quantidade de ${escapeHtml(produto.nome)}"><span aria-hidden="true">−</span></button>
-                  <span class="w-6 text-center text-xs font-bold text-[#343a33]">${item.quantity}</span>
-                  <button type="button" data-quantity="${produto.id}" data-delta="1" class="grid h-8 w-8 place-items-center text-[#666b62] transition hover:text-[#315b45]" aria-label="Aumentar quantidade de ${escapeHtml(produto.nome)}"><span aria-hidden="true">+</span></button>
-                </div>
-                <span class="text-xs font-bold text-[#4a5149]">${produto.preco === null ? "Sob consulta" : money.format(produto.preco * item.quantity)}</span>
-              </div>
-            </div>
-          </article>`;
-      }).join("")}</div>`;
-      applyImageFallbacks(cartContent);
-    }
-
-    function addToCart(id) {
-      const item = cart.find((entry) => entry.id === id);
-      if (item) item.quantity += 1;
-      else cart.push({ id, quantity: 1 });
-      updateCart();
-      const produto = productById.get(id);
-      showToast(`${produto.nome} adicionado ao carrinho`);
-    }
-
-    function updateCart() {
-      saveCart();
-      renderCart();
-    }
-
-    function openCart() {
-      cartOverlay.classList.remove("hidden");
-      cartDrawer.classList.remove("translate-x-full");
-      cartDrawer.setAttribute("aria-hidden", "false");
-      cartOverlay.setAttribute("aria-hidden", "false");
-      document.body.style.overflow = "hidden";
-      document.getElementById("close-cart").focus();
-    }
-
-    function closeCart() {
-      cartOverlay.classList.add("hidden");
-      cartDrawer.classList.add("translate-x-full");
-      cartDrawer.setAttribute("aria-hidden", "true");
-      cartOverlay.setAttribute("aria-hidden", "true");
-      document.body.style.overflow = "";
-      document.getElementById("open-cart").focus();
-    }
-
-    function checkout() {
-      if (cart.length === 0) return;
-      if (!/^\d{10,15}$/.test(WHATSAPP_NUMBER)) {
-        showToast("Configure um número de WhatsApp válido no código.");
-        return;
-      }
-      const customerName = document.getElementById("customer-name").value.trim() || "Cliente";
-      const notes = document.getElementById("customer-notes").value.trim();
-      const items = cart.map((item) => ({
-        product: productById.get(item.id),
-        quantity: item.quantity
-      }));
-      const total = items.reduce((sum, item) => sum + (item.product.preco || 0) * item.quantity, 0);
-      const hasQuoteItems = items.some((item) => item.product.preco === null);
-      const lines = [
-        `*Pedido para FVB Materiais — ${customerName}*`,
-        "----------------------------------",
-        ...items.map(({ product, quantity }) => `• ${quantity}x ${product.nome} (${product.marca}) - ${product.preco === null ? "sob consulta" : money.format(product.preco * quantity)}`),
-        "----------------------------------",
-        `${hasQuoteItems ? "*Subtotal dos itens com preço:*" : "*Total:*"} ${money.format(total)}`,
-        `*Cidade/Endereço/Obs:* ${notes || "Não informado"}`
-      ];
-      const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join("\n"))}`;
-      const whatsappWindow = window.open(whatsappUrl, "_blank");
-      if (whatsappWindow) whatsappWindow.opener = null;
-      else window.location.assign(whatsappUrl);
-      cart = [];
-      updateCart();
-      closeCart();
-      showToast("Pedido preparado no WhatsApp. Confira e envie a mensagem.");
-    }
-
-    function applyImageFallbacks(container) {
-      container.querySelectorAll("img").forEach((image) => {
-        image.addEventListener("error", () => {
-          if (image.dataset.fallbackApplied) return;
-          image.dataset.fallbackApplied = "true";
-          const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600"><rect width="600" height="600" fill="#e8ece8"/><path d="M210 360 300 210l90 150H210Z" fill="none" stroke="#344c40" stroke-width="18" stroke-linejoin="round"/><text x="300" y="420" text-anchor="middle" font-family="Arial,sans-serif" font-size="26" fill="#344c40">FVB MATERIAIS</text></svg>';
-          image.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
-        }, { once: true });
-      });
-    }
-
-    function initializeCatalog() {
-      try {
-        produtos = window.FVB_PRODUCTS.map((produto, index) => ({
-          id: index + 1,
-          nome: produto.name,
-          preco: produto.priceCents === null ? null : produto.priceCents / 100,
-          marca: produto.brand,
-          categoria: produto.category,
-          imagem: produto.image.replace(/^\/+/, "./"),
-          descricao: produto.description,
-          sku: produto.sku
-        }));
-        productById.clear();
-        produtos.forEach((produto) => productById.set(produto.id, produto));
-        cart = loadCart();
-        renderFilters();
-        renderBrandFilters();
-        renderProducts();
-        renderCart();
-      } catch (error) {
-        console.error("Falha ao carregar o catálogo:", error);
-        emptyState.textContent = "Não foi possível carregar os produtos. Tente atualizar a página.";
-        emptyState.classList.remove("hidden");
-      }
-    }
-
-    function escapeHtml(value) {
-      return String(value).replace(/[&<>"']/g, (character) => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-      })[character]);
-    }
-
-    function showToast(message) {
-      const toast = document.getElementById("toast");
-      toast.textContent = message;
-      toast.classList.remove("hidden");
-      clearTimeout(toastTimeout);
-      toastTimeout = setTimeout(() => toast.classList.add("hidden"), 2400);
-    }
-
-    filterContainer.addEventListener("click", (event) => {
-      const button = event.target.closest("[data-category]");
-      if (!button) return;
-      selectedCategory = button.dataset.category;
-      visibleProductLimit = productPageSize;
-      renderFilters();
-      renderProducts();
-    });
-
-    brandFilterContainer.addEventListener("click", (event) => {
-      const button = event.target.closest("[data-brand]");
-      if (!button) return;
-      selectedBrand = button.dataset.brand;
-      visibleProductLimit = productPageSize;
-      renderBrandFilters();
-      renderProducts();
-    });
-
-    grid.addEventListener("click", (event) => {
-      const button = event.target.closest("[data-add]");
-      if (button) addToCart(Number(button.dataset.add));
-    });
-
-    loadMoreButton.addEventListener("click", () => {
-      visibleProductLimit += productPageSize;
-      renderProducts();
-    });
-
-    cartContent.addEventListener("click", (event) => {
-      if (event.target.closest("[data-close-cart]")) {
-        closeCart();
-        return;
-      }
-      const quantityButton = event.target.closest("[data-quantity]");
-      if (quantityButton) {
-        const id = Number(quantityButton.dataset.quantity);
-        const item = cart.find((entry) => entry.id === id);
-        if (!item) return;
-        item.quantity += Number(quantityButton.dataset.delta);
-        if (item.quantity <= 0) cart = cart.filter((entry) => entry.id !== id);
-        updateCart();
-        return;
-      }
-      const removeButton = event.target.closest("[data-remove]");
-      if (removeButton) {
-        cart = cart.filter((entry) => entry.id !== Number(removeButton.dataset.remove));
-        updateCart();
-      }
-    });
-
-    document.getElementById("search-input").addEventListener("input", (event) => {
-      searchTerm = event.target.value.trim().toLocaleLowerCase("pt-BR");
-      visibleProductLimit = productPageSize;
-      renderProducts();
-    });
-    document.getElementById("open-cart").addEventListener("click", openCart);
-    document.getElementById("close-cart").addEventListener("click", closeCart);
-    cartOverlay.addEventListener("click", closeCart);
-    document.getElementById("checkout-button").addEventListener("click", checkout);
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && !cartDrawer.classList.contains("translate-x-full")) closeCart();
-    });
-
-    initializeCatalog();
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./supabase-config.js"></script>
+  <script src="./app.js"></script>
 </body>
 </html>
