@@ -119,6 +119,28 @@
     })[character]);
   }
 
+  function normalizeEmail(value) {
+    return String(value ?? "").trim().toLowerCase();
+  }
+
+  function formatPhoneNumber(value) {
+    let digits = String(value ?? "").replace(/\D/g, "");
+    if (digits.startsWith("55") && (digits.length === 12 || digits.length === 13)) {
+      digits = digits.slice(2);
+    }
+    digits = digits.slice(0, 11);
+    if (digits.length <= 2) return digits;
+
+    const areaCode = digits.slice(0, 2);
+    const subscriber = digits.slice(2);
+    if (subscriber.length <= 8) {
+      const firstPart = subscriber.slice(0, 4);
+      const secondPart = subscriber.slice(4);
+      return `(${areaCode}) ${firstPart}${secondPart ? `-${secondPart}` : ""}`;
+    }
+    return `(${areaCode}) ${subscriber.slice(0, 5)}-${subscriber.slice(5)}`;
+  }
+
   function showToast(message) {
     const toast = document.getElementById("toast");
     toast.textContent = message;
@@ -295,7 +317,7 @@
     elements["profile-display-name"].value = state.profile.display_name || "";
     elements["profile-store-name"].value = state.profile.store_name || "";
     elements["profile-email"].value = state.profile.email || state.session.user.email || "";
-    elements["profile-phone"].value = state.profile.phone || "";
+    elements["profile-phone"].value = formatPhoneNumber(state.profile.phone);
     elements["profile-city"].value = state.profile.city || "";
     elements["account-error"].classList.add("hidden");
     elements["profile-photo-input"].value = "";
@@ -701,14 +723,15 @@
   async function handleAuthSubmit(event) {
     event.preventDefault();
     setAuthMessage("");
-    const email = elements["email-input"].value.trim();
+    const email = normalizeEmail(elements["email-input"].value);
+    elements["email-input"].value = email;
     const password = elements["password-input"].value;
     elements["auth-submit"].disabled = true;
     try {
       if (state.authMode === "signup") {
         const displayName = elements["display-name-input"].value.trim();
         const storeName = elements["signup-store-input"].value.trim();
-        const phone = elements["signup-phone-input"].value.trim();
+        const phone = formatPhoneNumber(elements["signup-phone-input"].value);
         const city = elements["signup-city-input"].value.trim();
         const { data, error } = await state.client.auth.signUp({
           email,
@@ -771,7 +794,8 @@
   }
 
   async function resendConfirmation() {
-    const email = elements["email-input"].value.trim();
+    const email = normalizeEmail(elements["email-input"].value);
+    elements["email-input"].value = email;
     if (!email) {
       setAuthMessage("Digite seu e-mail acima para enviarmos uma nova confirmação.", true);
       elements["email-input"].focus();
@@ -872,7 +896,7 @@
         .update({
           display_name: elements["profile-display-name"].value.trim(),
           store_name: elements["profile-store-name"].value.trim(),
-          phone: elements["profile-phone"].value.trim(),
+          phone: formatPhoneNumber(elements["profile-phone"].value),
           city: elements["profile-city"].value.trim(),
           avatar_path: newAvatarPath,
         })
@@ -1030,6 +1054,25 @@
 
   function initializeEvents() {
     elements["login-form"].addEventListener("submit", handleAuthSubmit);
+    elements["email-input"].addEventListener("blur", (event) => {
+      event.target.value = normalizeEmail(event.target.value);
+    });
+    for (const phoneInput of [elements["signup-phone-input"], elements["profile-phone"]]) {
+      phoneInput.addEventListener("input", (event) => {
+        const input = event.target;
+        const previousLength = input.value.length;
+        const cursor = input.selectionStart;
+        input.value = formatPhoneNumber(input.value);
+        const nextCursor = Math.max(0, Math.min(
+          input.value.length,
+          cursor + input.value.length - previousLength
+        ));
+        input.setSelectionRange(nextCursor, nextCursor);
+      });
+      phoneInput.addEventListener("blur", (event) => {
+        event.target.value = formatPhoneNumber(event.target.value);
+      });
+    }
     elements["register-link"].addEventListener("click", (event) => {
       event.preventDefault();
       window.history.pushState({}, "", routeUrl("cadastro"));

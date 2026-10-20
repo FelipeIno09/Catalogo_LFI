@@ -23,7 +23,7 @@ test("static catalog routes load the Supabase app without publishing a price cat
   assert.match(html, /id="account-view"/);
   assert.match(html, /id="account-link"/);
   assert.match(html, /id="login-link"/);
-  assert.match(html, /@media \(max-width: 480px\)/);
+  assert.match(html, /@media \(max-width: 767px\)/);
   assert.match(html, /html \{ overflow-x: clip; \}/);
   assert.match(html, /body \{ margin: 0; min-width: 0; \}/);
   assert.match(html, /Depois, toque em “Salvar meus dados”/);
@@ -31,6 +31,9 @@ test("static catalog routes load the Supabase app without publishing a price cat
   assert.match(html, /Revisar pedido no WhatsApp/);
   assert.match(app, /aguarde a aprovação da equipe para consultar preços/);
   assert.match(app, /o limite de envio de e-mails foi atingido/i);
+  assert.match(html, /autocapitalize="none" spellcheck="false" inputmode="email"/);
+  assert.match(html, /id="signup-phone-input" type="tel" inputmode="tel" maxlength="16"/);
+  assert.match(html, /id="profile-phone" name="phone" type="tel" inputmode="tel" maxlength="16"/);
   assert.doesNotMatch(html, /catalog-products\.js/);
   assert.ok(!fs.existsSync(path.join(siteDirectory, "catalog-products.js")));
   assert.ok(fs.existsSync(path.join(siteDirectory, "product-placeholder.svg")));
@@ -98,6 +101,22 @@ test("products without a custom image use an illustration matched to their descr
       `missing ${illustration} illustration`
     );
   }
+});
+
+test("email addresses and Brazilian phone numbers are normalized consistently", () => {
+  const emailSource = app.match(/  function normalizeEmail\(value\) \{[\s\S]*?\n  \}/)?.[0];
+  const phoneSource = app.match(/  function formatPhoneNumber\(value\) \{[\s\S]*?\n  \}/)?.[0];
+  assert.ok(emailSource, "email normalizer should exist");
+  assert.ok(phoneSource, "phone formatter should exist");
+  const normalizeEmail = vm.runInNewContext(`(${emailSource.trim()})`);
+  const formatPhoneNumber = vm.runInNewContext(`(${phoneSource.trim()})`);
+
+  assert.equal(normalizeEmail("  Felipe.Ino@GMAIL.COM  "), "felipe.ino@gmail.com");
+  assert.equal(formatPhoneNumber("14991212375"), "(14) 99121-2375");
+  assert.equal(formatPhoneNumber("(14) 3232-1234"), "(14) 3232-1234");
+  assert.equal(formatPhoneNumber("+55 14 99121-2375"), "(14) 99121-2375");
+  assert.equal(formatPhoneNumber("14"), "14");
+  assert.equal(formatPhoneNumber(""), "");
 });
 
 test("account form exposes customer profile fields and email confirmation recovery", () => {

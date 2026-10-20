@@ -46,7 +46,7 @@
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
     }
-    @media (max-width: 480px) {
+    @media (max-width: 767px) {
       header > div.flex {
         display: grid;
         height: auto;
@@ -96,6 +96,7 @@
       #admin-link, #login-link, #logout-button { min-height: 36px; padding-inline: 9px; font-size: 11px; }
       #account-link { max-width: 100%; padding-right: 8px; font-size: 11px; }
       #account-name { max-width: 92px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      #account-avatar-fallback, #account-avatar { flex: 0 0 2rem; }
       #app-notice { margin-inline: 12px; padding: 12px; line-height: 1.5; }
       #login-view, #account-view, #admin-view { padding-bottom: 40px; }
       #account-form, #admin-view > div { min-width: 0; }
@@ -110,7 +111,7 @@
     @media (max-width: 360px) {
       #account-name, #open-cart > span.hidden { display: none; }
       #account-link { padding: 4px; }
-      #account-avatar-fallback, #account-avatar { height: 28px; width: 28px; }
+      #account-avatar-fallback, #account-avatar { flex-basis: 28px; height: 28px; width: 28px; }
       #admin-link, #login-link, #logout-button { padding-inline: 7px; }
     }
   </style>
@@ -243,7 +244,8 @@
               <div class="grid gap-4 sm:grid-cols-2">
                 <label class="block">
                   <span class="mb-1.5 block text-xs font-semibold text-[#555c53]">Celular / WhatsApp</span>
-                  <input id="signup-phone-input" type="tel" maxlength="30" autocomplete="tel" placeholder="(11) 99999-9999" class="h-11 w-full rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3.5 text-sm outline-none focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
+                  <input id="signup-phone-input" type="tel" inputmode="tel" maxlength="16" autocomplete="tel" placeholder="(11) 99999-9999" aria-describedby="signup-phone-help" class="h-11 w-full rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3.5 text-sm outline-none focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
+                  <span id="signup-phone-help" class="mt-1 block text-[11px] text-[#85877f]">DDD + número com 8 ou 9 dígitos.</span>
                 </label>
                 <label class="block">
                   <span class="mb-1.5 block text-xs font-semibold text-[#555c53]">Cidade</span>
@@ -253,7 +255,7 @@
             </div>
             <label class="block">
               <span class="mb-1.5 block text-xs font-semibold text-[#555c53]">E-mail</span>
-              <input id="email-input" type="email" required maxlength="254" autocomplete="email" placeholder="voce@sualoja.com.br" class="h-11 w-full rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3.5 text-sm outline-none focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
+              <input id="email-input" type="email" required maxlength="254" autocomplete="email" autocapitalize="none" spellcheck="false" inputmode="email" placeholder="voce@sualoja.com.br" class="h-11 w-full rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3.5 text-sm outline-none focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
             </label>
             <label id="password-field" class="block">
               <span class="mb-1.5 block text-xs font-semibold text-[#555c53]">Senha</span>
@@ -323,7 +325,8 @@
           </label>
           <label class="block">
             <span class="mb-1.5 block text-xs font-semibold text-[#555c53]">Celular / WhatsApp</span>
-            <input id="profile-phone" name="phone" type="tel" maxlength="30" autocomplete="tel" placeholder="(11) 99999-9999" class="h-11 w-full rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3.5 text-sm outline-none focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
+            <input id="profile-phone" name="phone" type="tel" inputmode="tel" maxlength="16" autocomplete="tel" placeholder="(11) 99999-9999" aria-describedby="profile-phone-help" class="h-11 w-full rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3.5 text-sm outline-none focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
+            <span id="profile-phone-help" class="mt-1 block text-[11px] text-[#85877f]">DDD + número com 8 ou 9 dígitos.</span>
           </label>
           <label class="block sm:col-span-2">
             <span class="mb-1.5 block text-xs font-semibold text-[#555c53]">Cidade</span>
