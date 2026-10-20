@@ -68,18 +68,23 @@
         <span class="hidden sm:inline">Meu carrinho</span>
         <span id="cart-count" class="grid h-5 min-w-5 place-items-center rounded-full bg-[#d58b58] px-1 text-[11px] font-bold text-white">0</span>
       </button>
-      <div class="flex items-center gap-2">
-        <a id="login-link" href="?rota=login" class="inline-flex min-h-10 items-center whitespace-nowrap rounded-full border border-[#d8ded8] bg-white px-4 text-xs font-bold text-[#344c40] transition hover:border-[#344c40]">Entrar</a>
-        <a id="admin-link" href="?rota=admin" hidden class="hidden inline-flex min-h-10 items-center whitespace-nowrap rounded-full border border-[#d8ded8] bg-white px-4 text-xs font-bold text-[#344c40] transition hover:border-[#344c40]">Painel</a>
-        <button id="logout-button" type="button" hidden class="hidden min-h-10 whitespace-nowrap rounded-full border border-[#d8ded8] bg-white px-4 text-xs font-bold text-[#344c40] transition hover:border-[#344c40]">Sair</button>
-      </div>
       <a href="https://wa.me/5514991622498" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-10 items-center whitespace-nowrap rounded-full bg-[#344c40] px-4 text-xs font-bold text-white transition hover:bg-[#26392f]">Fale conosco</a>
+      <div class="flex items-center gap-2">
+        <a id="admin-link" href="?rota=admin" hidden class="hidden min-h-10 items-center whitespace-nowrap rounded-full border border-[#d8ded8] bg-white px-3 text-xs font-bold text-[#344c40] transition hover:border-[#344c40]">Painel</a>
+        <a id="account-link" href="?rota=conta" hidden class="hidden min-h-10 items-center gap-2 whitespace-nowrap rounded-full border border-[#d8ded8] bg-white py-1 pl-1 pr-3 text-xs font-bold text-[#344c40] transition hover:border-[#344c40]">
+          <span id="account-avatar-fallback" class="grid h-8 w-8 place-items-center overflow-hidden rounded-full bg-[#e8ece8] text-[11px] font-extrabold text-[#344c40]">LF</span>
+          <img id="account-avatar" alt="" hidden class="h-8 w-8 rounded-full object-cover">
+          <span id="account-name">Minha conta</span>
+        </a>
+        <a id="login-link" href="?rota=login" class="inline-flex min-h-10 items-center whitespace-nowrap rounded-full border border-[#d8ded8] bg-white px-3 text-xs font-bold text-[#344c40] transition hover:border-[#344c40]">Entrar</a>
+        <button id="logout-button" type="button" hidden class="hidden min-h-10 whitespace-nowrap rounded-full border border-[#d8ded8] bg-white px-3 text-xs font-bold text-[#344c40] transition hover:border-[#344c40]">Sair</button>
+      </div>
     </div>
   </header>
 
   <main>
     <p id="app-notice" class="mx-auto mt-4 hidden max-w-7xl rounded-xl p-3 text-sm sm:mx-6 lg:mx-auto lg:px-4" role="status" aria-live="polite"></p>
-    <section class="mx-auto max-w-7xl px-4 pb-8 pt-8 sm:px-6 sm:pt-12 lg:px-8 lg:pb-12">
+    <section id="hero-view" class="mx-auto max-w-7xl px-4 pb-8 pt-8 sm:px-6 sm:pt-12 lg:px-8 lg:pb-12">
       <div class="relative overflow-hidden rounded-[28px] bg-[#e8ece8] px-6 py-8 sm:px-10 sm:py-11 lg:px-14 lg:py-14">
         <div class="relative z-10 max-w-xl">
           <span class="mb-3 inline-flex items-center gap-2 rounded-full bg-white/75 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[.14em] text-[#54735d]">
@@ -133,34 +138,136 @@
     </div>
     </section>
 
-    <section id="login-view" hidden class="mx-auto max-w-xl px-4 pb-16 sm:px-6 lg:px-8">
-      <div class="rounded-[24px] border border-[#e2e5e1] bg-white p-6 shadow-sm sm:p-9">
-        <p class="text-xs font-bold uppercase tracking-[.16em] text-[#b7794d]">Área do cliente</p>
-        <h2 id="auth-title" class="font-display mt-2 text-2xl font-extrabold tracking-[-.04em] text-[#28362d]">Entrar na sua conta</h2>
-        <p id="auth-description" class="mt-2 text-sm leading-6 text-[#737b74]">Entre para consultar preços e preparar pedidos.</p>
-        <form id="login-form" class="mt-6 space-y-4">
-          <label id="display-name-field" class="hidden block">
-            <span class="mb-1.5 block text-xs font-semibold text-[#555c53]">Seu nome / loja</span>
-            <input id="display-name-input" type="text" maxlength="100" autocomplete="name" class="h-11 w-full rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3.5 text-sm outline-none focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
-          </label>
-          <label class="block">
-            <span class="mb-1.5 block text-xs font-semibold text-[#555c53]">E-mail</span>
-            <input id="email-input" type="email" required maxlength="254" autocomplete="email" class="h-11 w-full rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3.5 text-sm outline-none focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
-          </label>
-          <label class="block">
-            <span class="mb-1.5 block text-xs font-semibold text-[#555c53]">Senha</span>
-            <input id="password-input" type="password" required minlength="8" autocomplete="current-password" class="h-11 w-full rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3.5 text-sm outline-none focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
-          </label>
-          <button id="auth-submit" type="submit" class="min-h-11 w-full rounded-xl bg-[#344c40] px-4 text-sm font-bold text-white transition hover:bg-[#26392f]">Entrar</button>
-        </form>
-        <p id="auth-message" class="mt-4 hidden rounded-xl bg-[#eff3ed] p-3 text-sm leading-5 text-[#344c40]" role="status" aria-live="polite"></p>
-        <p id="auth-error" class="mt-4 hidden rounded-xl bg-[#f8ece8] p-3 text-sm leading-5 text-[#8c4131]" role="alert"></p>
-        <p class="mt-5 text-center text-sm text-[#737b74]">
-          <span id="register-prompt">Ainda não tem conta?</span>
-          <a id="register-link" href="?rota=cadastro" class="font-bold text-[#315b45] underline underline-offset-2">Solicitar cadastro</a>
-          <a id="back-to-catalog" href="?rota=catalogo" class="hidden font-bold text-[#315b45] underline underline-offset-2">Voltar ao catálogo</a>
-        </p>
+    <section id="login-view" hidden class="mx-auto max-w-6xl px-4 pb-16 pt-4 sm:px-6 lg:px-8">
+      <div class="mx-auto grid max-w-4xl overflow-hidden rounded-[28px] border border-[#e2e5e1] bg-white shadow-[0_24px_80px_-48px_#29332966] md:grid-cols-[.9fr_1.1fr]">
+        <div class="relative hidden overflow-hidden bg-[#344c40] p-9 text-white md:flex md:flex-col md:justify-between lg:p-12">
+          <div class="pointer-events-none absolute -right-24 -top-20 h-72 w-72 rounded-full border border-white/15"></div>
+          <div class="pointer-events-none absolute -bottom-24 -left-20 h-64 w-64 rounded-full border border-white/15"></div>
+          <a href="./" class="relative z-10 inline-flex items-center gap-2 text-sm font-bold tracking-wide text-white">
+            <span class="grid h-9 w-9 place-items-center rounded-xl bg-white/10 font-display">LFI</span>
+            LFI Tools
+          </a>
+          <div class="relative z-10 py-10">
+            <p class="text-xs font-bold uppercase tracking-[.18em] text-[#e7b88c]">Atendimento para lojistas</p>
+            <h2 class="font-display mt-4 text-3xl font-extrabold leading-tight tracking-[-.045em] lg:text-4xl">Seu catálogo.<br>Suas condições.</h2>
+            <p class="mt-4 max-w-xs text-sm leading-6 text-white/75">Acesse sua conta para consultar preços, montar pedidos e falar com nossa equipe.</p>
+          </div>
+          <p class="relative z-10 text-xs text-white/55">Acesso seguro para clientes LFI Tools.</p>
+        </div>
+        <div class="p-6 sm:p-9 lg:p-12">
+          <a id="back-to-catalog" href="./" class="inline-flex min-h-9 items-center gap-2 text-xs font-semibold text-[#737b74] hover:text-[#344c40]">
+            <span aria-hidden="true">←</span> Voltar ao catálogo
+          </a>
+          <div class="mt-7">
+            <p id="auth-eyebrow" class="text-xs font-bold uppercase tracking-[.16em] text-[#b7794d]">Área do cliente</p>
+            <h2 id="auth-title" class="font-display mt-2 text-2xl font-extrabold tracking-[-.04em] text-[#28362d] sm:text-3xl">Entre na sua conta</h2>
+            <p id="auth-description" class="mt-2 text-sm leading-6 text-[#737b74]">Acesse para consultar preços e preparar seus pedidos.</p>
+          </div>
+          <form id="login-form" class="mt-6 space-y-4">
+            <label id="display-name-field" class="hidden block">
+              <span class="mb-1.5 block text-xs font-semibold text-[#555c53]">Seu nome</span>
+              <input id="display-name-input" type="text" maxlength="100" autocomplete="name" placeholder="Como podemos chamar você?" class="h-11 w-full rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3.5 text-sm outline-none focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
+            </label>
+            <div id="signup-extra-fields" class="hidden space-y-4">
+              <label class="block">
+                <span class="mb-1.5 block text-xs font-semibold text-[#555c53]">Loja</span>
+                <input id="signup-store-input" type="text" maxlength="120" autocomplete="organization" placeholder="Nome da sua loja" class="h-11 w-full rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3.5 text-sm outline-none focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
+              </label>
+              <div class="grid gap-4 sm:grid-cols-2">
+                <label class="block">
+                  <span class="mb-1.5 block text-xs font-semibold text-[#555c53]">Celular / WhatsApp</span>
+                  <input id="signup-phone-input" type="tel" maxlength="30" autocomplete="tel" placeholder="(11) 99999-9999" class="h-11 w-full rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3.5 text-sm outline-none focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
+                </label>
+                <label class="block">
+                  <span class="mb-1.5 block text-xs font-semibold text-[#555c53]">Cidade</span>
+                  <input id="signup-city-input" type="text" maxlength="100" autocomplete="address-level2" placeholder="Sua cidade" class="h-11 w-full rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3.5 text-sm outline-none focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
+                </label>
+              </div>
+            </div>
+            <label class="block">
+              <span class="mb-1.5 block text-xs font-semibold text-[#555c53]">E-mail</span>
+              <input id="email-input" type="email" required maxlength="254" autocomplete="email" placeholder="voce@sualoja.com.br" class="h-11 w-full rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3.5 text-sm outline-none focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
+            </label>
+            <label id="password-field" class="block">
+              <span class="mb-1.5 block text-xs font-semibold text-[#555c53]">Senha</span>
+              <span class="relative block">
+                <input id="password-input" type="password" required minlength="8" autocomplete="current-password" placeholder="Mínimo de 8 caracteres" class="h-11 w-full rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3.5 pr-20 text-sm outline-none focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
+                <button id="toggle-password" type="button" class="absolute inset-y-0 right-3 text-xs font-bold text-[#54735d]" aria-label="Mostrar senha">Mostrar</button>
+              </span>
+            </label>
+            <label id="new-password-field" class="hidden block">
+              <span class="mb-1.5 block text-xs font-semibold text-[#555c53]">Nova senha</span>
+              <input id="new-password-input" type="password" minlength="8" autocomplete="new-password" placeholder="Mínimo de 8 caracteres" class="h-11 w-full rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3.5 text-sm outline-none focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
+            </label>
+            <button id="auth-submit" type="submit" class="min-h-12 w-full rounded-xl bg-[#344c40] px-4 text-sm font-bold text-white shadow-lg shadow-[#344c40]/15 transition hover:bg-[#26392f] disabled:cursor-not-allowed disabled:opacity-60">Entrar</button>
+          </form>
+          <div class="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-xs">
+            <button id="forgot-password-link" type="button" class="font-semibold text-[#54735d] hover:underline">Esqueci minha senha</button>
+            <button id="resend-confirmation-link" type="button" class="hidden font-semibold text-[#54735d] hover:underline">Reenviar e-mail de confirmação</button>
+          </div>
+          <p id="auth-message" class="mt-4 hidden rounded-xl border border-[#dce5dc] bg-[#eff3ed] p-3 text-sm leading-5 text-[#344c40]" role="status" aria-live="polite"></p>
+          <p id="auth-error" class="mt-4 hidden rounded-xl border border-[#efd7ce] bg-[#fbf1ed] p-3 text-sm leading-5 text-[#8c4131]" role="alert"></p>
+          <p class="mt-6 border-t border-[#eeede7] pt-5 text-center text-sm text-[#737b74]">
+            <span id="register-prompt">Ainda não tem acesso?</span>
+            <a id="register-link" href="?rota=cadastro" class="ml-1 font-bold text-[#315b45] underline underline-offset-2">Solicitar cadastro</a>
+          </p>
+        </div>
       </div>
+    </section>
+
+    <section id="account-view" hidden class="mx-auto max-w-3xl px-4 pb-16 pt-4 sm:px-6 lg:px-8">
+      <div class="mb-6">
+        <p class="text-xs font-bold uppercase tracking-[.16em] text-[#b7794d]">Sua área LFI</p>
+        <h2 class="font-display mt-1 text-3xl font-extrabold tracking-[-.04em] text-[#28362d]">Minha conta</h2>
+        <p class="mt-2 text-sm leading-6 text-[#737b74]">Mantenha seus dados de contato atualizados para facilitar o atendimento dos seus pedidos.</p>
+      </div>
+      <div id="account-status" class="mb-5 rounded-xl border border-[#dce5dc] bg-[#eff3ed] p-4 text-sm leading-6 text-[#344c40]" role="status" aria-live="polite"></div>
+      <div id="account-error" class="mb-5 hidden rounded-xl border border-[#efd7ce] bg-[#fbf1ed] p-4 text-sm leading-6 text-[#8c4131]" role="alert"></div>
+      <form id="account-form" class="rounded-[24px] border border-[#e2e5e1] bg-white p-5 shadow-sm sm:p-8">
+        <div class="flex flex-col gap-5 border-b border-[#eeede7] pb-6 sm:flex-row sm:items-center">
+          <span id="profile-avatar-fallback" class="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-full bg-[#e8ece8] font-display text-xl font-extrabold text-[#344c40]">LF</span>
+          <img id="profile-avatar" alt="Foto do perfil" hidden class="h-20 w-20 shrink-0 rounded-full object-cover ring-4 ring-[#eff3ed]">
+          <div class="flex-1">
+            <h3 class="font-display text-lg font-extrabold text-[#28362d]">Foto do perfil</h3>
+            <p class="mt-1 text-xs leading-5 text-[#737b74]">Escolha uma imagem JPG, PNG ou WebP de até 3 MB. Ela ficará visível no seu perfil.</p>
+            <div class="mt-3 flex flex-wrap gap-3">
+              <label class="inline-flex min-h-9 cursor-pointer items-center rounded-lg border border-[#d8ded8] px-3 text-xs font-bold text-[#344c40] hover:border-[#344c40]">
+                Escolher foto
+                <input id="profile-photo-input" type="file" accept="image/jpeg,image/png,image/webp" class="sr-only">
+              </label>
+              <button id="remove-profile-photo" type="button" class="hidden min-h-9 rounded-lg px-3 text-xs font-bold text-[#8c4131] hover:bg-[#fbf1ed]">Remover foto</button>
+            </div>
+            <p id="profile-photo-name" class="mt-2 text-xs text-[#85877f]"></p>
+          </div>
+        </div>
+        <div class="grid gap-4 pt-6 sm:grid-cols-2">
+          <label class="block">
+            <span class="mb-1.5 block text-xs font-semibold text-[#555c53]">Nome de contato</span>
+            <input id="profile-display-name" name="display_name" type="text" maxlength="100" required autocomplete="name" class="h-11 w-full rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3.5 text-sm outline-none focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
+          </label>
+          <label class="block">
+            <span class="mb-1.5 block text-xs font-semibold text-[#555c53]">Nome da loja</span>
+            <input id="profile-store-name" name="store_name" type="text" maxlength="120" autocomplete="organization" class="h-11 w-full rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3.5 text-sm outline-none focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
+          </label>
+          <label class="block">
+            <span class="mb-1.5 block text-xs font-semibold text-[#555c53]">E-mail da conta</span>
+            <input id="profile-email" type="email" readonly class="h-11 w-full cursor-not-allowed rounded-xl border border-[#eeede7] bg-[#f4f5f3] px-3.5 text-sm text-[#737b74]">
+            <span class="mt-1 block text-[11px] text-[#85877f]">Para alterar o e-mail, fale com nosso atendimento.</span>
+          </label>
+          <label class="block">
+            <span class="mb-1.5 block text-xs font-semibold text-[#555c53]">Celular / WhatsApp</span>
+            <input id="profile-phone" name="phone" type="tel" maxlength="30" autocomplete="tel" placeholder="(11) 99999-9999" class="h-11 w-full rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3.5 text-sm outline-none focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
+          </label>
+          <label class="block sm:col-span-2">
+            <span class="mb-1.5 block text-xs font-semibold text-[#555c53]">Cidade</span>
+            <input id="profile-city" name="city" type="text" maxlength="100" autocomplete="address-level2" placeholder="Cidade onde sua loja está localizada" class="h-11 w-full rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3.5 text-sm outline-none focus:border-[#78947e] focus:ring-4 focus:ring-[#344c40]/[.08]">
+          </label>
+        </div>
+        <div class="mt-6 flex flex-col-reverse gap-3 border-t border-[#eeede7] pt-5 sm:flex-row sm:items-center sm:justify-between">
+          <a href="./" class="inline-flex min-h-10 items-center justify-center rounded-xl px-4 text-sm font-semibold text-[#737b74] hover:bg-[#f4f5f3]">Voltar ao catálogo</a>
+          <button id="save-profile-button" type="submit" class="min-h-11 rounded-xl bg-[#344c40] px-5 text-sm font-bold text-white transition hover:bg-[#26392f] disabled:cursor-not-allowed disabled:opacity-60">Salvar meus dados</button>
+        </div>
+      </form>
     </section>
 
     <section id="admin-view" hidden class="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
@@ -198,7 +305,7 @@
 
   <footer class="border-t border-[#e2e5e1] bg-white/70">
     <div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 text-center text-xs text-[#85877f] sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:text-left lg:px-8">
-      <span class="font-display font-bold text-[#344c40]">FVB Materiais<span class="text-[#d58b58]">.</span> <span class="font-normal">Fabio Vicente Bezerra</span></span>
+      <span class="font-display font-bold text-[#344c40]">LFI Tools<span class="text-[#d58b58]">.</span> <span class="font-normal">Fabio Vicente Bezerra</span></span>
       <span>Atendimento para lojas físicas de materiais de construção. Clientes aprovados consultam preços e enviam pedidos pelo WhatsApp.</span>
     </div>
   </footer>

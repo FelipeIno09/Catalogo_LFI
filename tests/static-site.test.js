@@ -20,6 +20,9 @@ test("static catalog routes load the Supabase app without publishing a price cat
   assert.match(html, /id="catalog-view"/);
   assert.match(html, /id="login-view"/);
   assert.match(html, /id="admin-view"/);
+  assert.match(html, /id="account-view"/);
+  assert.match(html, /id="account-link"/);
+  assert.match(html, /id="login-link"/);
   assert.doesNotMatch(html, /catalog-products\.js/);
   assert.ok(!fs.existsSync(path.join(siteDirectory, "catalog-products.js")));
   assert.ok(fs.existsSync(path.join(siteDirectory, "product-placeholder.svg")));
@@ -37,7 +40,25 @@ test("public catalog queries omit prices and protected roles use database functi
   assert.match(schema, /grant select \(id, name, sku, image, description, active\) on public\.products to anon, authenticated/i);
   assert.match(schema, /function public\.products_with_prices\(\)/);
   assert.match(schema, /function public\.admin_list_products\(\)/);
+  assert.match(schema, /function public\.set_customer_status\(p_profile_id uuid, p_status text\)/);
   assert.match(schema, /role in \('customer', 'admin'\)/);
+  assert.match(schema, /grant update \(display_name, store_name, phone, city, avatar_path\) on public\.profiles to authenticated/i);
+  assert.match(schema, /revoke update \(status\) on public\.profiles from authenticated/i);
+  assert.match(schema, /profile-photos/);
+  assert.match(app, /storage\.from\("profile-photos"\)/);
+  assert.match(app, /auth\.resetPasswordForEmail/);
+});
+
+test("account form exposes customer profile fields and email confirmation recovery", () => {
+  assert.match(html, /id="profile-phone"/);
+  assert.match(html, /id="profile-store-name"/);
+  assert.match(html, /id="profile-city"/);
+  assert.match(html, /id="profile-photo-input"/);
+  assert.match(app, /auth\.resend/);
+  assert.match(app, /emailRedirectTo:/);
+  assert.match(app, /PASSWORD_RECOVERY/);
+  assert.match(app, /profile-display-name/);
+  assert.match(app, /profile-photo-input/);
 });
 
 test("public Supabase configuration contains no service-role credential", () => {

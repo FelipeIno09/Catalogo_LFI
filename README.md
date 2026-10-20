@@ -8,7 +8,9 @@ Catálogo estático publicado no GitHub Pages, com autenticação, preços prote
 
 - `?rota=catalogo` (padrão): catálogo público sem preços, carrinho ou pedidos.
 - `?rota=login`: acesso à conta.
-- `?rota=cadastro`: solicitação de cadastro de cliente. Novas contas começam como pendentes e só veem preços e fazem pedidos depois de aprovadas.
+- `?rota=cadastro`: solicitação de cadastro de cliente com nome, loja, celular e cidade. Novas contas começam pendentes até confirmarem o e-mail e receberem aprovação.
+- `?rota=conta`: atualizar contato, loja, cidade e foto do perfil.
+- `?rota=senha`: recuperar o acesso ou definir uma nova senha pelo link enviado ao e-mail.
 - `?rota=admin`: painel para aprovar/recusar clientes e adicionar, editar ou desativar produtos. O painel exige uma conta promovida a administradora.
 
 O pedido do cliente aprovado continua sendo preparado no WhatsApp; o cliente revisa e envia a mensagem. O cadastro não cria um pedido automaticamente.
@@ -17,9 +19,9 @@ O pedido do cliente aprovado continua sendo preparado no WhatsApp; o cliente rev
 
 O projeto do site é servido por arquivos estáticos. A autenticação e a proteção dos preços ficam no banco/API do Supabase — não em verificações de interface. Preços não são publicados no diretório `docs`.
 
-1. Crie um projeto Supabase e configure a URL do site nas opções de autenticação. Para produção, permita `https://felipeino09.github.io/Catalogo_LFI/`; para desenvolvimento local, permita `http://localhost:8000/`.
-2. No SQL Editor do projeto, execute [`supabase/schema.sql`](./supabase/schema.sql).
-3. Em **Authentication → URL Configuration**, defina `https://felipeino09.github.io/Catalogo_LFI/` como URL principal e adicione `https://felipeino09.github.io/Catalogo_LFI/**` e `http://localhost:8000/**` às URLs de redirecionamento permitidas.
+1. Crie um projeto Supabase.
+2. No SQL Editor do projeto, execute o conteúdo atualizado de [`supabase/schema.sql`](./supabase/schema.sql). Se o esquema já foi configurado, execute o arquivo inteiro novamente para adicionar os campos do perfil e configurar o armazenamento de fotos; os comandos são reaplicáveis.
+3. Em **Authentication → URL Configuration**, defina `https://felipeino09.github.io/Catalogo_LFI/docs/` como URL principal e adicione `https://felipeino09.github.io/Catalogo_LFI/docs/**` e `http://localhost:8000/**` às URLs de redirecionamento permitidas.
 4. Copie a URL do projeto e a chave pública `anon`/`publishable` para [`docs/supabase-config.js`](./docs/supabase-config.js). Essas duas informações são públicas por desenho. **Nunca** coloque a chave `service_role` nesse arquivo ou em qualquer arquivo dentro de `docs`.
 5. Importe a planilha local `Extras/ProdutosFinal.xlsx` usando a chave `service_role` somente no terminal local. No PowerShell, na raiz do repositório:
 
@@ -42,7 +44,7 @@ O projeto do site é servido por arquivos estáticos. A autenticação e a prote
 
 7. Publique `docs` pelo GitHub Pages e verifique o login, aprovação e painel. Nas configurações do Supabase, mantenha a confirmação de e-mail habilitada quando apropriado para sua operação.
 
-As políticas de Row Level Security do esquema deixam a listagem pública limitada a nome, referência, imagem e descrição. Preços são obtidos por uma função que exige sessão aprovada; a chave de serviço deve permanecer privada. O painel pode aprovar ou recusar clientes, editar/preço de produtos e desativar produtos sem removê-los.
+As políticas de Row Level Security do esquema deixam a listagem pública limitada a nome, referência, imagem e descrição. Preços são obtidos por uma função que exige sessão aprovada; a chave de serviço deve permanecer privada. O painel pode aprovar ou recusar clientes, editar preços de produtos e desativar produtos sem removê-los. Fotos de perfil ficam em um bucket público para poderem aparecer no catálogo; oriente os clientes a usar apenas uma foto de perfil, sem informações privadas.
 
 ## Desenvolver localmente
 

@@ -14,9 +14,18 @@
       "admin-product-count",
       "admin-product-search",
       "admin-view",
+      "account-avatar",
+      "account-avatar-fallback",
+      "account-error",
+      "account-form",
+      "account-link",
+      "account-name",
+      "account-status",
+      "account-view",
       "app-notice",
       "auth-description",
       "auth-error",
+      "auth-eyebrow",
       "auth-message",
       "auth-submit",
       "auth-title",
@@ -37,18 +46,40 @@
       "display-name-input",
       "empty-state",
       "email-input",
+      "forgot-password-link",
+      "hero-view",
       "login-form",
       "login-link",
       "load-more-products",
       "logout-button",
       "open-cart",
       "password-input",
+      "password-field",
+      "new-password-field",
+      "new-password-input",
       "product-admin-list",
       "product-create-form",
       "product-grid",
       "register-link",
       "register-prompt",
+      "remove-profile-photo",
+      "resend-confirmation-link",
+      "profile-avatar",
+      "profile-avatar-fallback",
+      "profile-city",
+      "profile-display-name",
+      "profile-email",
+      "profile-phone",
+      "profile-photo-input",
+      "profile-photo-name",
+      "profile-store-name",
+      "save-profile-button",
       "search-input",
+      "signup-city-input",
+      "signup-extra-fields",
+      "signup-phone-input",
+      "signup-store-input",
+      "toggle-password",
       "login-view",
       "catalog-view",
     ].map((id) => [id, document.getElementById(id)])
@@ -67,6 +98,10 @@
     authMode: "login",
     adminProductSearch: "",
     route: "catalogo",
+    pendingProfilePhoto: null,
+    removeProfilePhoto: false,
+    passwordRecovery: false,
+    avatarPreviewUrl: "",
   };
 
   const isApproved = () => state.profile?.status === "approved";
@@ -101,6 +136,11 @@
     elements["app-notice"].classList.toggle("text-[#344c40]", !isError);
   }
 
+  function setAccountError(message) {
+    elements["account-error"].textContent = message;
+    elements["account-error"].classList.toggle("hidden", !message);
+  }
+
   function setAuthMessage(message, isError = false) {
     const target = isError ? elements["auth-error"] : elements["auth-message"];
     const other = isError ? elements["auth-message"] : elements["auth-error"];
@@ -112,7 +152,13 @@
 
   function currentRoute() {
     const route = new URLSearchParams(window.location.search).get("rota");
-    return ["login", "cadastro", "admin"].includes(route) ? route : "catalogo";
+    return ["login", "cadastro", "admin", "conta", "senha"].includes(route) ? route : "catalogo";
+  }
+
+  function getAvatarUrl(path) {
+    if (!path || !state.client) return "";
+    const { data } = state.client.storage.from("profile-photos").getPublicUrl(path);
+    return data.publicUrl;
   }
 
   function routeUrl(route) {
@@ -125,14 +171,32 @@
   function renderRoute() {
     state.route = currentRoute();
     const adminRouteAllowed = state.route === "admin" && isAdmin();
+    const accountRouteAllowed = state.route === "conta" && Boolean(state.session?.user && state.profile);
     const loginVisible = state.route === "login" || state.route === "cadastro" ||
-      (state.route === "admin" && !isAdmin());
+      state.route === "senha" ||
+      ((state.route === "admin" || state.route === "conta") && !accountRouteAllowed && !isAdmin());
     elements["login-view"].hidden = !loginVisible;
     elements["admin-view"].hidden = !adminRouteAllowed;
-    elements["catalog-view"].hidden = loginVisible || adminRouteAllowed;
+    elements["account-view"].hidden = !accountRouteAllowed;
+    elements["catalog-view"].hidden = loginVisible || adminRouteAllowed || accountRouteAllowed;
+    elements["hero-view"].hidden = loginVisible || adminRouteAllowed || accountRouteAllowed;
+
+    if (loginVisible) {
+      setNotice(
+        state.route === "cadastro"
+          ? "Crie sua solicitação de acesso: confirme o e-mail e aguarde nossa equipe aprovar seu cadastro."
+          : state.route === "senha"
+            ? "Use o e-mail da sua conta. Enviaremos um link seguro para você criar uma senha nova."
+            : state.route === "admin"
+              ? "Acesso restrito: entre com a conta de administrador autorizada."
+              : "Entre para consultar preços e preparar pedidos. Ainda não tem acesso? Solicite seu cadastro nesta página."
+      );
+    }
 
     if (state.route === "cadastro") {
       setAuthMode("signup");
+    } else if (state.route === "senha") {
+      setAuthMode(state.passwordRecovery ? "recovery" : "reset");
     } else if (loginVisible) {
       setAuthMode("login");
       if (state.route === "admin") {
@@ -140,10 +204,13 @@
         elements["auth-description"].textContent = "Entre com uma conta de administrador autorizada.";
         elements["register-link"].classList.add("hidden");
         elements["register-prompt"].classList.add("hidden");
-        elements["back-to-catalog"].classList.remove("hidden");
+        elements["forgot-password-link"].classList.add("hidden");
+      } else if (state.route === "conta" && !state.session?.user) {
+        elements["auth-description"].textContent = "Entre para acessar seus dados, telefone e foto do perfil.";
       }
     }
 
+    if (accountRouteAllowed) renderAccount();
     if (adminRouteAllowed) {
       loadAdminData().catch((error) => reportAdminError(error));
     }
@@ -152,30 +219,84 @@
   function setAuthMode(mode) {
     state.authMode = mode;
     const isSignup = mode === "signup";
+    const isRecovery = mode === "recovery";
+    const isReset = mode === "reset";
+    const passwordRecovery = isRecovery || isReset;
     elements["display-name-field"].classList.toggle("hidden", !isSignup);
+    elements["signup-extra-fields"].classList.toggle("hidden", !isSignup);
     elements["display-name-input"].required = isSignup;
     elements["display-name-input"].autocomplete = "name";
-    elements["password-input"].autocomplete = isSignup ? "new-password" : "current-password";
-    elements["auth-title"].textContent = isSignup ? "Solicitar cadastro" : "Entrar na sua conta";
+    elements["password-field"].classList.toggle("hidden", passwordRecovery);
+    elements["password-input"].required = !passwordRecovery;
+    elements["new-password-field"].classList.toggle("hidden", !isRecovery);
+    elements["new-password-input"].required = isRecovery;
+    elements["toggle-password"].classList.toggle("hidden", passwordRecovery);
+    elements["forgot-password-link"].classList.toggle("hidden", isSignup || passwordRecovery || state.route === "admin");
+    elements["resend-confirmation-link"].classList.add("hidden");
+    elements["auth-eyebrow"].textContent = isSignup ? "Novo cliente" : "Área do cliente";
+    elements["auth-title"].textContent = isSignup
+      ? "Solicite seu acesso"
+      : isRecovery ? "Crie uma nova senha"
+        : isReset ? "Recuperar acesso" : "Entre na sua conta";
     elements["auth-description"].textContent = isSignup
-      ? "Após criar sua conta, aguarde a aprovação para consultar preços e preparar pedidos."
-      : "Entre para consultar preços e preparar pedidos.";
-    elements["auth-submit"].textContent = isSignup ? "Criar conta" : "Entrar";
+      ? "Preencha seus dados. Após confirmar o e-mail, nossa equipe libera o acesso a preços e pedidos."
+      : isRecovery ? "Escolha uma senha nova para continuar acessando sua conta."
+        : isReset ? "Informe seu e-mail e enviaremos um link seguro para redefinir sua senha."
+          : "Acesse para consultar preços, montar pedidos e acompanhar seu cadastro.";
+    elements["auth-submit"].textContent = isSignup
+      ? "Enviar solicitação de cadastro"
+      : isRecovery ? "Salvar nova senha"
+        : isReset ? "Enviar link de recuperação" : "Entrar";
     elements["register-prompt"].classList.toggle("hidden", isSignup);
     elements["register-link"].classList.toggle("hidden", isSignup);
-    elements["back-to-catalog"].classList.toggle("hidden", isSignup);
+    elements["back-to-catalog"].classList.toggle("hidden", isSignup || passwordRecovery);
     setAuthMessage("");
+  }
+
+  function renderAccount() {
+    if (!state.profile || !state.session?.user) return;
+    elements["profile-display-name"].value = state.profile.display_name || "";
+    elements["profile-store-name"].value = state.profile.store_name || "";
+    elements["profile-email"].value = state.profile.email || state.session.user.email || "";
+    elements["profile-phone"].value = state.profile.phone || "";
+    elements["profile-city"].value = state.profile.city || "";
+    elements["account-error"].classList.add("hidden");
+    elements["profile-photo-input"].value = "";
+    elements["profile-photo-name"].textContent = "";
+    state.pendingProfilePhoto = null;
+    state.removeProfilePhoto = false;
+    const avatarUrl = getAvatarUrl(state.profile.avatar_path);
+    elements["profile-avatar"].hidden = !avatarUrl;
+    elements["profile-avatar-fallback"].classList.toggle("hidden", Boolean(avatarUrl));
+    if (avatarUrl) elements["profile-avatar"].src = avatarUrl;
+    else elements["profile-avatar"].removeAttribute("src");
+    elements["remove-profile-photo"].classList.toggle("hidden", !avatarUrl);
+    const statusText = state.profile.status === "approved"
+      ? "Conta aprovada. Você já pode consultar preços e, se for cliente, preparar pedidos."
+      : state.profile.status === "rejected"
+        ? "Cadastro não aprovado. Fale com nossa equipe para entender como solicitar acesso."
+        : "Cadastro aguardando aprovação. Você pode atualizar seus dados enquanto nossa equipe analisa sua solicitação.";
+    elements["account-status"].textContent = `${statusText} E-mail da conta: ${state.profile.email || state.session.user.email}.`;
   }
 
   function updateHeader() {
     const loggedIn = Boolean(state.session?.user);
     elements["login-link"].classList.toggle("hidden", loggedIn);
+    elements["account-link"].classList.toggle("hidden", !loggedIn || !state.profile);
+    elements["account-link"].hidden = !loggedIn || !state.profile;
     elements["logout-button"].hidden = !loggedIn;
     elements["logout-button"].classList.toggle("hidden", !loggedIn);
     elements["admin-link"].hidden = !isAdmin();
     elements["admin-link"].classList.toggle("hidden", !isAdmin());
     elements["open-cart"].hidden = !canOrder();
     elements["open-cart"].classList.toggle("hidden", !canOrder());
+    elements["account-name"].textContent =
+      state.profile?.display_name || state.profile?.store_name || "Minha conta";
+    const avatarUrl = getAvatarUrl(state.profile?.avatar_path);
+    elements["account-avatar"].hidden = !avatarUrl;
+    elements["account-avatar-fallback"].classList.toggle("hidden", Boolean(avatarUrl));
+    if (avatarUrl) elements["account-avatar"].src = avatarUrl;
+    else elements["account-avatar"].removeAttribute("src");
     if (!canOrder()) {
       state.cart = [];
       renderCart();
@@ -443,7 +564,7 @@
     const [customersResult, productsResult] = await Promise.all([
       state.client
         .from("profiles")
-        .select("id,email,display_name,status,created_at")
+        .select("id,email,display_name,store_name,phone,city,status,created_at")
         .eq("role", "customer")
         .order("created_at", { ascending: false })
         .range(0, 999),
@@ -466,8 +587,9 @@
       <article class="flex flex-col gap-3 rounded-xl border border-[#eceae4] p-4 sm:flex-row sm:items-center sm:justify-between">
         <div class="min-w-0">
           <p class="truncate text-sm font-bold text-[#28362d]">${escapeHtml(customer.display_name || "Cliente")}</p>
-          <p class="truncate text-xs text-[#737b74]">${escapeHtml(customer.email)}</p>
-          <p class="mt-1 text-xs text-[#85877f]">Situação: ${escapeHtml(customer.status)}</p>
+            ${customer.store_name ? `<p class="truncate text-xs text-[#54735d]">${escapeHtml(customer.store_name)}</p>` : ""}
+            <p class="truncate text-xs text-[#737b74]">${escapeHtml(customer.email)}${customer.phone ? ` · ${escapeHtml(customer.phone)}` : ""}</p>
+            <p class="mt-1 text-xs text-[#85877f]">Situação: ${escapeHtml(customer.status)}${customer.city ? ` · ${escapeHtml(customer.city)}` : ""}</p>
         </div>
         <div class="flex shrink-0 gap-2">
           ${customer.status !== "approved" ? `<button type="button" data-profile-id="${escapeHtml(customer.id)}" data-status="approved" class="rounded-lg bg-[#344c40] px-3 py-2 text-xs font-bold text-white">Aprovar</button>` : ""}
@@ -510,7 +632,7 @@
     if (state.session?.user) {
       const result = await state.client
         .from("profiles")
-        .select("id,email,display_name,role,status")
+        .select("id,email,display_name,store_name,phone,city,avatar_path,role,status")
         .eq("id", state.session.user.id)
         .single();
       if (result.error) {
@@ -519,14 +641,16 @@
         state.profile = result.data;
         setNotice(
           state.profile.status === "pending"
-            ? "Cadastro recebido. O acesso a preços e pedidos será liberado após aprovação."
+            ? "Cadastro pendente: você ainda pode navegar pelo catálogo. Para consultar preços e fazer pedidos, aguarde a aprovação da nossa equipe."
             : state.profile.status === "rejected"
-              ? "Este cadastro não foi aprovado. Entre em contato para obter ajuda."
-              : ""
+              ? "Não foi possível liberar o acesso neste cadastro. Fale com nossa equipe pelo botão WhatsApp para receber orientação."
+              : isAdmin()
+                ? "Acesso de administrador liberado. Use o botão Painel para gerenciar produtos e cadastros."
+                : "Acesso aprovado! Os preços e as opções para montar pedidos já estão disponíveis no catálogo."
         );
       }
     } else {
-      setNotice("");
+      setNotice("Explore o catálogo sem entrar. Para consultar preços e montar pedidos, entre ou solicite seu acesso de cliente.");
     }
 
     if (previousUserId !== (state.session?.user?.id || null)) {
@@ -546,10 +670,16 @@
     try {
       if (state.authMode === "signup") {
         const displayName = elements["display-name-input"].value.trim();
+        const storeName = elements["signup-store-input"].value.trim();
+        const phone = elements["signup-phone-input"].value.trim();
+        const city = elements["signup-city-input"].value.trim();
         const { data, error } = await state.client.auth.signUp({
           email,
           password,
-          options: { data: { display_name: displayName } },
+          options: {
+            emailRedirectTo: `${window.location.origin}${routeUrl("login")}`,
+            data: { display_name: displayName, store_name: storeName, phone, city },
+          },
         });
         if (error) throw error;
         if (data.session) {
@@ -558,8 +688,22 @@
           window.history.replaceState({}, "", routeUrl("catalogo"));
           renderRoute();
         } else {
-          setAuthMessage("Conta criada. Confirme seu e-mail e aguarde a aprovação do administrador.");
+          setAuthMessage("Solicitação criada! Abra o e-mail enviado pelo Supabase e confirme seu endereço. Depois, aguarde a aprovação da nossa equipe; vamos avisar nesta página quando o acesso for liberado.");
         }
+      } else if (state.authMode === "reset") {
+        const { error } = await state.client.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}${routeUrl("senha")}`,
+        });
+        if (error) throw error;
+        setAuthMessage("Se existir uma conta com esse e-mail, enviaremos um link seguro para redefinir sua senha. Confira também o spam.");
+      } else if (state.authMode === "recovery") {
+        const newPassword = elements["new-password-input"].value;
+        const { error } = await state.client.auth.updateUser({ password: newPassword });
+        if (error) throw error;
+        state.passwordRecovery = false;
+        window.history.replaceState({}, "", routeUrl("login"));
+        renderRoute();
+        setAuthMessage("Senha alterada com sucesso. Faça login com sua nova senha.");
       } else {
         const requestedRoute = state.route;
         const { error } = await state.client.auth.signInWithPassword({ email, password });
@@ -571,10 +715,157 @@
       }
     } catch (error) {
       console.error("Falha na autenticação:", error);
-      setAuthMessage(error.message || "Não foi possível concluir a solicitação.", true);
+      const errorMessage = String(error.message || "");
+      if (/email not confirmed/i.test(errorMessage)) {
+        elements["resend-confirmation-link"].classList.remove("hidden");
+        setAuthMessage("Seu e-mail ainda não foi confirmado. Abra a mensagem de confirmação que enviamos ou use a opção para reenviá-la.", true);
+      } else if (/invalid login credentials/i.test(errorMessage)) {
+        setAuthMessage("E-mail ou senha não conferem. Confira os dados ou use “Esqueci minha senha”.", true);
+      } else if (/password should be at least/i.test(errorMessage)) {
+        setAuthMessage("Escolha uma senha com pelo menos 8 caracteres.", true);
+      } else {
+        setAuthMessage(error.message || "Não foi possível concluir a solicitação. Tente novamente.", true);
+      }
     } finally {
       elements["auth-submit"].disabled = false;
     }
+  }
+
+  async function resendConfirmation() {
+    const email = elements["email-input"].value.trim();
+    if (!email) {
+      setAuthMessage("Digite seu e-mail acima para enviarmos uma nova confirmação.", true);
+      elements["email-input"].focus();
+      return;
+    }
+    elements["resend-confirmation-link"].disabled = true;
+    try {
+      const { error } = await state.client.auth.resend({
+        type: "signup",
+        email,
+        options: { emailRedirectTo: `${window.location.origin}${routeUrl("login")}` },
+      });
+      if (error) throw error;
+      elements["resend-confirmation-link"].classList.add("hidden");
+      setAuthMessage("Se o cadastro ainda precisar de confirmação, enviaremos outro e-mail. Confira a caixa de entrada e o spam.");
+    } catch (error) {
+      console.error("Falha ao reenviar confirmação:", error);
+      setAuthMessage(error.message || "Não foi possível reenviar o e-mail. Tente novamente.", true);
+    } finally {
+      elements["resend-confirmation-link"].disabled = false;
+    }
+  }
+
+  function previewProfilePhoto(file) {
+    if (!file) return;
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowedTypes.includes(file.type)) {
+      setAccountError("Escolha uma imagem JPG, PNG ou WebP.");
+      elements["profile-photo-input"].value = "";
+      return;
+    }
+    if (file.size > 3 * 1024 * 1024) {
+      setAccountError("A foto precisa ter até 3 MB. Reduza o tamanho e tente novamente.");
+      elements["profile-photo-input"].value = "";
+      return;
+    }
+    setAccountError("");
+    state.pendingProfilePhoto = file;
+    state.removeProfilePhoto = false;
+    if (state.avatarPreviewUrl) {
+      URL.revokeObjectURL(state.avatarPreviewUrl);
+      state.avatarPreviewUrl = "";
+    }
+    const previewUrl = URL.createObjectURL(file);
+    state.avatarPreviewUrl = previewUrl;
+    elements["profile-avatar"].src = previewUrl;
+    elements["profile-avatar"].hidden = false;
+    elements["profile-avatar-fallback"].classList.add("hidden");
+    elements["profile-photo-name"].textContent = file.name;
+    elements["remove-profile-photo"].classList.remove("hidden");
+  }
+
+  async function handleProfileSave(event) {
+    event.preventDefault();
+    if (!state.session?.user || !state.profile) return;
+    setAccountError("");
+    elements["save-profile-button"].disabled = true;
+    elements["save-profile-button"].textContent = "Salvando...";
+    const userId = state.session.user.id;
+    const oldAvatarPath = state.profile.avatar_path;
+    let newAvatarPath = oldAvatarPath;
+    let uploadedPath = "";
+
+    try {
+      if (state.pendingProfilePhoto) {
+        const extensionByType = {
+          "image/jpeg": "jpg",
+          "image/png": "png",
+          "image/webp": "webp",
+        };
+        const extension = extensionByType[state.pendingProfilePhoto.type];
+        const path = `${userId}/${crypto.randomUUID()}.${extension}`;
+        const upload = await state.client.storage
+          .from("profile-photos")
+          .upload(path, state.pendingProfilePhoto, {
+            upsert: true,
+            contentType: state.pendingProfilePhoto.type,
+            cacheControl: "3600",
+          });
+        if (upload.error) throw upload.error;
+        newAvatarPath = upload.data.path;
+        uploadedPath = upload.data.path;
+      } else if (state.removeProfilePhoto) {
+        newAvatarPath = null;
+      }
+
+      const update = await state.client
+        .from("profiles")
+        .update({
+          display_name: elements["profile-display-name"].value.trim(),
+          store_name: elements["profile-store-name"].value.trim(),
+          phone: elements["profile-phone"].value.trim(),
+          city: elements["profile-city"].value.trim(),
+          avatar_path: newAvatarPath,
+        })
+        .eq("id", userId)
+        .select("id,email,display_name,store_name,phone,city,avatar_path,role,status")
+        .single();
+      if (update.error) throw update.error;
+
+      state.profile = update.data;
+      let photoCleanupWarning = "";
+      if (oldAvatarPath && oldAvatarPath !== newAvatarPath) {
+        const removal = await state.client.storage.from("profile-photos").remove([oldAvatarPath]);
+        if (removal.error) {
+          console.error("Perfil salvo, mas não foi possível remover a foto antiga:", removal.error);
+          photoCleanupWarning = "Seus dados foram salvos, mas a foto antiga não pôde ser removida do armazenamento. Tente novamente mais tarde.";
+        }
+      }
+
+      state.pendingProfilePhoto = null;
+      state.removeProfilePhoto = false;
+      updateHeader();
+      renderAccount();
+      if (photoCleanupWarning) setAccountError(photoCleanupWarning);
+      showToast("Seus dados foram salvos.");
+    } catch (error) {
+      console.error("Falha ao salvar o perfil:", error);
+      if (uploadedPath && uploadedPath !== oldAvatarPath) {
+        const cleanup = await state.client.storage.from("profile-photos").remove([uploadedPath]);
+        if (cleanup.error) console.error("Não foi possível limpar a foto enviada após falha:", cleanup.error);
+      }
+      setAccountError(`Não foi possível salvar seu perfil: ${error.message || error}. Confira as permissões do Supabase e tente novamente.`);
+    } finally {
+      elements["save-profile-button"].disabled = false;
+      elements["save-profile-button"].textContent = "Salvar meus dados";
+    }
+  }
+
+  async function requestPasswordReset() {
+    window.history.pushState({}, "", routeUrl("senha"));
+    renderRoute();
+    elements["email-input"].focus();
   }
 
   async function handleLogout() {
@@ -594,10 +885,10 @@
     const button = event.target.closest("[data-profile-id][data-status]");
     if (!button || !isAdmin()) return;
     button.disabled = true;
-    const { error } = await state.client
-      .from("profiles")
-      .update({ status: button.dataset.status })
-      .eq("id", button.dataset.profileId);
+    const { error } = await state.client.rpc("set_customer_status", {
+      p_profile_id: button.dataset.profileId,
+      p_status: button.dataset.status,
+    });
     if (error) {
       button.disabled = false;
       reportAdminError(error);
@@ -606,7 +897,7 @@
     try {
       const result = await state.client
         .from("profiles")
-        .select("id,email,display_name,status,created_at")
+        .select("id,email,display_name,store_name,phone,city,status,created_at")
         .eq("role", "customer")
         .order("created_at", { ascending: false })
         .range(0, 999);
@@ -693,6 +984,44 @@
       renderRoute();
     });
     elements["logout-button"].addEventListener("click", handleLogout);
+    elements["forgot-password-link"].addEventListener("click", requestPasswordReset);
+    elements["resend-confirmation-link"].addEventListener("click", resendConfirmation);
+    elements["toggle-password"].addEventListener("click", () => {
+      const isVisible = elements["password-input"].type === "text";
+      elements["password-input"].type = isVisible ? "password" : "text";
+      elements["toggle-password"].textContent = isVisible ? "Mostrar" : "Ocultar";
+      elements["toggle-password"].setAttribute("aria-label", isVisible ? "Mostrar senha" : "Ocultar senha");
+    });
+    elements["account-form"].addEventListener("submit", (event) => {
+      handleProfileSave(event).catch((error) => {
+        console.error("Falha ao salvar perfil:", error);
+        setAccountError(`Não foi possível salvar seus dados: ${error.message || error}`);
+        elements["save-profile-button"].disabled = false;
+        elements["save-profile-button"].textContent = "Salvar meus dados";
+      });
+    });
+    elements["profile-avatar"].addEventListener("error", () => {
+      elements["profile-avatar"].hidden = true;
+      elements["profile-avatar-fallback"].classList.remove("hidden");
+    });
+    elements["account-avatar"].addEventListener("error", () => {
+      elements["account-avatar"].hidden = true;
+      elements["account-avatar-fallback"].classList.remove("hidden");
+    });
+    elements["profile-photo-input"].addEventListener("change", (event) => {
+      previewProfilePhoto(event.target.files?.[0]);
+    });
+    elements["remove-profile-photo"].addEventListener("click", () => {
+      state.pendingProfilePhoto = null;
+      state.removeProfilePhoto = true;
+      elements["profile-photo-input"].value = "";
+      elements["profile-photo-name"].textContent = "A foto será removida ao salvar.";
+      elements["profile-avatar"].hidden = true;
+      elements["profile-avatar"].removeAttribute("src");
+      elements["profile-avatar-fallback"].classList.remove("hidden");
+      elements["remove-profile-photo"].classList.add("hidden");
+      setAccountError("");
+    });
     elements["product-grid"].addEventListener("click", (event) => {
       const button = event.target.closest("[data-add]");
       if (button) addToCart(button.dataset.add);
@@ -767,6 +1096,7 @@
 
   async function initialize() {
     initializeEvents();
+    state.passwordRecovery = new URLSearchParams(window.location.hash.slice(1)).get("type") === "recovery";
     const config = window.FVB_SUPABASE_CONFIG;
     if (
       !config ||
@@ -795,8 +1125,13 @@
       console.error("Falha ao inicializar o catálogo:", error);
       setNotice(`Não foi possível conectar ao catálogo: ${error.message || error}`, true);
     }
-    state.client.auth.onAuthStateChange(() => {
+    state.client.auth.onAuthStateChange((event) => {
       setTimeout(() => {
+        if (event === "PASSWORD_RECOVERY" ||
+          new URLSearchParams(window.location.hash.slice(1)).get("type") === "recovery") {
+          state.passwordRecovery = true;
+          window.history.replaceState({}, "", routeUrl("senha"));
+        }
         refreshSession().catch((error) => {
           console.error("Falha ao atualizar a sessão:", error);
           setNotice(`Não foi possível atualizar sua sessão: ${error.message || error}`, true);
