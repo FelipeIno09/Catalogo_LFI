@@ -22,12 +22,14 @@ create table if not exists public.products (
   name text not null,
   sku text not null default '',
   price_cents integer not null check (price_cents >= 0),
-  image text not null default './product-placeholder.svg',
+  image text not null default './images/products/generic.svg',
   description text not null default '',
   active boolean not null default true,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table public.products alter column image set default './images/products/generic.svg';
 
 alter table public.profiles enable row level security;
 alter table public.products enable row level security;

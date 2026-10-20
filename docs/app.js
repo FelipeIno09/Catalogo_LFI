@@ -161,6 +161,42 @@
     return data.publicUrl;
   }
 
+  function clearAvatarPreview() {
+    if (!state.avatarPreviewUrl) return;
+    URL.revokeObjectURL(state.avatarPreviewUrl);
+    state.avatarPreviewUrl = "";
+  }
+
+  function getProductIllustration(name, description = "", image = "") {
+    const defaultImages = ["./product-placeholder.svg", "./images/products/generic.svg"];
+    if (image && !defaultImages.includes(image)) return image;
+
+    const terms = `${name} ${description}`
+      .normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLocaleLowerCase("pt-BR");
+    const illustrations = [
+      [/\b(fenda|philips|phillips|bit|bits|canhao)\b/, "screwdriver"],
+      [/\b(biela|combinada|inglesa|estrela|soquete|fixa|grifo|roda|catraca)\b/, "wrench"],
+      [/\b(alicate|torques)\b/, "pliers"],
+      [/\bmartelo\b/, "hammer"],
+      [/\b(broca|mandril|furadeira|parafusadeira)\b/, "drill-bit"],
+      [/\b(serra|serrote|arco de serra)\b/, "saw"],
+      [/\b(disco|lixa|desbaste|rebolo|lima)\b/, "abrasive"],
+      [/\b(trena|nivel|esquadro|metro|paquimetro|prumo)\b/, "measuring"],
+      [/\bfita isolante\b/, "electrical"],
+      [/\bfita\b/, "tape"],
+      [/\b(pincel|rolo|tinta|trincha|escova|broxa)\b/, "painting"],
+      [/\b(torneira|registro|valvula|mangueira|engate|esguicho|bomba|niple|acabamento|mecanismo)\b/, "plumbing"],
+      [/\b(parafuso|bucha|abracadeira|abraca|porca|arruela|rebite|pino|grampo|cantoneira|dobradica|flange|chaveta)\b/, "fasteners"],
+      [/\b(fio|eletrodo|multimetro|tomada|interruptor|conector|cabo de forca|arame mig|chave teste)\b/, "electrical"],
+      [/\b(formao|tesoura|estilete|lamina|talhadeira|raspador|espatula|aplicador)\b/, "hand-tools"],
+      [/\b(colher|desempenadeira|sacho|enxada)\b/, "masonry"],
+    ];
+    const match = illustrations.find(([pattern]) => pattern.test(terms));
+    return `./images/products/${match ? match[1] : "generic"}.svg`;
+  }
+
   function routeUrl(route) {
     const url = new URL(window.location.href);
     if (route === "catalogo") url.searchParams.delete("rota");
@@ -255,6 +291,7 @@
 
   function renderAccount() {
     if (!state.profile || !state.session?.user) return;
+    clearAvatarPreview();
     elements["profile-display-name"].value = state.profile.display_name || "";
     elements["profile-store-name"].value = state.profile.store_name || "";
     elements["profile-email"].value = state.profile.email || state.session.user.email || "";
@@ -309,7 +346,7 @@
       nome: product.name,
       sku: product.sku || "",
       preco: Number.isInteger(product.price_cents) ? product.price_cents / 100 : null,
-      imagem: product.image || "./product-placeholder.svg",
+      imagem: getProductIllustration(product.name, product.description, product.image),
       descricao: product.description || "",
       ativo: product.active !== false,
     };
@@ -390,16 +427,16 @@
           <img src="${escapeHtml(product.imagem)}" alt="${escapeHtml(product.nome)}" loading="lazy" class="h-full w-full object-cover">
         </div>
         <div class="p-3 sm:p-4">
-          <h3 class="font-display min-h-[38px] text-[13px] font-bold leading-[1.4] tracking-[-.02em] text-[#28362d] sm:min-h-0 sm:text-base">${escapeHtml(product.nome)}</h3>
-          ${product.sku ? `<p class="mt-1 text-[10px] text-[#92948d]">Ref. ${escapeHtml(product.sku)}</p>` : ""}
-          ${product.descricao ? `<p class="mt-1.5 hidden min-h-[40px] text-xs leading-5 text-[#85877f] sm:block">${escapeHtml(product.descricao)}</p>` : ""}
+          <h3 class="font-display min-h-[38px] text-center text-[13px] font-bold leading-[1.4] tracking-[-.02em] text-[#28362d] sm:min-h-0 sm:text-base">${escapeHtml(product.nome)}</h3>
+          ${product.sku ? `<p class="mt-1 text-center text-[10px] text-[#92948d]">Ref. ${escapeHtml(product.sku)}</p>` : ""}
+          ${product.descricao ? `<p class="mt-1.5 hidden min-h-[40px] text-center text-xs leading-5 text-[#85877f] sm:block">${escapeHtml(product.descricao)}</p>` : ""}
           ${isApproved() ? `
             <div class="mt-2.5 flex items-center justify-between gap-1 sm:mt-3">
               <span class="font-display text-sm font-extrabold tracking-[-.03em] text-[#344c40] sm:text-base">${formatPrice(product.preco)}</span>
               ${canOrder() ? `<button type="button" data-add="${escapeHtml(product.id)}" class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#edf1ed] text-[#344c40] transition hover:bg-[#344c40] hover:text-white focus:outline-none focus:ring-4 focus:ring-[#344c40]/15 sm:flex sm:h-9 sm:w-auto sm:gap-1.5 sm:px-3" aria-label="Adicionar ${escapeHtml(product.nome)} ao carrinho"><span aria-hidden="true">+</span><span class="hidden text-xs font-bold sm:inline">Adicionar</span></button>` : ""}
             </div>
           ` : `<p class="mt-3 text-xs font-semibold text-[#54735d]">Entre para consultar preços e fazer pedidos.</p>`}
-          ${product.descricao ? `<p class="mt-2 line-clamp-2 text-[10px] leading-4 text-[#92948d] sm:hidden">${escapeHtml(product.descricao)}</p>` : ""}
+          ${product.descricao ? `<p class="mt-2 line-clamp-2 text-center text-[10px] leading-4 text-[#92948d] sm:hidden">${escapeHtml(product.descricao)}</p>` : ""}
         </div>
       </article>
     `).join("");
@@ -547,7 +584,7 @@
       image.addEventListener("error", () => {
         if (image.dataset.fallbackApplied) return;
         image.dataset.fallbackApplied = "true";
-        image.src = "./product-placeholder.svg";
+        image.src = "./images/products/generic.svg";
       }, { once: true });
     });
   }
@@ -591,7 +628,7 @@
             <p class="truncate text-xs text-[#737b74]">${escapeHtml(customer.email)}${customer.phone ? ` · ${escapeHtml(customer.phone)}` : ""}</p>
             <p class="mt-1 text-xs text-[#85877f]">Situação: ${escapeHtml(customer.status)}${customer.city ? ` · ${escapeHtml(customer.city)}` : ""}</p>
         </div>
-        <div class="flex shrink-0 gap-2">
+        <div class="flex shrink-0 justify-center gap-2 sm:justify-start">
           ${customer.status !== "approved" ? `<button type="button" data-profile-id="${escapeHtml(customer.id)}" data-status="approved" class="rounded-lg bg-[#344c40] px-3 py-2 text-xs font-bold text-white">Aprovar</button>` : ""}
           ${customer.status !== "rejected" ? `<button type="button" data-profile-id="${escapeHtml(customer.id)}" data-status="rejected" class="rounded-lg border border-[#e2e5e1] px-3 py-2 text-xs font-bold text-[#8c4131]">Recusar</button>` : ""}
         </div>
@@ -804,11 +841,14 @@
           "image/webp": "webp",
         };
         const extension = extensionByType[state.pendingProfilePhoto.type];
-        const path = `${userId}/${crypto.randomUUID()}.${extension}`;
+        const photoId = typeof crypto.randomUUID === "function"
+          ? crypto.randomUUID()
+          : Array.from(crypto.getRandomValues(new Uint8Array(16)), (byte) => byte.toString(16).padStart(2, "0")).join("");
+        const path = `${userId}/${photoId}.${extension}`;
         const upload = await state.client.storage
           .from("profile-photos")
           .upload(path, state.pendingProfilePhoto, {
-            upsert: true,
+            upsert: false,
             contentType: state.pendingProfilePhoto.type,
             cacheControl: "3600",
           });
@@ -845,6 +885,7 @@
 
       state.pendingProfilePhoto = null;
       state.removeProfilePhoto = false;
+      clearAvatarPreview();
       updateHeader();
       renderAccount();
       if (photoCleanupWarning) setAccountError(photoCleanupWarning);
@@ -855,7 +896,15 @@
         const cleanup = await state.client.storage.from("profile-photos").remove([uploadedPath]);
         if (cleanup.error) console.error("Não foi possível limpar a foto enviada após falha:", cleanup.error);
       }
-      setAccountError(`Não foi possível salvar seu perfil: ${error.message || error}. Confira as permissões do Supabase e tente novamente.`);
+      const errorDetails = `${error.message || error} ${error.details || ""}`.toLocaleLowerCase("pt-BR");
+      const setupHint = errorDetails.includes("bucket not found") || errorDetails.includes("profile-photos")
+        ? " Verifique se o bucket profile-photos e suas políticas foram criados executando novamente supabase/schema.sql no SQL Editor do Supabase."
+        : errorDetails.includes("row-level security")
+          ? " O Supabase bloqueou o envio pelas políticas de acesso. Execute novamente supabase/schema.sql no SQL Editor e tente outra vez."
+          : errorDetails.includes("avatar_path") && errorDetails.includes("column")
+            ? " Atualize as colunas do perfil executando supabase/schema.sql no SQL Editor do Supabase."
+            : " Confira a configuração de armazenamento e as permissões no Supabase.";
+      setAccountError(`Não foi possível salvar seu perfil: ${error.message || error}.${setupHint}`);
     } finally {
       elements["save-profile-button"].disabled = false;
       elements["save-profile-button"].textContent = "Salvar meus dados";
@@ -956,7 +1005,7 @@
       name: String(values.get("name")).trim(),
       sku: String(values.get("sku") || "").trim(),
       price_cents: Math.round(price * 100),
-      image: String(values.get("image") || "./product-placeholder.svg").trim(),
+      image: String(values.get("image") || "./images/products/generic.svg").trim(),
       description: String(values.get("description") || "").trim(),
       active: true,
     });
@@ -966,7 +1015,7 @@
       return;
     }
     elements["product-create-form"].reset();
-    elements["product-create-form"].elements.image.value = "./product-placeholder.svg";
+    elements["product-create-form"].elements.image.value = "./images/products/generic.svg";
     showToast("Produto adicionado.");
     await loadAdminData();
   }

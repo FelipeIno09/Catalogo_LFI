@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Ilustracao de ferramenta">
+  <rect width="600" height="600" rx="48" fill="#f0f2ed"/>
+  <circle cx="300" cy="270" r="190" fill="#e3e9e1"/>
+  <path d="M186 344 342 188l71 71-156 156z" fill="#66776b" stroke="#344c40" stroke-linejoin="round" stroke-width="16"/>
+  <path d="m350 180 28-28 71 71-28 28z" fill="#d58b58" stroke="#344c40" stroke-linejoin="round" stroke-width="14"/>
+  <path d="m166 364 43 43-47 47-43-43z" fill="#d58b58" stroke="#344c40" stroke-linejoin="round" stroke-width="14"/>
+  <path d="m224 306 71 71" stroke="#dce5dc" stroke-linecap="round" stroke-width="10"/>
+</svg>

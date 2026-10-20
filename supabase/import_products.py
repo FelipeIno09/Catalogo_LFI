@@ -107,7 +107,7 @@ def read_workbook(path):
                 "name": name,
                 "sku": sku,
                 "price_cents": price_cents,
-                "image": "./product-placeholder.svg",
+                "image": "./images/products/generic.svg",
                 "description": "",
                 "active": True,
             }

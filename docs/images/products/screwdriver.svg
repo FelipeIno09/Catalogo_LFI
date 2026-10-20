@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Chave Phillips">
+  <rect width="600" height="600" rx="48" fill="#f0f2ed"/>
+  <circle cx="300" cy="290" r="202" fill="#e3e9e1"/>
+  <g transform="rotate(-42 300 300)">
+    <path d="M274 257h52v213c0 22-12 39-26 39s-26-17-26-39z" fill="#89958a" stroke="#344c40" stroke-width="13"/>
+    <path d="M280 457h40v22c0 17-9 30-20 30s-20-13-20-30z" fill="#d9dcd6"/>
+    <path d="M253 177c0-27 21-48 47-48s47 21 47 48v78h-94z" fill="#d58b58" stroke="#344c40" stroke-linejoin="round" stroke-width="14"/>
+    <path d="M253 194c0-17 14-31 31-31h32c17 0 31 14 31 31v24h-94z" fill="#e4a16e"/>
+    <path d="M300 112v-28m-15 28h30" stroke="#344c40" stroke-linecap="round" stroke-width="13"/>
+  </g>
+</svg>

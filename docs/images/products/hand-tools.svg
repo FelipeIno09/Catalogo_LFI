@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Ferramenta manual">
+  <rect width="600" height="600" rx="48" fill="#f0f2ed"/>
+  <circle cx="300" cy="290" r="202" fill="#e3e9e1"/>
+  <g transform="rotate(-38 300 300)">
+    <path d="M261 269h78v224a39 39 0 0 1-78 0z" fill="#d58b58" stroke="#344c40" stroke-width="15"/>
+    <path d="M252 238h96v57h-96z" fill="#99a69c" stroke="#344c40" stroke-width="14"/>
+    <path d="M246 116h108v133H246z" fill="#aeb9b0" stroke="#344c40" stroke-width="15"/>
+    <path d="m246 116 54-61 54 61" fill="#dce5dc" stroke="#344c40" stroke-linejoin="round" stroke-width="15"/>
+    <path d="M273 151v61m54-61v61" stroke="#f0f2ed" stroke-linecap="round" stroke-width="9"/>
+  </g>
+</svg>

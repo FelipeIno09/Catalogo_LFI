@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Disco abrasivo">
+  <rect width="600" height="600" rx="48" fill="#f0f2ed"/>
+  <circle cx="300" cy="290" r="202" fill="#e3e9e1"/>
+  <circle cx="300" cy="292" r="154" fill="#d58b58" stroke="#344c40" stroke-width="17"/>
+  <circle cx="300" cy="292" r="42" fill="#f0f2ed" stroke="#344c40" stroke-width="15"/>
+  <circle cx="300" cy="292" r="113" fill="none" stroke="#f0c39e" stroke-dasharray="4 15" stroke-linecap="round" stroke-width="8"/>
+  <path d="M300 121v58m0 226v58M129 292h58m226 0h58M179 171l41 41m160 160 41 41m0-242-41 41m-160 160-41 41" stroke="#f7e3d1" stroke-linecap="round" stroke-width="10"/>
+</svg>

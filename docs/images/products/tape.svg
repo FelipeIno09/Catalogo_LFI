@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Fita adesiva">
+  <rect width="600" height="600" rx="48" fill="#f0f2ed"/>
+  <circle cx="300" cy="290" r="202" fill="#e3e9e1"/>
+  <path d="M176 248c0-35 28-63 63-63h122c35 0 63 28 63 63v120c0 35-28 63-63 63H239c-35 0-63-28-63-63z" fill="#d58b58" stroke="#344c40" stroke-width="17"/>
+  <path d="M232 263c0-16 13-29 29-29h78c16 0 29 13 29 29v90c0 16-13 29-29 29h-78c-16 0-29-13-29-29z" fill="#f0f2ed" stroke="#344c40" stroke-width="15"/>
+  <path d="M176 281h-28v60h28m248-60h28v60h-28" fill="#efbd91" stroke="#344c40" stroke-linejoin="round" stroke-width="13"/>
+</svg>

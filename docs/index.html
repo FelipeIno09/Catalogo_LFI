@@ -224,20 +224,20 @@
       <div id="account-status" class="mb-5 rounded-xl border border-[#dce5dc] bg-[#eff3ed] p-4 text-sm leading-6 text-[#344c40]" role="status" aria-live="polite"></div>
       <div id="account-error" class="mb-5 hidden rounded-xl border border-[#efd7ce] bg-[#fbf1ed] p-4 text-sm leading-6 text-[#8c4131]" role="alert"></div>
       <form id="account-form" class="rounded-[24px] border border-[#e2e5e1] bg-white p-5 shadow-sm sm:p-8">
-        <div class="flex flex-col gap-5 border-b border-[#eeede7] pb-6 sm:flex-row sm:items-center">
-          <span id="profile-avatar-fallback" class="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-full bg-[#e8ece8] font-display text-xl font-extrabold text-[#344c40]">LF</span>
-          <img id="profile-avatar" alt="Foto do perfil" hidden class="h-20 w-20 shrink-0 rounded-full object-cover ring-4 ring-[#eff3ed]">
-          <div class="flex-1">
+        <div class="flex flex-col items-center gap-5 border-b border-[#eeede7] pb-6 text-center sm:flex-row sm:items-center sm:text-left">
+          <span id="profile-avatar-fallback" class="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-full bg-[#e8ece8] font-display text-xl font-extrabold text-[#344c40] ring-4 ring-[#eff3ed]">LF</span>
+          <img id="profile-avatar" alt="Foto do perfil" hidden class="block h-20 w-20 shrink-0 rounded-full object-cover object-center ring-4 ring-[#eff3ed]">
+          <div class="flex-1 text-center sm:text-left">
             <h3 class="font-display text-lg font-extrabold text-[#28362d]">Foto do perfil</h3>
             <p class="mt-1 text-xs leading-5 text-[#737b74]">Escolha uma imagem JPG, PNG ou WebP de até 3 MB. Ela ficará visível no seu perfil.</p>
-            <div class="mt-3 flex flex-wrap gap-3">
+            <div class="mt-3 flex flex-wrap justify-center gap-3 sm:justify-start">
               <label class="inline-flex min-h-9 cursor-pointer items-center rounded-lg border border-[#d8ded8] px-3 text-xs font-bold text-[#344c40] hover:border-[#344c40]">
                 Escolher foto
                 <input id="profile-photo-input" type="file" accept="image/jpeg,image/png,image/webp" class="sr-only">
               </label>
               <button id="remove-profile-photo" type="button" class="hidden min-h-9 rounded-lg px-3 text-xs font-bold text-[#8c4131] hover:bg-[#fbf1ed]">Remover foto</button>
             </div>
-            <p id="profile-photo-name" class="mt-2 text-xs text-[#85877f]"></p>
+            <p id="profile-photo-name" class="mt-2 text-center text-xs text-[#85877f] sm:text-left"></p>
           </div>
         </div>
         <div class="grid gap-4 pt-6 sm:grid-cols-2">
@@ -265,28 +265,28 @@
         </div>
         <div class="mt-6 flex flex-col-reverse gap-3 border-t border-[#eeede7] pt-5 sm:flex-row sm:items-center sm:justify-between">
           <a href="./" class="inline-flex min-h-10 items-center justify-center rounded-xl px-4 text-sm font-semibold text-[#737b74] hover:bg-[#f4f5f3]">Voltar ao catálogo</a>
-          <button id="save-profile-button" type="submit" class="min-h-11 rounded-xl bg-[#344c40] px-5 text-sm font-bold text-white transition hover:bg-[#26392f] disabled:cursor-not-allowed disabled:opacity-60">Salvar meus dados</button>
+          <button id="save-profile-button" type="submit" class="min-h-11 w-full rounded-xl bg-[#344c40] px-5 text-sm font-bold text-white transition hover:bg-[#26392f] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto">Salvar meus dados</button>
         </div>
       </form>
     </section>
 
     <section id="admin-view" hidden class="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
-      <div class="mb-8">
+      <div class="mb-8 text-center">
         <p class="text-xs font-bold uppercase tracking-[.16em] text-[#b7794d]">Administração</p>
         <h2 class="font-display mt-1 text-3xl font-extrabold tracking-[-.04em] text-[#28362d]">Clientes e produtos</h2>
       </div>
       <div id="admin-error" class="mb-5 hidden rounded-xl bg-[#f8ece8] p-3 text-sm text-[#8c4131]" role="alert"></div>
       <div class="mb-10 rounded-[24px] border border-[#e2e5e1] bg-white p-5 shadow-sm sm:p-7">
-        <h3 class="font-display text-xl font-extrabold text-[#28362d]">Clientes cadastrados</h3>
+        <h3 class="font-display text-center text-xl font-extrabold text-[#28362d]">Clientes cadastrados</h3>
         <div id="customer-list" class="mt-4 space-y-3" aria-live="polite"></div>
       </div>
       <div class="rounded-[24px] border border-[#e2e5e1] bg-white p-5 shadow-sm sm:p-7">
-        <h3 class="font-display text-xl font-extrabold text-[#28362d]">Adicionar produto</h3>
+        <h3 class="font-display text-center text-xl font-extrabold text-[#28362d]">Adicionar produto</h3>
         <form id="product-create-form" class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <input name="name" required maxlength="200" placeholder="Nome do produto" aria-label="Nome do produto" class="h-11 rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3 text-sm">
           <input name="sku" maxlength="80" placeholder="Referência (opcional)" aria-label="Referência" class="h-11 rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3 text-sm">
           <input name="price" type="number" required min="0" step="0.01" placeholder="Preço em reais" aria-label="Preço em reais" class="h-11 rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3 text-sm">
-          <input name="image" maxlength="1000" placeholder="Imagem (URL ou caminho)" aria-label="Imagem" value="./product-placeholder.svg" class="h-11 rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3 text-sm">
+          <input name="image" maxlength="1000" placeholder="Imagem (URL ou caminho)" aria-label="Imagem" value="./images/products/generic.svg" class="h-11 rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3 text-sm">
           <input name="description" maxlength="1000" placeholder="Descrição (opcional)" aria-label="Descrição" class="h-11 rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3 text-sm">
           <button type="submit" class="min-h-11 rounded-xl bg-[#344c40] px-4 text-sm font-bold text-white transition hover:bg-[#26392f]">Adicionar produto</button>
         </form>

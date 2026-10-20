@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Trena">
+  <rect width="600" height="600" rx="48" fill="#f0f2ed"/>
+  <circle cx="300" cy="290" r="202" fill="#e3e9e1"/>
+  <path d="M196 237a115 115 0 0 1 206-68l46 50-60 55-42-47a42 42 0 0 0-74 25v90h-76z" fill="#d58b58" stroke="#344c40" stroke-linejoin="round" stroke-width="16"/>
+  <path d="M247 306h144v113a34 34 0 0 1-34 34h-76a34 34 0 0 1-34-34z" fill="#839188" stroke="#344c40" stroke-width="15"/>
+  <path d="M281 315v34m30-34v22m30-22v34m30-34v22" stroke="#f4f1e8" stroke-linecap="round" stroke-width="9"/>
+  <path d="M252 454h134" stroke="#dce5dc" stroke-linecap="round" stroke-width="10"/>
+</svg>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Alicate">
+  <rect width="600" height="600" rx="48" fill="#f0f2ed"/>
+  <circle cx="300" cy="290" r="202" fill="#e3e9e1"/>
+  <g transform="rotate(38 300 300)">
+    <path d="M248 284c-24-8-39-31-39-58v-89c0-20 15-35 35-35s35 15 35 35v91l21 61z" fill="#d58b58" stroke="#344c40" stroke-linejoin="round" stroke-width="15"/>
+    <path d="M352 284c24-8 39-31 39-58v-89c0-20-15-35-35-35s-35 15-35 35v91l-21 61z" fill="#d58b58" stroke="#344c40" stroke-linejoin="round" stroke-width="15"/>
+    <path d="m259 285-7-62 27-96 35 4-20 108 30 75-39 28z" fill="#99a69c" stroke="#344c40" stroke-linejoin="round" stroke-width="14"/>
+    <path d="m341 285 7-62-27-96-35 4 20 108-30 75 39 28z" fill="#99a69c" stroke="#344c40" stroke-linejoin="round" stroke-width="14"/>
+    <circle cx="300" cy="317" r="25" fill="#e2e6df" stroke="#344c40" stroke-width="12"/>
+  </g>
+</svg>

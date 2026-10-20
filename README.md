@@ -33,7 +33,7 @@ O projeto do site é servido por arquivos estáticos. A autenticação e a prote
    Remove-Item Env:SUPABASE_URL
    ```
 
-   O importador usa apenas a biblioteca padrão do Python. Ele importa descrição, referência e preço; a planilha não fornece imagens, então os produtos usam a imagem padrão. A importação usa o número da linha como identificador de origem e pode ser repetida para atualizar os produtos da planilha.
+   O importador usa apenas a biblioteca padrão do Python. Ele importa descrição, referência e preço; como a planilha não fornece imagens, o catálogo associa ilustrações locais por tipo de produto, como chaves, alicates, martelos e brocas. A importação usa o número da linha como identificador de origem e pode ser repetida para atualizar os produtos da planilha.
 6. Cadastre a conta do proprietário pela tela de cadastro do site e confirme o e-mail, se a confirmação estiver habilitada. Promova essa conta a administradora no SQL Editor, substituindo pelo e-mail cadastrado:
 
    ```sql
@@ -44,7 +44,7 @@ O projeto do site é servido por arquivos estáticos. A autenticação e a prote
 
 7. Publique `docs` pelo GitHub Pages e verifique o login, aprovação e painel. Nas configurações do Supabase, mantenha a confirmação de e-mail habilitada quando apropriado para sua operação.
 
-As políticas de Row Level Security do esquema deixam a listagem pública limitada a nome, referência, imagem e descrição. Preços são obtidos por uma função que exige sessão aprovada; a chave de serviço deve permanecer privada. O painel pode aprovar ou recusar clientes, editar preços de produtos e desativar produtos sem removê-los. Fotos de perfil ficam em um bucket público para poderem aparecer no catálogo; oriente os clientes a usar apenas uma foto de perfil, sem informações privadas.
+As políticas de Row Level Security do esquema deixam a listagem pública limitada a nome, referência, imagem e descrição. Preços são obtidos por uma função que exige sessão aprovada; a chave de serviço deve permanecer privada. O painel pode aprovar ou recusar clientes, editar preços de produtos e desativar produtos sem removê-los. Fotos de perfil ficam em um bucket público para poderem aparecer no catálogo; oriente os clientes a usar apenas uma foto de perfil, sem informações privadas. Se o envio da foto for recusado, execute novamente `supabase/schema.sql` no SQL Editor para configurar o bucket `profile-photos` e suas políticas.
 
 ## Desenvolver localmente
 

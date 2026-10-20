@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Martelo">
+  <rect width="600" height="600" rx="48" fill="#f0f2ed"/>
+  <circle cx="300" cy="290" r="202" fill="#e3e9e1"/>
+  <g transform="rotate(-42 300 300)">
+    <path d="M274 271h52v232a26 26 0 0 1-52 0z" fill="#d58b58" stroke="#344c40" stroke-width="15"/>
+    <path d="M180 167h210v64h-75l-37 66-37-66h-61z" fill="#8d9990" stroke="#344c40" stroke-linejoin="round" stroke-width="16"/>
+    <path d="M185 167h92v64h-97c-27 0-48-21-48-48v-15c0-18 15-33 33-33h20z" fill="#aeb9b0" stroke="#344c40" stroke-linejoin="round" stroke-width="15"/>
+    <path d="M295 280v198" stroke="#efbd91" stroke-linecap="round" stroke-width="9"/>
+  </g>
+</svg>

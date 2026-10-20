@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Chave de aperto">
+  <rect width="600" height="600" rx="48" fill="#f0f2ed"/>
+  <circle cx="300" cy="290" r="202" fill="#e3e9e1"/>
+  <g transform="rotate(-43 300 300)">
+    <path d="M250 276h100v220a30 30 0 0 1-30 30h-40a30 30 0 0 1-30-30z" fill="#8b9990" stroke="#344c40" stroke-width="15"/>
+    <path d="M217 276v-55l-54-54a108 108 0 0 1 134-134l-61 62 58 58 61-61a108 108 0 0 1-134 134v50z" transform="translate(8 12)" fill="#aeb9b0" stroke="#344c40" stroke-linejoin="round" stroke-width="15"/>
+    <path d="M275 399h50" stroke="#dce5dc" stroke-linecap="round" stroke-width="11"/>
+  </g>
+</svg>

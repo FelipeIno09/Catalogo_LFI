@@ -26,6 +26,7 @@ test("static catalog routes load the Supabase app without publishing a price cat
   assert.doesNotMatch(html, /catalog-products\.js/);
   assert.ok(!fs.existsSync(path.join(siteDirectory, "catalog-products.js")));
   assert.ok(fs.existsSync(path.join(siteDirectory, "product-placeholder.svg")));
+  assert.ok(fs.existsSync(path.join(siteDirectory, "images", "products", "generic.svg")));
   assert.match(rootPage, /url=\.\/docs\//);
 });
 
@@ -46,7 +47,49 @@ test("public catalog queries omit prices and protected roles use database functi
   assert.match(schema, /revoke update \(status\) on public\.profiles from authenticated/i);
   assert.match(schema, /profile-photos/);
   assert.match(app, /storage\.from\("profile-photos"\)/);
+  assert.match(app, /upsert:\s*false/);
+  assert.match(app, /Execute novamente supabase\/schema\.sql/);
   assert.match(app, /auth\.resetPasswordForEmail/);
+});
+
+test("products without a custom image use an illustration matched to their description", () => {
+  const resolverSource = app.match(
+    /  function getProductIllustration\(name, description = "", image = ""\) \{[\s\S]*?\n  \}/
+  )?.[0];
+  assert.ok(resolverSource, "product illustration resolver should exist");
+  const getProductIllustration = vm.runInNewContext(`(${resolverSource.trim()})`);
+
+  assert.equal(
+    getProductIllustration("CHAVE PHILLIPS", "", "./product-placeholder.svg"),
+    "./images/products/screwdriver.svg"
+  );
+  assert.equal(
+    getProductIllustration("BROCA ACO RAPIDO", "", "./images/products/generic.svg"),
+    "./images/products/drill-bit.svg"
+  );
+  assert.equal(
+    getProductIllustration("TORNEIRA CROMADA", "", "./product-placeholder.svg"),
+    "./images/products/plumbing.svg"
+  );
+  assert.equal(
+    getProductIllustration("COLHER PEDREIRO", "", "./images/products/generic.svg"),
+    "./images/products/masonry.svg"
+  );
+  assert.equal(
+    getProductIllustration("FITA DUPLA FACE", "", "./product-placeholder.svg"),
+    "./images/products/tape.svg"
+  );
+  assert.equal(
+    getProductIllustration("Produto com foto propria", "", "https://example.com/produto.jpg"),
+    "https://example.com/produto.jpg"
+  );
+
+  for (const illustration of ["screwdriver", "wrench", "pliers", "hammer", "drill-bit", "saw", "abrasive", "measuring", "painting", "plumbing", "fasteners", "tape", "electrical", "hand-tools", "masonry"]) {
+    assert.ok(
+      fs.existsSync(path.join(siteDirectory, "images", "products", `${illustration}.svg`)),
+      `missing ${illustration} illustration`
+    );
+  }
 });
 
 test("account form exposes customer profile fields and email confirmation recovery", () => {

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Parafuso e fixadores">
+  <rect width="600" height="600" rx="48" fill="#f0f2ed"/>
+  <circle cx="300" cy="290" r="202" fill="#e3e9e1"/>
+  <g transform="rotate(-38 300 300)">
+    <path d="M277 178h46v230h-46z" fill="#9ca9a1" stroke="#344c40" stroke-width="13"/>
+    <path d="M258 159h84v40h-84z" fill="#d58b58" stroke="#344c40" stroke-width="13"/>
+    <path d="M278 235h44m-44 35h44m-44 35h44m-44 35h44" stroke="#dce5dc" stroke-linecap="round" stroke-width="8"/>
+    <path d="m277 408 23 47 23-47z" fill="#9ca9a1" stroke="#344c40" stroke-linejoin="round" stroke-width="12"/>
+  </g>
+  <path d="m375 385 42-24 42 24v48l-42 24-42-24z" fill="#d58b58" stroke="#344c40" stroke-linejoin="round" stroke-width="13"/>
+  <path d="m395 397 22-13 22 13v25l-22 13-22-13z" fill="#e3e9e1" stroke="#344c40" stroke-width="9"/>
+</svg>

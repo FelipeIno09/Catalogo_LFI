@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Serrote">
+  <rect width="600" height="600" rx="48" fill="#f0f2ed"/>
+  <circle cx="300" cy="290" r="202" fill="#e3e9e1"/>
+  <g transform="rotate(-38 300 300)">
+    <path d="M238 169h140v274l-22-17-22 17-22-17-22 17-22-17-22 17-8-8z" fill="#aeb9b0" stroke="#344c40" stroke-linejoin="round" stroke-width="15"/>
+    <path d="M228 170h160v77H228c-22 0-40-17-40-38s18-39 40-39z" fill="#d58b58" stroke="#344c40" stroke-width="15"/>
+    <path d="M252 208h85" stroke="#f2c49f" stroke-linecap="round" stroke-width="10"/>
+    <path d="m263 439-13 35m58-35-13 35m58-35-13 35" stroke="#344c40" stroke-linecap="round" stroke-width="9"/>
+  </g>
+</svg>

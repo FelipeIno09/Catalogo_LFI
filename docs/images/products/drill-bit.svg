@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Broca">
+  <rect width="600" height="600" rx="48" fill="#f0f2ed"/>
+  <circle cx="300" cy="290" r="202" fill="#e3e9e1"/>
+  <g transform="rotate(40 300 300)">
+    <path d="M273 137h54v300h-54z" fill="#aab4ad" stroke="#344c40" stroke-width="14"/>
+    <path d="M273 437h54v68h-54z" fill="#d58b58" stroke="#344c40" stroke-width="14"/>
+    <path d="m273 137 27-61 27 61" fill="#d8ddd7" stroke="#344c40" stroke-linejoin="round" stroke-width="14"/>
+    <path d="M277 195c67 28-13 58 51 87s-14 59-2 87-40 44-49 66" fill="none" stroke="#65756b" stroke-linecap="round" stroke-width="17"/>
+    <path d="m277 195 51 87m-2 0-51 87m0 0 52 66" fill="none" stroke="#dce5dc" stroke-linecap="round" stroke-width="9"/>
+  </g>
+</svg>

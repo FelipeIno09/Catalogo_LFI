@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Torneira">
+  <rect width="600" height="600" rx="48" fill="#f0f2ed"/>
+  <circle cx="300" cy="290" r="202" fill="#e3e9e1"/>
+  <path d="M205 382h190v52H205z" fill="#8d9990" stroke="#344c40" stroke-width="15"/>
+  <path d="M242 380V278c0-45 36-81 81-81h58v56h-58c-14 0-25 11-25 25v102z" fill="#aeb9b0" stroke="#344c40" stroke-linejoin="round" stroke-width="15"/>
+  <path d="M346 196v-45h74v45m-37-45v-33" fill="none" stroke="#d58b58" stroke-linecap="round" stroke-linejoin="round" stroke-width="19"/>
+  <path d="M383 278h69v53h-69" fill="#aeb9b0" stroke="#344c40" stroke-linejoin="round" stroke-width="15"/>
+  <path d="M428 346c0 17-11 28-25 28s-25-11-25-28 25-48 25-48 25 31 25 48z" fill="#83aeb0" stroke="#344c40" stroke-width="10"/>
+</svg>

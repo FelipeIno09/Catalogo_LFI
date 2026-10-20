@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Pincel de pintura">
+  <rect width="600" height="600" rx="48" fill="#f0f2ed"/>
+  <circle cx="300" cy="290" r="202" fill="#e3e9e1"/>
+  <g transform="rotate(-38 300 300)">
+    <path d="M270 281h60v213a30 30 0 0 1-60 0z" fill="#d58b58" stroke="#344c40" stroke-width="15"/>
+    <path d="M251 260h98v57h-98z" fill="#99a69c" stroke="#344c40" stroke-width="14"/>
+    <path d="M240 128h120v136H240z" fill="#f8f7f4" stroke="#344c40" stroke-width="15"/>
+    <path d="M240 128h120v50H240z" fill="#d58b58"/>
+    <path d="M262 184v59m39-59v59m39-59v59" stroke="#e0e4dd" stroke-linecap="round" stroke-width="8"/>
+  </g>
+</svg>
