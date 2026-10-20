@@ -16,7 +16,7 @@ test("static catalog routes load the Supabase app without publishing a price cat
   assert.doesNotThrow(() => new vm.Script(app));
   assert.match(html, /@supabase\/supabase-js@2/);
   assert.match(html, /src="\.\/supabase-config\.js"/);
-  assert.match(html, /src="\.\/app\.js\?v=20261020"/);
+  assert.match(html, /src="\.\/app\.js\?v=20261020-2"/);
   assert.match(html, /src="\.\/images\/lfi-tools-logo\.jpg\?v=20261020"/);
   assert.match(html, /id="catalog-view"/);
   assert.match(html, /id="login-view"/);
@@ -68,6 +68,14 @@ test("event listeners only target existing and cached page elements", () => {
       assert.ok(cachedIds.has(target.id), `event listener target #${target.id} should be cached`);
     }
   }
+});
+
+test("logging out redirects to the login screen", () => {
+  const logoutSource = app.match(/  async function handleLogout\(\) \{[\s\S]*?\n  \}/)?.[0];
+  assert.ok(logoutSource, "logout handler should exist");
+  assert.match(logoutSource, /auth\.signOut\(\)/);
+  assert.match(logoutSource, /replaceState\(\{\},\s*\"\",\s*routeUrl\(\"login\"\)\)/);
+  assert.match(logoutSource, /await refreshSession\(\)/);
 });
 
 test("public catalog queries omit prices and protected roles use database functions", () => {

@@ -965,7 +965,7 @@
     }
     state.profile = null;
     state.cart = [];
-    window.history.replaceState({}, "", routeUrl("catalogo"));
+    window.history.replaceState({}, "", routeUrl("login"));
     await refreshSession();
   }
 
