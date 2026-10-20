@@ -51,52 +51,25 @@
         display: grid;
         height: auto;
         min-height: 68px;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px;
+        grid-template-columns: minmax(0, 1fr) auto;
         padding: 8px 12px;
       }
       header > div > a:first-child {
         grid-column: 1;
         grid-row: 1;
         min-width: 0;
-        gap: 6px;
-      }
-      header > div > a:first-child > span:first-child { height: 34px; width: 34px; border-radius: 12px; }
-      header > div > a:first-child > span:first-child svg { height: 20px; width: 20px; }
-      header > div > a:first-child > span:last-child > span:first-child { font-size: 15px; }
-      header > div > a:first-child > span:last-child > span:last-child { display: none; }
-      #open-cart {
-        grid-column: 1;
-        grid-row: 2;
-        justify-self: start;
-        width: max-content;
-        min-height: 36px;
-        padding-inline: 10px;
-      }
-      header > div > a[href^="https://wa.me/"] {
-        grid-column: 2;
-        grid-row: 1;
-        justify-self: end;
-        width: max-content;
-        min-height: 36px;
-        padding-inline: 10px;
       }
       header > div > div:last-child {
         grid-column: 2;
-        grid-row: 2;
+        grid-row: 1;
         display: flex;
         min-width: 0;
-        flex-wrap: wrap;
-        width: 100%;
-        max-width: 100%;
+        width: auto;
+        max-width: none;
         justify-self: end;
         justify-content: flex-end;
-        gap: 4px;
       }
-      #admin-link, #login-link, #logout-button { min-height: 36px; padding-inline: 9px; font-size: 11px; }
-      #account-link { max-width: 100%; padding-right: 8px; font-size: 11px; }
-      #account-name { max-width: 92px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-      #account-avatar-fallback, #account-avatar { flex: 0 0 2rem; }
+      #profile-menu-toggle { height: 42px; width: 42px; }
       #app-notice { margin-inline: 12px; padding: 12px; line-height: 1.5; }
       #login-view, #account-view, #admin-view { padding-bottom: 40px; }
       #account-form, #admin-view > div { min-width: 0; }
@@ -109,44 +82,31 @@
       }
     }
     @media (max-width: 360px) {
-      #account-name, #open-cart > span.hidden { display: none; }
-      #account-link { padding: 4px; }
-      #account-avatar-fallback, #account-avatar { flex-basis: 28px; height: 28px; width: 28px; }
-      #admin-link, #login-link, #logout-button { padding-inline: 7px; }
+      #profile-menu-toggle { height: 38px; width: 38px; }
     }
   </style>
 </head>
 <body>
   <header class="sticky top-0 z-30 border-b border-[#e2e5e1] bg-[#f4f5f3]/95 backdrop-blur-md">
     <div class="mx-auto flex h-[68px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-      <a href="#" class="flex items-center gap-2.5" aria-label="LFI Tools, início">
-        <span class="grid h-10 w-10 place-items-center rounded-2xl bg-[#344c40] text-white">
-          <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" aria-hidden="true">
-            <path d="m14.5 4.5 5 5m-2-7 4 4-3.5 3.5-4-4m-1 1L5 15.5l3.5 3.5L16.5 11m-10 3L4 12l-2 2 6 6 2-2-2-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </span>
-        <span>
-          <span class="font-display block text-[17px] font-extrabold leading-5 tracking-[-.04em]">LFI <span class="text-[#d58b58]">Tools</span></span>
-          <span class="block text-[10px] font-semibold uppercase tracking-[.16em] text-[#737b74]">ferragens & ferramentas</span>
-        </span>
+      <a href="#" class="inline-flex shrink-0 items-center" aria-label="LFI Tools, início">
+        <img src="./images/lfi-tools-logo.jpg" alt="" class="h-[56px] w-[82px] rounded-lg object-contain">
       </a>
-      <button id="open-cart" type="button" hidden class="hidden relative flex h-11 items-center gap-2 rounded-full border border-[#e7e5de] bg-white px-4 text-sm font-semibold text-[#343a33] shadow-sm transition hover:border-[#315b45] hover:text-[#315b45]" aria-label="Abrir carrinho, 0 itens">
-        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" aria-hidden="true">
-          <path d="M3.5 4.5h2l2.1 10.1a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4l1.3-6.3H6.3M10 20a.8.8 0 1 0 0-1.6.8.8 0 0 0 0 1.6ZM17 20a.8.8 0 1 0 0-1.6.8.8 0 0 0 0 1.6Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <span class="hidden sm:inline">Meu carrinho</span>
-        <span id="cart-count" class="grid h-5 min-w-5 place-items-center rounded-full bg-[#d58b58] px-1 text-[11px] font-bold text-white">0</span>
-      </button>
-      <a href="https://wa.me/5514991622498" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-10 items-center whitespace-nowrap rounded-full bg-[#344c40] px-4 text-xs font-bold text-white transition hover:bg-[#26392f]">Fale conosco</a>
-      <div class="flex items-center gap-2">
-        <a id="admin-link" href="?rota=admin" hidden class="hidden min-h-10 items-center whitespace-nowrap rounded-full border border-[#d8ded8] bg-white px-3 text-xs font-bold text-[#344c40] transition hover:border-[#344c40]">Painel</a>
-        <a id="account-link" href="?rota=conta" hidden class="hidden min-h-10 items-center gap-2 whitespace-nowrap rounded-full border border-[#d8ded8] bg-white py-1 pl-1 pr-3 text-xs font-bold text-[#344c40] transition hover:border-[#344c40]">
-          <img id="account-avatar-fallback" src="./images/default-avatar.svg" alt="" class="h-8 w-8 shrink-0 rounded-full object-cover">
-          <img id="account-avatar" alt="" hidden class="h-8 w-8 rounded-full object-cover">
-          <span id="account-name">Minha conta</span>
-        </a>
-        <a id="login-link" href="?rota=login" class="inline-flex min-h-10 items-center whitespace-nowrap rounded-full border border-[#d8ded8] bg-white px-3 text-xs font-bold text-[#344c40] transition hover:border-[#344c40]">Entrar</a>
-        <button id="logout-button" type="button" hidden class="hidden min-h-10 whitespace-nowrap rounded-full border border-[#d8ded8] bg-white px-3 text-xs font-bold text-[#344c40] transition hover:border-[#344c40]">Sair</button>
+      <div class="relative">
+        <button id="profile-menu-toggle" type="button" class="grid h-11 w-11 place-items-center overflow-hidden rounded-full border-2 border-white bg-white shadow-sm ring-1 ring-[#d8ded8] transition hover:ring-[#344c40] focus:outline-none focus:ring-2 focus:ring-[#344c40]" aria-label="Abrir menu do usuário" aria-haspopup="true" aria-expanded="false" aria-controls="profile-menu">
+          <img id="account-avatar-fallback" src="./images/default-avatar.svg" alt="" class="h-full w-full object-cover">
+          <img id="account-avatar" alt="" hidden class="h-full w-full object-cover">
+        </button>
+        <nav id="profile-menu" hidden class="absolute right-0 top-[calc(100%+10px)] z-40 w-52 overflow-hidden rounded-2xl border border-[#e2e5e1] bg-white p-2 shadow-xl" aria-label="Menu do usuário">
+          <a id="profile-menu-account" href="?rota=conta" class="block rounded-xl px-3 py-2.5 text-sm font-semibold text-[#344c40] hover:bg-[#eff3ed]">Perfil</a>
+          <a id="profile-menu-catalog" href="./#catalogo" class="block rounded-xl px-3 py-2.5 text-sm font-semibold text-[#344c40] hover:bg-[#eff3ed]">Catálogo</a>
+          <button id="menu-open-cart" type="button" hidden class="hidden w-full rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-[#344c40] hover:bg-[#eff3ed]">
+            Carrinho <span id="cart-count" class="ml-1 inline-grid h-5 min-w-5 place-items-center rounded-full bg-[#d58b58] px-1 text-[11px] font-bold text-white">0</span>
+          </button>
+          <a id="admin-link" href="?rota=admin" hidden class="hidden block rounded-xl px-3 py-2.5 text-sm font-semibold text-[#344c40] hover:bg-[#eff3ed]">Painel</a>
+          <a id="login-link" href="?rota=login" class="block rounded-xl px-3 py-2.5 text-sm font-semibold text-[#344c40] hover:bg-[#eff3ed]">Entrar</a>
+          <button id="logout-button" type="button" hidden class="hidden w-full rounded-xl px-3 py-2.5 text-left text-sm font-semibold text-[#8c4131] hover:bg-[#fbf1ed]">Sair</button>
+        </nav>
       </div>
     </div>
   </header>
@@ -212,8 +172,9 @@
           <div class="pointer-events-none absolute -right-24 -top-20 h-72 w-72 rounded-full border border-white/15"></div>
           <div class="pointer-events-none absolute -bottom-24 -left-20 h-64 w-64 rounded-full border border-white/15"></div>
           <a href="./" class="relative z-10 inline-flex items-center gap-2 text-sm font-bold tracking-wide text-white">
-            <span class="grid h-9 w-9 place-items-center rounded-xl bg-white/10 font-display">LFI</span>
-            LFI Tools
+            <span class="rounded-xl bg-white px-2 py-1">
+              <img src="./images/lfi-tools-logo.jpg" alt="LFI Tools" class="h-12 w-[70px] object-contain">
+            </span>
           </a>
           <div class="relative z-10 py-10">
             <p class="text-xs font-bold uppercase tracking-[.18em] text-[#e7b88c]">Atendimento para lojistas</p>
@@ -375,7 +336,10 @@
 
   <footer class="border-t border-[#e2e5e1] bg-white/70">
     <div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 text-center text-xs text-[#85877f] sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:text-left lg:px-8">
-      <span class="font-display font-bold text-[#344c40]">LFI Tools<span class="text-[#d58b58]">.</span> <span class="font-normal">Fabio Vicente Bezerra</span></span>
+      <span class="flex items-center justify-center gap-3 font-display font-bold text-[#344c40] sm:justify-start">
+        <img src="./images/lfi-tools-logo.jpg" alt="LFI Tools" class="h-12 w-[70px] rounded-lg object-contain">
+        <span class="font-normal">Fabio Vicente Bezerra</span>
+      </span>
       <span>Atendimento para lojas físicas de materiais de construção. Clientes aprovados consultam preços e enviam pedidos pelo WhatsApp.</span>
     </div>
   </footer>

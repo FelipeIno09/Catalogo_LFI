@@ -21,7 +21,13 @@ test("static catalog routes load the Supabase app without publishing a price cat
   assert.match(html, /id="login-view"/);
   assert.match(html, /id="admin-view"/);
   assert.match(html, /id="account-view"/);
-  assert.match(html, /id="account-link"/);
+  assert.match(html, /id="profile-menu-toggle"/);
+  assert.match(html, /id="profile-menu"/);
+  assert.match(html, /id="profile-menu-account"[^>]*>Perfil<\/a>/);
+  assert.match(html, /id="profile-menu-catalog"[^>]*>Catálogo<\/a>/);
+  assert.match(html, /id="menu-open-cart"/);
+  assert.match(html, /id="logout-button"[^>]*>Sair<\/button>/);
+  assert.doesNotMatch(html, /id="open-cart"/);
   assert.match(html, /id="login-link"/);
   assert.match(html, /@media \(max-width: 767px\)/);
   assert.match(html, /html \{ overflow-x: clip; \}/);
@@ -39,6 +45,8 @@ test("static catalog routes load the Supabase app without publishing a price cat
   assert.ok(fs.existsSync(path.join(siteDirectory, "product-placeholder.svg")));
   assert.ok(fs.existsSync(path.join(siteDirectory, "images", "products", "generic.svg")));
   assert.ok(fs.existsSync(path.join(siteDirectory, "images", "default-avatar.svg")));
+  assert.ok(fs.existsSync(path.join(siteDirectory, "images", "lfi-tools-logo.jpg")));
+  assert.match(html, /aria-label="LFI Tools, início">\s*<img src="\.\/images\/lfi-tools-logo\.jpg"/);
   assert.match(html, /id="account-avatar-fallback" src="\.\/images\/default-avatar\.svg"/);
   assert.match(html, /id="profile-avatar-fallback" src="\.\/images\/default-avatar\.svg"/);
   assert.match(rootPage, /url=\.\/docs\//);

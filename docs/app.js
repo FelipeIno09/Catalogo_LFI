@@ -18,8 +18,6 @@
       "account-avatar-fallback",
       "account-error",
       "account-form",
-      "account-link",
-      "account-name",
       "account-status",
       "account-view",
       "app-notice",
@@ -52,7 +50,10 @@
       "login-link",
       "load-more-products",
       "logout-button",
-      "open-cart",
+      "menu-open-cart",
+      "profile-menu",
+      "profile-menu-account",
+      "profile-menu-toggle",
       "password-input",
       "password-field",
       "new-password-field",
@@ -341,16 +342,12 @@
   function updateHeader() {
     const loggedIn = Boolean(state.session?.user);
     elements["login-link"].classList.toggle("hidden", loggedIn);
-    elements["account-link"].classList.toggle("hidden", !loggedIn || !state.profile);
-    elements["account-link"].hidden = !loggedIn || !state.profile;
     elements["logout-button"].hidden = !loggedIn;
     elements["logout-button"].classList.toggle("hidden", !loggedIn);
     elements["admin-link"].hidden = !isAdmin();
     elements["admin-link"].classList.toggle("hidden", !isAdmin());
-    elements["open-cart"].hidden = !canOrder();
-    elements["open-cart"].classList.toggle("hidden", !canOrder());
-    elements["account-name"].textContent =
-      state.profile?.display_name || state.profile?.store_name || "Minha conta";
+    elements["menu-open-cart"].hidden = !canOrder();
+    elements["menu-open-cart"].classList.toggle("hidden", !canOrder());
     const avatarUrl = getAvatarUrl(state.profile?.avatar_path);
     elements["account-avatar"].hidden = !avatarUrl;
     elements["account-avatar-fallback"].classList.toggle("hidden", Boolean(avatarUrl));
@@ -476,7 +473,7 @@
     );
 
     elements["cart-count"].textContent = String(totalItems);
-    document.getElementById("open-cart").setAttribute(
+    elements["menu-open-cart"].setAttribute(
       "aria-label",
       `Abrir carrinho, ${totalItems} ${totalItems === 1 ? "item" : "itens"}`
     );
@@ -560,7 +557,17 @@
     elements["cart-drawer"].setAttribute("aria-hidden", "true");
     elements["cart-overlay"].setAttribute("aria-hidden", "true");
     document.body.style.overflow = "";
-    if (canOrder()) elements["open-cart"].focus();
+    if (canOrder()) elements["profile-menu-toggle"].focus();
+  }
+
+  function setProfileMenuOpen(isOpen) {
+    elements["profile-menu"].hidden = !isOpen;
+    elements["profile-menu"].classList.toggle("hidden", !isOpen);
+    elements["profile-menu-toggle"].setAttribute("aria-expanded", String(isOpen));
+  }
+
+  function closeProfileMenu() {
+    setProfileMenuOpen(false);
   }
 
   async function checkout() {
@@ -1083,7 +1090,10 @@
       window.history.pushState({}, "", routeUrl("catalogo"));
       renderRoute();
     });
-    elements["logout-button"].addEventListener("click", handleLogout);
+    elements["logout-button"].addEventListener("click", () => {
+      closeProfileMenu();
+      handleLogout();
+    });
     elements["forgot-password-link"].addEventListener("click", requestPasswordReset);
     elements["resend-confirmation-link"].addEventListener("click", resendConfirmation);
     elements["toggle-password"].addEventListener("click", () => {
@@ -1135,7 +1145,21 @@
       state.visibleProductLimit = PRODUCT_PAGE_SIZE;
       renderProducts();
     });
-    document.getElementById("open-cart").addEventListener("click", openCart);
+    elements["profile-menu-toggle"].addEventListener("click", () => {
+      setProfileMenuOpen(elements["profile-menu"].hidden);
+    });
+    elements["profile-menu"].addEventListener("click", (event) => {
+      if (event.target.closest("a")) closeProfileMenu();
+    });
+    elements["menu-open-cart"].addEventListener("click", () => {
+      closeProfileMenu();
+      openCart();
+    });
+    document.addEventListener("click", (event) => {
+      if (!elements["profile-menu"].hidden && !event.target.closest("#profile-menu-toggle, #profile-menu")) {
+        closeProfileMenu();
+      }
+    });
     elements["close-cart"].addEventListener("click", closeCart);
     elements["cart-overlay"].addEventListener("click", closeCart);
     elements["checkout-button"].addEventListener("click", () => {
@@ -1188,8 +1212,13 @@
     });
     window.addEventListener("popstate", renderRoute);
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && !elements["cart-drawer"].classList.contains("translate-x-full")) {
-        closeCart();
+      if (event.key === "Escape") {
+        if (!elements["profile-menu"].hidden) {
+          closeProfileMenu();
+          elements["profile-menu-toggle"].focus();
+        } else if (!elements["cart-drawer"].classList.contains("translate-x-full")) {
+          closeCart();
+        }
       }
     });
   }
