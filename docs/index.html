@@ -93,9 +93,10 @@
         <img src="./images/lfi-tools-logo.png?v=20261020-3" alt="" class="h-[56px] w-[82px] rounded-lg object-contain">
       </a>
       <div class="relative">
-        <button id="profile-menu-toggle" type="button" class="grid h-11 w-11 place-items-center overflow-hidden rounded-full border-2 border-white bg-white shadow-sm ring-1 ring-[#d8ded8] transition hover:ring-[#344c40] focus:outline-none focus:ring-2 focus:ring-[#344c40]" aria-label="Abrir menu do usuário" aria-haspopup="true" aria-expanded="false" aria-controls="profile-menu">
-          <img id="account-avatar-fallback" src="./images/default-avatar.svg" alt="" class="h-full w-full object-cover">
-          <img id="account-avatar" alt="" hidden class="h-full w-full object-cover">
+        <button id="profile-menu-toggle" type="button" class="relative grid h-11 w-11 place-items-center rounded-full border-2 border-white bg-white shadow-sm ring-1 ring-[#d8ded8] transition hover:ring-[#344c40] focus:outline-none focus:ring-2 focus:ring-[#344c40]" aria-label="Abrir menu do usuário" aria-haspopup="true" aria-expanded="false" aria-controls="profile-menu">
+          <img id="account-avatar-fallback" src="./images/default-avatar.svg" alt="" class="h-full w-full rounded-full object-cover">
+          <img id="account-avatar" alt="" hidden class="h-full w-full rounded-full object-cover">
+          <span id="profile-cart-count" hidden class="absolute -right-1 -top-1 min-w-5 rounded-full bg-[#d58b58] px-1 text-center text-[10px] font-extrabold leading-5 text-white ring-2 ring-white"></span>
         </button>
         <nav id="profile-menu" hidden class="absolute right-0 top-[calc(100%+10px)] z-40 w-52 overflow-hidden rounded-2xl border border-[#e2e5e1] bg-white p-2 shadow-xl" aria-label="Menu do usuário">
           <a id="profile-menu-account" href="?rota=conta" class="block rounded-xl px-3 py-2.5 text-sm font-semibold text-[#344c40] hover:bg-[#eff3ed]">Perfil</a>
@@ -333,7 +334,11 @@
           <input name="name" required maxlength="200" placeholder="Nome do produto" aria-label="Nome do produto" class="h-11 rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3 text-sm">
           <input name="sku" maxlength="80" placeholder="Referência (opcional)" aria-label="Referência" class="h-11 rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3 text-sm">
           <input name="price" type="number" required min="0" step="0.01" placeholder="Preço em reais" aria-label="Preço em reais" class="h-11 rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3 text-sm">
-          <input name="image" maxlength="1000" placeholder="Imagem (URL ou caminho)" aria-label="Imagem" value="./images/products/generic.svg" class="h-11 rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3 text-sm">
+          <label class="flex min-h-11 items-center gap-2 rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3 text-sm text-[#555c53]">
+            <span class="shrink-0 font-semibold">Foto do produto</span>
+            <input name="image-file" type="file" accept="image/jpeg,image/png,image/webp" aria-label="Escolher foto do produto" class="min-w-0 flex-1 text-xs file:mr-2 file:rounded-lg file:border-0 file:bg-[#e8ece8] file:px-2 file:py-1.5 file:text-xs file:font-bold file:text-[#344c40]">
+          </label>
+          <img data-new-product-preview src="./images/products/generic.svg" alt="Prévia da foto do produto" class="hidden h-16 w-16 rounded-xl bg-[#eeede7] object-cover">
           <input name="description" maxlength="1000" placeholder="Descrição (opcional)" aria-label="Descrição" class="h-11 rounded-xl border border-[#e2e5e1] bg-[#f7f8f6] px-3 text-sm">
           <button type="submit" class="min-h-11 rounded-xl bg-[#344c40] px-4 text-sm font-bold text-white transition hover:bg-[#26392f]">Adicionar produto</button>
         </form>
@@ -399,6 +404,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./supabase-config.js"></script>
-  <script src="./app.js?v=20261020-4"></script>
+  <script src="./app.js?v=20261020-5"></script>
 </body>
 </html>

@@ -20,7 +20,7 @@ O pedido do cliente aprovado continua sendo preparado no WhatsApp; o cliente rev
 O projeto do site é servido por arquivos estáticos. A autenticação e a proteção dos preços ficam no banco/API do Supabase — não em verificações de interface. Preços não são publicados no diretório `docs`.
 
 1. Crie um projeto Supabase.
-2. No SQL Editor do projeto, execute o conteúdo atualizado de [`supabase/schema.sql`](./supabase/schema.sql). Se o esquema já foi configurado, execute o arquivo inteiro novamente para adicionar os campos do perfil e configurar o armazenamento de fotos; os comandos são reaplicáveis.
+2. No SQL Editor do projeto, execute o conteúdo atualizado de [`supabase/schema.sql`](./supabase/schema.sql). Se o esquema já foi configurado, execute o arquivo inteiro novamente para adicionar os campos do perfil, o armazenamento de fotos e o bucket de imagens dos produtos; os comandos são reaplicáveis.
 3. Em **Authentication → URL Configuration**, defina `https://felipeino09.github.io/Catalogo_LFI/docs/` como URL principal e adicione `https://felipeino09.github.io/Catalogo_LFI/docs/**` e `http://localhost:8000/**` às URLs de redirecionamento permitidas.
 4. Copie a URL do projeto e a chave pública `anon`/`publishable` para [`docs/supabase-config.js`](./docs/supabase-config.js). Essas duas informações são públicas por desenho. **Nunca** coloque a chave `service_role` nesse arquivo ou em qualquer arquivo dentro de `docs`.
 5. Importe a planilha local `Extras/ProdutosFinal.xlsx` usando a chave `service_role` somente no terminal local. No PowerShell, na raiz do repositório:
@@ -44,7 +44,7 @@ O projeto do site é servido por arquivos estáticos. A autenticação e a prote
 
 7. Publique `docs` pelo GitHub Pages e verifique o login, aprovação e painel. Nas configurações do Supabase, mantenha a confirmação de e-mail habilitada quando apropriado para sua operação.
 
-As políticas de Row Level Security do esquema deixam a listagem pública limitada a nome, referência, imagem e descrição. Preços são obtidos por uma função que exige sessão aprovada; a chave de serviço deve permanecer privada. O painel pode aprovar ou recusar clientes, editar preços de produtos e desativar produtos sem removê-los. Fotos de perfil ficam em um bucket público para poderem aparecer no catálogo; oriente os clientes a usar apenas uma foto de perfil, sem informações privadas. Se o envio da foto for recusado, execute novamente `supabase/schema.sql` no SQL Editor para configurar o bucket `profile-photos` e suas políticas.
+As políticas de Row Level Security do esquema deixam a listagem pública limitada a nome, referência, imagem e descrição. Preços são obtidos por uma função que exige sessão aprovada; a chave de serviço deve permanecer privada. O painel pode aprovar ou recusar clientes, editar preços de produtos, desativar produtos sem removê-los e escolher fotos JPG, PNG ou WebP de até 5 MB pelo seletor de imagens do dispositivo. As fotos de produtos ficam no bucket público `product-images`, com envio e remoção restritos a administradores. Fotos de perfil ficam em outro bucket público para poderem aparecer no catálogo; oriente os clientes a usar apenas uma foto de perfil, sem informações privadas. Se o envio de uma foto for recusado, execute novamente `supabase/schema.sql` no SQL Editor para configurar os buckets e suas políticas.
 
 ## Desenvolver localmente
 

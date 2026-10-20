@@ -16,13 +16,14 @@ test("static catalog routes load the Supabase app without publishing a price cat
   assert.doesNotThrow(() => new vm.Script(app));
   assert.match(html, /@supabase\/supabase-js@2/);
   assert.match(html, /src="\.\/supabase-config\.js"/);
-  assert.match(html, /src="\.\/app\.js\?v=20261020-4"/);
+  assert.match(html, /src="\.\/app\.js\?v=20261020-5"/);
   assert.match(html, /src="\.\/images\/lfi-tools-logo\.png\?v=20261020-3"/);
   assert.match(html, /id="catalog-view"/);
   assert.match(html, /id="login-view"/);
   assert.match(html, /id="admin-view"/);
   assert.match(html, /id="account-view"/);
   assert.match(html, /id="profile-menu-toggle"/);
+  assert.match(html, /id="profile-cart-count"/);
   assert.match(html, /id="profile-menu"/);
   assert.match(html, /id="profile-menu-account"[^>]*>Perfil<\/a>/);
   assert.match(html, /id="profile-menu-catalog"[^>]*>Catálogo<\/a>/);
@@ -53,6 +54,54 @@ test("static catalog routes load the Supabase app without publishing a price cat
   assert.match(html, /id="account-avatar-fallback" src="\.\/images\/default-avatar\.svg"/);
   assert.match(html, /id="profile-avatar-fallback" src="\.\/images\/default-avatar\.svg"/);
   assert.match(rootPage, /url=\.\/docs\//);
+});
+
+test("approved customers can select product quantities and see the cart count by their avatar", () => {
+  assert.match(app, /data-quantity-for="\$\{escapeHtml\(product\.id\)\}"/);
+  assert.match(app, /type="number" min="1" max="9999" step="1" value="1"/);
+  assert.match(app, /function addToCart\(id, quantity = 1\)/);
+  assert.match(app, /item\.quantity \+ quantity > 9999/);
+  assert.match(app, /elements\["profile-cart-count"\]\.hidden = totalItems === 0/);
+  assert.match(app, /Abrir menu do usuário, carrinho com \$\{totalItems\}/);
+});
+
+test("adding a selected quantity merges it into the cart and rejects invalid totals", () => {
+  const addToCartSource = app.match(
+    /  function addToCart\(id, quantity = 1\) \{[\s\S]*?\n  \}/
+  )?.[0];
+  assert.ok(addToCartSource, "cart add handler should exist");
+  const state = {
+    cart: [],
+    products: [{ id: "product-1", nome: "Martelo" }],
+  };
+  const notifications = [];
+  const addToCart = vm.runInNewContext(`(${addToCartSource.trim()})`, {
+    state,
+    canOrder: () => true,
+    saveCart: () => {},
+    renderCart: () => {},
+    showToast: (message) => notifications.push(message),
+  });
+
+  addToCart("product-1", 4);
+  addToCart("product-1", 2);
+  assert.equal(state.cart[0].quantity, 6);
+  addToCart("product-1", 0);
+  addToCart("product-1", 9994);
+  assert.equal(state.cart[0].quantity, 6);
+  assert.equal(notifications.length, 4);
+});
+
+test("administrators can upload validated product images from the device picker", () => {
+  assert.match(html, /name="image-file" type="file" accept="image\/jpeg,image\/png,image\/webp"/);
+  assert.match(app, /function validateProductImage\(file\)/);
+  assert.match(app, /file\.size > 5 \* 1024 \* 1024/);
+  assert.match(app, /function uploadProductImage\(file\)/);
+  assert.match(app, /\.from\("product-images"\)[\s\S]*?\.upload\(path, file/);
+  assert.match(app, /image: uploadedImage\?\.url/);
+  assert.match(schema, /'product-images'[\s\S]*?5242880[\s\S]*?image\/webp/);
+  assert.match(schema, /Admins can upload product photos[\s\S]*?public\.is_catalog_admin\(\)/);
+  assert.match(schema, /Admins can delete product photos[\s\S]*?public\.is_catalog_admin\(\)/);
 });
 
 test("event listeners only target existing and cached page elements", () => {
