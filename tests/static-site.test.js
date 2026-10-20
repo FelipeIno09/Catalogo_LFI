@@ -23,6 +23,14 @@ test("static catalog routes load the Supabase app without publishing a price cat
   assert.match(html, /id="account-view"/);
   assert.match(html, /id="account-link"/);
   assert.match(html, /id="login-link"/);
+  assert.match(html, /@media \(max-width: 480px\)/);
+  assert.match(html, /html \{ overflow-x: clip; \}/);
+  assert.match(html, /body \{ margin: 0; min-width: 0; \}/);
+  assert.match(html, /Depois, toque em “Salvar meus dados”/);
+  assert.match(html, /Os preços aparecem para clientes aprovados/);
+  assert.match(html, /Revisar pedido no WhatsApp/);
+  assert.match(app, /aguarde a aprovação da equipe para consultar preços/);
+  assert.match(app, /o limite de envio de e-mails foi atingido/i);
   assert.doesNotMatch(html, /catalog-products\.js/);
   assert.ok(!fs.existsSync(path.join(siteDirectory, "catalog-products.js")));
   assert.ok(fs.existsSync(path.join(siteDirectory, "product-placeholder.svg")));

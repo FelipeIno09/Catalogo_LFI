@@ -275,10 +275,10 @@
       : isRecovery ? "Crie uma nova senha"
         : isReset ? "Recuperar acesso" : "Entre na sua conta";
     elements["auth-description"].textContent = isSignup
-      ? "Preencha seus dados. Após confirmar o e-mail, nossa equipe libera o acesso a preços e pedidos."
+      ? "Etapas: envie seus dados, confirme o e-mail pelo link recebido e aguarde a aprovação da equipe para consultar preços e preparar pedidos."
       : isRecovery ? "Escolha uma senha nova para continuar acessando sua conta."
         : isReset ? "Informe seu e-mail e enviaremos um link seguro para redefinir sua senha."
-          : "Acesse para consultar preços, montar pedidos e acompanhar seu cadastro.";
+          : "Entre com seu e-mail e senha. Preços e pedidos são liberados depois que a equipe aprova seu cadastro.";
     elements["auth-submit"].textContent = isSignup
       ? "Enviar solicitação de cadastro"
       : isRecovery ? "Salvar nova senha"
@@ -309,10 +309,10 @@
     else elements["profile-avatar"].removeAttribute("src");
     elements["remove-profile-photo"].classList.toggle("hidden", !avatarUrl);
     const statusText = state.profile.status === "approved"
-      ? "Conta aprovada. Você já pode consultar preços e, se for cliente, preparar pedidos."
+      ? "Seu acesso está aprovado. Os preços aparecem no catálogo; você pode montar um pedido e revisar tudo antes de enviá-lo pelo WhatsApp."
       : state.profile.status === "rejected"
-        ? "Cadastro não aprovado. Fale com nossa equipe para entender como solicitar acesso."
-        : "Cadastro aguardando aprovação. Você pode atualizar seus dados enquanto nossa equipe analisa sua solicitação.";
+        ? "Seu cadastro não foi aprovado. Fale com nossa equipe pelo WhatsApp para saber como solicitar uma nova análise."
+        : "Seu cadastro está aguardando aprovação. Enquanto isso, você pode navegar pelo catálogo, mas os preços e pedidos ficam indisponíveis. Nossa equipe precisa aprovar seu acesso.";
     elements["account-status"].textContent = `${statusText} E-mail da conta: ${state.profile.email || state.session.user.email}.`;
   }
 
@@ -509,7 +509,7 @@
 
   function addToCart(id) {
     if (!canOrder()) {
-      showToast("Entre com uma conta de cliente aprovada para fazer pedidos.");
+      showToast("Para adicionar itens ao pedido, entre com uma conta de cliente aprovada pela equipe.");
       return;
     }
     const product = state.products.find((item) => item.id === id);
@@ -725,7 +725,7 @@
           window.history.replaceState({}, "", routeUrl("catalogo"));
           renderRoute();
         } else {
-          setAuthMessage("Solicitação criada! Abra o e-mail enviado pelo Supabase e confirme seu endereço. Depois, aguarde a aprovação da nossa equipe; vamos avisar nesta página quando o acesso for liberado.");
+          setAuthMessage("Solicitação enviada. 1. Abra o e-mail de confirmação (confira também o spam). 2. Clique no link para confirmar seu endereço. 3. Aguarde a aprovação da equipe. Você só verá preços depois da aprovação.");
         }
       } else if (state.authMode === "reset") {
         const { error } = await state.client.auth.resetPasswordForEmail(email, {
@@ -760,6 +760,8 @@
         setAuthMessage("E-mail ou senha não conferem. Confira os dados ou use “Esqueci minha senha”.", true);
       } else if (/password should be at least/i.test(errorMessage)) {
         setAuthMessage("Escolha uma senha com pelo menos 8 caracteres.", true);
+      } else if (/email rate limit exceeded|rate limit.*email/i.test(errorMessage)) {
+        setAuthMessage("O limite de envio de e-mails foi atingido. Aguarde antes de tentar novamente; várias tentativas seguidas não aceleram o envio.", true);
       } else {
         setAuthMessage(error.message || "Não foi possível concluir a solicitação. Tente novamente.", true);
       }
@@ -787,7 +789,13 @@
       setAuthMessage("Se o cadastro ainda precisar de confirmação, enviaremos outro e-mail. Confira a caixa de entrada e o spam.");
     } catch (error) {
       console.error("Falha ao reenviar confirmação:", error);
-      setAuthMessage(error.message || "Não foi possível reenviar o e-mail. Tente novamente.", true);
+      const message = String(error.message || "");
+      setAuthMessage(
+        /email rate limit exceeded|rate limit.*email/i.test(message)
+          ? "O limite de envio de e-mails foi atingido. Aguarde antes de pedir outra confirmação; várias tentativas seguidas não aceleram o envio."
+          : message || "Não foi possível reenviar o e-mail. Tente novamente.",
+        true
+      );
     } finally {
       elements["resend-confirmation-link"].disabled = false;
     }
