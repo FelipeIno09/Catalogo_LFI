@@ -45,6 +45,8 @@
       "empty-state",
       "email-input",
       "forgot-password-link",
+      "google-login-button",
+      "google-login-section",
       "hero-view",
       "login-form",
       "login-link",
@@ -281,8 +283,10 @@
     const isRecovery = mode === "recovery";
     const isReset = mode === "reset";
     const passwordRecovery = isRecovery || isReset;
+    const showGoogleLogin = !isSignup && !passwordRecovery && state.route !== "admin";
     elements["display-name-field"].classList.toggle("hidden", !isSignup);
     elements["signup-extra-fields"].classList.toggle("hidden", !isSignup);
+    elements["google-login-section"].classList.toggle("hidden", !showGoogleLogin);
     elements["display-name-input"].required = isSignup;
     elements["display-name-input"].autocomplete = "name";
     elements["password-field"].classList.toggle("hidden", passwordRecovery);
@@ -800,6 +804,27 @@
     }
   }
 
+  async function handleGoogleLogin() {
+    elements["google-login-button"].disabled = true;
+    elements["google-login-button"].querySelector("span").textContent = "Conectando ao Google...";
+    setAuthMessage("");
+    try {
+      const { error } = await state.client.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}${routeUrl("catalogo")}`,
+        },
+      });
+      if (error) throw error;
+    } catch (error) {
+      console.error("Falha ao entrar com Google:", error);
+      setAuthMessage(error.message || "Não foi possível iniciar o login com Google. Tente novamente.", true);
+    } finally {
+      elements["google-login-button"].disabled = false;
+      elements["google-login-button"].querySelector("span").textContent = "Continuar com Google";
+    }
+  }
+
   async function resendConfirmation() {
     const email = normalizeEmail(elements["email-input"].value);
     elements["email-input"].value = email;
@@ -1061,6 +1086,7 @@
 
   function initializeEvents() {
     elements["login-form"].addEventListener("submit", handleAuthSubmit);
+    elements["google-login-button"].addEventListener("click", handleGoogleLogin);
     elements["email-input"].addEventListener("blur", (event) => {
       event.target.value = normalizeEmail(event.target.value);
     });

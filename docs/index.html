@@ -231,6 +231,22 @@
             </label>
             <button id="auth-submit" type="submit" class="min-h-12 w-full rounded-xl bg-[#344c40] px-4 text-sm font-bold text-white shadow-lg shadow-[#344c40]/15 transition hover:bg-[#26392f] disabled:cursor-not-allowed disabled:opacity-60">Entrar</button>
           </form>
+          <div id="google-login-section" class="mt-4">
+            <div class="mb-3 flex items-center gap-3 text-xs text-[#85877f]">
+              <span class="h-px flex-1 bg-[#e2e5e1]"></span>
+              <span>ou continue com</span>
+              <span class="h-px flex-1 bg-[#e2e5e1]"></span>
+            </div>
+            <button id="google-login-button" type="button" class="flex min-h-12 w-full items-center justify-center gap-3 rounded-xl border border-[#d8ded8] bg-white px-4 text-sm font-bold text-[#343a33] transition hover:bg-[#f7f8f6] disabled:cursor-not-allowed disabled:opacity-60">
+              <svg viewBox="0 0 48 48" class="h-5 w-5" aria-hidden="true">
+                <path fill="#4285F4" d="M43.6 24.5c0-1.4-.1-2.8-.4-4.1H24v7.8h11a9.4 9.4 0 0 1-4.1 6.2v5.1h6.6c3.9-3.6 6.1-8.8 6.1-15Z"/>
+                <path fill="#34A853" d="M24 44c5.5 0 10.1-1.8 13.5-4.9l-6.6-5.1c-1.8 1.2-4.1 2-6.9 2-5.3 0-9.8-3.6-11.4-8.4H5.8V33C9.2 39.7 16.1 44 24 44Z"/>
+                <path fill="#FBBC05" d="M12.6 27.6a12 12 0 0 1 0-7.2v-5.4H5.8a20 20 0 0 0 0 18l6.8-5.4Z"/>
+                <path fill="#EA4335" d="M24 12c3 0 5.7 1 7.8 3.1l5.9-5.9C34.1 5.8 29.5 4 24 4 16.1 4 9.2 8.3 5.8 15l6.8 5.4C14.2 15.6 18.7 12 24 12Z"/>
+              </svg>
+              <span>Continuar com Google</span>
+            </button>
+          </div>
           <div class="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-xs">
             <button id="forgot-password-link" type="button" class="font-semibold text-[#54735d] hover:underline">Esqueci minha senha</button>
             <button id="resend-confirmation-link" type="button" class="hidden font-semibold text-[#54735d] hover:underline">Reenviar e-mail de confirmação</button>
@@ -383,6 +399,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./supabase-config.js"></script>
-  <script src="./app.js?v=20261020-3"></script>
+  <script src="./app.js?v=20261020-4"></script>
 </body>
 </html>

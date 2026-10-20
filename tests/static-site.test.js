@@ -16,7 +16,7 @@ test("static catalog routes load the Supabase app without publishing a price cat
   assert.doesNotThrow(() => new vm.Script(app));
   assert.match(html, /@supabase\/supabase-js@2/);
   assert.match(html, /src="\.\/supabase-config\.js"/);
-  assert.match(html, /src="\.\/app\.js\?v=20261020-3"/);
+  assert.match(html, /src="\.\/app\.js\?v=20261020-4"/);
   assert.match(html, /src="\.\/images\/lfi-tools-logo\.png\?v=20261020-3"/);
   assert.match(html, /id="catalog-view"/);
   assert.match(html, /id="login-view"/);
@@ -30,6 +30,8 @@ test("static catalog routes load the Supabase app without publishing a price cat
   assert.match(html, /id="logout-button"[^>]*>Sair<\/button>/);
   assert.doesNotMatch(html, /id="open-cart"/);
   assert.match(html, /id="login-link"/);
+  assert.match(html, /id="google-login-button"[^>]*>[\s\S]*Continuar com Google/);
+  assert.match(html, /id="google-login-section"/);
   assert.match(html, /@media \(max-width: 767px\)/);
   assert.match(html, /html \{ overflow-x: clip; \}/);
   assert.match(html, /body \{ margin: 0; min-width: 0; \}/);
@@ -76,6 +78,14 @@ test("logging out redirects to the login screen", () => {
   assert.match(logoutSource, /auth\.signOut\(\)/);
   assert.match(logoutSource, /replaceState\(\{\},\s*\"\",\s*routeUrl\(\"login\"\)\)/);
   assert.match(logoutSource, /await refreshSession\(\)/);
+});
+
+test("Google sign-in uses Supabase OAuth and returns to the catalog", () => {
+  assert.match(app, /auth\.signInWithOAuth\(\{\s*provider:\s*"google"/);
+  assert.match(app, /redirectTo:\s*`\$\{window\.location\.origin\}\$\{routeUrl\("catalogo"\)\}`/);
+  assert.match(app, /elements\["google-login-button"\]\.addEventListener\("click", handleGoogleLogin\)/);
+  assert.match(app, /const showGoogleLogin = !isSignup && !passwordRecovery && state\.route !== "admin"/);
+  assert.match(schema, /'customer',\s*'pending'\s*\)/);
 });
 
 test("public catalog queries omit prices and protected roles use database functions", () => {
