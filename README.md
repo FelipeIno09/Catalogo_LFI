@@ -1,3 +1,5 @@
+# Catalogo_LFI
+Catalogo da empresa LFI Tools
 # LFI Tools — catálogo para lojistas
 
 Catálogo estático publicado no GitHub Pages, com autenticação, preços protegidos e painel administrativo fornecidos pelo Supabase.
