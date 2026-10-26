@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const WHATSAPP_NUMBER = "5514991622498";
+  const WHATSAPP_NUMBER = "5514991533526";
   const STORAGE_KEY = "fvb-materiais-cart-v3";
   const PRODUCT_PAGE_SIZE = 48;
   const ADMIN_PRODUCT_PAGE_SIZE = 40;
