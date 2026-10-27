@@ -11,12 +11,16 @@ const app = fs.readFileSync(path.join(siteDirectory, "app.js"), "utf8");
 const config = fs.readFileSync(path.join(siteDirectory, "supabase-config.js"), "utf8");
 const schema = fs.readFileSync(path.join(repositoryDirectory, "supabase", "schema.sql"), "utf8");
 const rootPage = fs.readFileSync(path.join(repositoryDirectory, "index.html"), "utf8");
+const adminCustomerFunction = fs.readFileSync(
+  path.join(repositoryDirectory, "supabase", "functions", "admin-create-customer", "index.ts"),
+  "utf8"
+);
 
 test("static catalog routes load the Supabase app without publishing a price catalog", () => {
   assert.doesNotThrow(() => new vm.Script(app));
   assert.match(html, /@supabase\/supabase-js@2/);
   assert.match(html, /src="\.\/supabase-config\.js"/);
-  assert.match(html, /src="\.\/app\.js\?v=20261027-1"/);
+  assert.match(html, /src="\.\/app\.js\?v=20261027-2"/);
   assert.match(html, /src="\.\/images\/lfi-tools-logo\.png\?v=20261020-3"/);
   assert.match(html, /id="catalog-view"/);
   assert.match(html, /id="login-view"/);
@@ -26,6 +30,7 @@ test("static catalog routes load the Supabase app without publishing a price cat
   assert.match(html, /id="profile-menu"/);
   assert.match(html, /id="profile-menu-account"[^>]*>Perfil<\/a>/);
   assert.match(html, /id="header-cart-button"/);
+  assert.match(html, /id="header-catalog-link" href="\.\/#catalogo"/);
   assert.doesNotMatch(html, /id="profile-menu-catalog"|id="menu-open-cart"/);
   assert.match(html, /id="logout-button"[^>]*>Sair<\/button>/);
   assert.doesNotMatch(html, /id="open-cart"/);
@@ -253,6 +258,24 @@ test("administrator can share the customer registration flow and customer name i
   assert.match(app, /navigator\.clipboard\.writeText\(signupUrl\)/);
   assert.match(app, /data: \{ display_name: displayName, store_name: storeName, cnpj:/);
   assert.match(html, /Nome do contato responsável[^<]*<span[^>]*>\(opcional\)/);
+});
+
+test("administrators can create approved customers through secure email invitations", () => {
+  assert.match(html, /id="admin-customer-form"/);
+  assert.match(html, /id="admin-customer-submit"/);
+  assert.match(app, /functions\.invoke\("admin-create-customer"/);
+  assert.match(app, /redirect_to:\s*new URL\(routeUrl\("senha"\)/);
+  assert.match(app, /authLinkType === "invite"/);
+  assert.match(html, /id="email-field"/);
+  assert.match(app, /elements\["email-field"\]\.classList\.toggle\("hidden", isRecovery\)/);
+  assert.match(adminCustomerFunction, /callerClient\.auth\.getUser\(accessToken\)/);
+  assert.match(adminCustomerFunction, /adminProfile\?\.role !== "admin" \|\| adminProfile\.status !== "approved"/);
+  assert.match(adminCustomerFunction, /admin\.inviteUserByEmail/);
+  assert.match(adminCustomerFunction, /\.update\(\{ status: "approved" \}\)/);
+  assert.match(adminCustomerFunction, /isValidCnpj\(cnpj\)/);
+  assert.match(adminCustomerFunction, /SUPABASE_SERVICE_ROLE_KEY/);
+  assert.doesNotMatch(html, /SUPABASE_SERVICE_ROLE_KEY/);
+  assert.doesNotMatch(app, /SUPABASE_SERVICE_ROLE_KEY/);
 });
 
 test("public Supabase configuration contains no service-role credential", () => {

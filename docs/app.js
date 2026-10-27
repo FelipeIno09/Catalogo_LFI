@@ -9,6 +9,9 @@
   const elements = Object.fromEntries(
     [
       "admin-error",
+      "admin-customer-form",
+      "admin-customer-message",
+      "admin-customer-submit",
       "admin-link",
       "admin-load-more",
       "admin-product-count",
@@ -41,6 +44,7 @@
       "customer-list",
       "display-name-field",
       "display-name-input",
+      "email-field",
       "empty-state",
       "email-input",
       "forgot-password-link",
@@ -319,6 +323,11 @@
     elements["display-name-input"].autocomplete = "name";
     elements["signup-store-input"].required = isSignup;
     elements["signup-cnpj-input"].required = isSignup;
+    elements["email-field"].classList.toggle("hidden", isRecovery);
+    elements["email-input"].required = !isRecovery;
+    if (isRecovery && state.session?.user?.email) {
+      elements["email-input"].value = state.session.user.email;
+    }
     elements["password-field"].classList.toggle("hidden", passwordRecovery);
     elements["password-input"].required = !passwordRecovery;
     elements["new-password-field"].classList.toggle("hidden", !isRecovery);
@@ -758,6 +767,62 @@
     state.products = (productsResult.data || []).map(normalizeProduct);
     renderAdminProducts();
     renderProducts();
+  }
+
+  async function handleAdminCustomerCreate(event) {
+    event.preventDefault();
+    if (!isAdmin()) return;
+    elements["admin-error"].classList.add("hidden");
+    elements["admin-customer-message"].classList.add("hidden");
+    const formData = new FormData(elements["admin-customer-form"]);
+    const cnpj = formatCnpj(formData.get("cnpj"));
+    if (!isValidCnpj(cnpj)) {
+      elements["admin-error"].textContent = "Confira o CNPJ informado. Digite um CNPJ válido com 14 caracteres.";
+      elements["admin-error"].classList.remove("hidden");
+      elements["admin-customer-form"].querySelector('[name="cnpj"]').focus();
+      return;
+    }
+
+    const submitButton = elements["admin-customer-submit"];
+    submitButton.disabled = true;
+    submitButton.textContent = "Criando conta e enviando convite...";
+    try {
+      const { error } = await state.client.functions.invoke("admin-create-customer", {
+        body: {
+          email: normalizeEmail(formData.get("email")),
+          store_name: String(formData.get("store_name") || "").trim(),
+          cnpj: cnpj.replace(/[^0-9A-Z]/g, ""),
+          display_name: String(formData.get("display_name") || "").trim(),
+          phone: formatPhoneNumber(formData.get("phone")),
+          city: String(formData.get("city") || "").trim(),
+          redirect_to: new URL(routeUrl("senha"), window.location.origin).href,
+        },
+      });
+      if (error) {
+        if (error.context instanceof Response) {
+          const result = await error.context.json();
+          throw new Error(result.error || error.message);
+        }
+        throw error;
+      }
+
+      elements["admin-customer-form"].reset();
+      elements["admin-customer-message"].textContent =
+        "Conta criada e aprovada. O convite foi enviado por e-mail para o cliente definir a senha.";
+      elements["admin-customer-message"].classList.remove("hidden");
+      try {
+        await loadAdminData();
+      } catch (refreshError) {
+        reportAdminError(new Error(
+          `A conta foi criada e o convite enviado, mas não foi possível atualizar a lista: ${refreshError.message || refreshError}`
+        ));
+      }
+    } catch (error) {
+      reportAdminError(error);
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = "Criar conta e enviar convite";
+    }
   }
 
   function renderCustomers(customers) {
@@ -1298,6 +1363,14 @@
         event.target.value = formatCnpj(event.target.value);
       });
     }
+    elements["admin-customer-form"].addEventListener("input", (event) => {
+      if (event.target.name === "cnpj") event.target.value = formatCnpj(event.target.value);
+      if (event.target.name === "phone") event.target.value = formatPhoneNumber(event.target.value);
+      if (event.target.name === "email") event.target.value = normalizeEmail(event.target.value);
+    });
+    elements["admin-customer-form"].addEventListener("submit", (event) => {
+      handleAdminCustomerCreate(event).catch(reportAdminError);
+    });
     elements["header-cart-button"].addEventListener("click", openCart);
     elements["copy-signup-link"].addEventListener("click", async () => {
       const signupUrl = new URL(routeUrl("cadastro"), window.location.origin).href;
@@ -1460,7 +1533,8 @@
 
   async function initialize() {
     initializeEvents();
-    state.passwordRecovery = new URLSearchParams(window.location.hash.slice(1)).get("type") === "recovery";
+    const authLinkType = new URLSearchParams(window.location.hash.slice(1)).get("type");
+    state.passwordRecovery = authLinkType === "recovery" || authLinkType === "invite";
     const config = window.FVB_SUPABASE_CONFIG;
     if (
       !config ||
@@ -1491,8 +1565,8 @@
     }
     state.client.auth.onAuthStateChange((event) => {
       setTimeout(() => {
-        if (event === "PASSWORD_RECOVERY" ||
-          new URLSearchParams(window.location.hash.slice(1)).get("type") === "recovery") {
+        const authLinkType = new URLSearchParams(window.location.hash.slice(1)).get("type");
+        if (event === "PASSWORD_RECOVERY" || authLinkType === "recovery" || authLinkType === "invite") {
           state.passwordRecovery = true;
           window.history.replaceState({}, "", routeUrl("senha"));
         }

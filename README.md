@@ -11,11 +11,11 @@ Catálogo estático publicado no GitHub Pages, com autenticação, preços prote
 - `?rota=cadastro`: solicitação de cadastro da empresa com nome da loja, CNPJ, contato, celular e cidade. Novas contas começam pendentes até confirmarem o e-mail e receberem aprovação.
 - `?rota=conta`: atualizar os dados da empresa, CNPJ, contato, cidade e foto do perfil.
 - `?rota=senha`: recuperar o acesso ou definir uma nova senha pelo link enviado ao e-mail.
-- `?rota=admin`: painel para compartilhar o link de cadastro, aprovar/recusar clientes e adicionar, editar ou desativar produtos. O painel exige uma conta promovida a administradora.
+- `?rota=admin`: painel para criar e aprovar clientes enviando um convite por e-mail, compartilhar o link de cadastro, aprovar/recusar solicitações e adicionar, editar ou desativar produtos. O painel exige uma conta promovida a administradora.
 
 O pedido do cliente aprovado continua sendo preparado no WhatsApp; o cliente revisa e envia a mensagem. O cadastro não cria um pedido automaticamente.
 
-O CNPJ aceita o formato numérico tradicional e o formato alfanumérico. Para cadastrar clientes, o administrador compartilha o link do formulário; o próprio cliente cria a senha, confirma o e-mail e aguarda a aprovação. Execute novamente `supabase/schema.sql` no SQL Editor para adicionar o campo CNPJ aos projetos já configurados.
+O CNPJ aceita o formato numérico tradicional e o formato alfanumérico. No painel, o administrador pode preencher os dados da empresa e enviar um convite. O acesso é aprovado pelo administrador e o cliente define sua própria senha pelo link recebido por e-mail. O link público de solicitação de cadastro continua disponível para clientes que desejem solicitar acesso.
 
 ## Configuração inicial do Supabase
 
@@ -44,7 +44,17 @@ O projeto do site é servido por arquivos estáticos. A autenticação e a prote
    where lower(email) = lower('seu-email@exemplo.com');
    ```
 
-7. Publique `docs` pelo GitHub Pages e verifique o login, aprovação e painel. Nas configurações do Supabase, mantenha a confirmação de e-mail habilitada quando apropriado para sua operação.
+7. Publique `docs` pelo GitHub Pages e verifique o login, aprovação e painel. Para habilitar o cadastro administrativo com convite, instale/execute o Supabase CLI e publique a Edge Function usando a mesma referência de projeto configurada em `docs/supabase-config.js`:
+
+   ```powershell
+   supabase login
+   supabase link --project-ref SUA_REFERENCIA_DO_PROJETO
+   supabase functions deploy admin-create-customer
+   ```
+
+   A função usa `SUPABASE_SERVICE_ROLE_KEY` somente no ambiente seguro do Supabase; nunca copie essa chave para o site. Em **Authentication → URL Configuration**, permita os redirecionamentos `https://lfi-tools-catalogos.com.br/**`, `https://www.lfi-tools-catalogos.com.br/**`, `https://felipeino09.github.io/Catalogo_LFI/**` e `http://localhost:8000/**` para que o convite abra a tela de criação de senha. Verifique também se o envio de convites por e-mail está configurado no Supabase.
+
+   Nas configurações do Supabase, mantenha a confirmação de e-mail habilitada quando apropriado para sua operação.
 
 As políticas de Row Level Security do esquema deixam a listagem pública limitada a nome, referência, imagem e descrição. Preços são obtidos por uma função que exige sessão aprovada; a chave de serviço deve permanecer privada. O painel pode aprovar ou recusar clientes, editar preços de produtos, desativar produtos sem removê-los e escolher fotos JPG, PNG ou WebP de até 5 MB pelo seletor de imagens do dispositivo. As fotos de produtos ficam no bucket público `product-images`, com envio e remoção restritos a administradores. Fotos de perfil ficam em outro bucket público para poderem aparecer no catálogo; oriente os clientes a usar apenas uma foto de perfil, sem informações privadas. Se o envio de uma foto for recusado, execute novamente `supabase/schema.sql` no SQL Editor para configurar os buckets e suas políticas.
 
