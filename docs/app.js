@@ -14,8 +14,6 @@
       "admin-product-count",
       "admin-product-search",
       "admin-view",
-      "account-avatar",
-      "account-avatar-fallback",
       "account-error",
       "account-form",
       "account-status",
@@ -39,6 +37,7 @@
       "catalog-result-count",
       "checkout-button",
       "close-cart",
+      "copy-signup-link",
       "customer-list",
       "display-name-field",
       "display-name-input",
@@ -47,16 +46,16 @@
       "forgot-password-link",
       "google-login-button",
       "google-login-section",
+      "header-cart-button",
       "hero-view",
       "login-form",
       "login-link",
       "load-more-products",
       "logout-button",
-      "menu-open-cart",
       "profile-menu",
       "profile-menu-account",
       "profile-menu-toggle",
-      "profile-cart-count",
+      "profile-cnpj",
       "password-input",
       "password-field",
       "new-password-field",
@@ -79,6 +78,7 @@
       "profile-store-name",
       "save-profile-button",
       "search-input",
+      "signup-cnpj-input",
       "signup-city-input",
       "signup-extra-fields",
       "signup-phone-input",
@@ -143,6 +143,33 @@
       return `(${areaCode}) ${firstPart}${secondPart ? `-${secondPart}` : ""}`;
     }
     return `(${areaCode}) ${subscriber.slice(0, 5)}-${subscriber.slice(5)}`;
+  }
+
+  function formatCnpj(value) {
+    const characters = String(value ?? "").toLocaleUpperCase("pt-BR").replace(/[^0-9A-Z]/g, "").slice(0, 14);
+    const base = characters.slice(0, 12);
+    const checkDigits = characters.slice(12).replace(/\D/g, "");
+    const digits = `${base}${checkDigits}`.slice(0, 14);
+    return digits
+      .replace(/^([A-Z0-9]{2})([A-Z0-9])/, "$1.$2")
+      .replace(/^([A-Z0-9]{2})\.([A-Z0-9]{3})([A-Z0-9])/, "$1.$2.$3")
+      .replace(/\.([A-Z0-9]{3})([A-Z0-9])/, ".$1/$2")
+      .replace(/([A-Z0-9]{4})(\d)/, "$1-$2");
+  }
+
+  function isValidCnpj(value) {
+    const digits = String(value ?? "").toLocaleUpperCase("pt-BR").replace(/[^0-9A-Z]/g, "");
+    if (!/^[A-Z0-9]{12}\d{2}$/.test(digits) || /^(\w)\1{13}$/.test(digits)) return false;
+    const calculateDigit = (base, weights) => {
+      const remainder = base.split("").reduce(
+        (sum, character, index) => sum + (character.charCodeAt(0) - 48) * weights[index],
+        0
+      ) % 11;
+      return remainder < 2 ? 0 : 11 - remainder;
+    };
+    const firstDigit = calculateDigit(digits.slice(0, 12), [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]);
+    const secondDigit = calculateDigit(`${digits.slice(0, 12)}${firstDigit}`, [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]);
+    return digits.endsWith(`${firstDigit}${secondDigit}`);
   }
 
   function showToast(message) {
@@ -288,8 +315,10 @@
     elements["display-name-field"].classList.toggle("hidden", !isSignup);
     elements["signup-extra-fields"].classList.toggle("hidden", !isSignup);
     elements["google-login-section"].classList.toggle("hidden", !showGoogleLogin);
-    elements["display-name-input"].required = isSignup;
+    elements["display-name-input"].required = false;
     elements["display-name-input"].autocomplete = "name";
+    elements["signup-store-input"].required = isSignup;
+    elements["signup-cnpj-input"].required = isSignup;
     elements["password-field"].classList.toggle("hidden", passwordRecovery);
     elements["password-input"].required = !passwordRecovery;
     elements["new-password-field"].classList.toggle("hidden", !isRecovery);
@@ -322,6 +351,7 @@
     clearAvatarPreview();
     elements["profile-display-name"].value = state.profile.display_name || "";
     elements["profile-store-name"].value = state.profile.store_name || "";
+    elements["profile-cnpj"].value = formatCnpj(state.profile.cnpj);
     elements["profile-email"].value = state.profile.email || state.session.user.email || "";
     elements["profile-phone"].value = formatPhoneNumber(state.profile.phone);
     elements["profile-city"].value = state.profile.city || "";
@@ -351,13 +381,12 @@
     elements["logout-button"].classList.toggle("hidden", !loggedIn);
     elements["admin-link"].hidden = !isAdmin();
     elements["admin-link"].classList.toggle("hidden", !isAdmin());
-    elements["menu-open-cart"].hidden = !canOrder();
-    elements["menu-open-cart"].classList.toggle("hidden", !canOrder());
-    const avatarUrl = getAvatarUrl(state.profile?.avatar_path);
-    elements["account-avatar"].hidden = !avatarUrl;
-    elements["account-avatar-fallback"].classList.toggle("hidden", Boolean(avatarUrl));
-    if (avatarUrl) elements["account-avatar"].src = avatarUrl;
-    else elements["account-avatar"].removeAttribute("src");
+    elements["header-cart-button"].hidden = !canOrder();
+    elements["header-cart-button"].classList.toggle("hidden", !canOrder());
+    elements["profile-menu-account"].hidden = !loggedIn;
+    elements["profile-menu-account"].classList.toggle("hidden", !loggedIn);
+    elements["login-link"].hidden = loggedIn;
+    elements["login-link"].classList.toggle("hidden", loggedIn);
     if (!canOrder()) {
       state.cart = [];
       renderCart();
@@ -482,19 +511,12 @@
       0
     );
 
-    elements["cart-count"].textContent = String(totalItems);
-    elements["profile-cart-count"].textContent = totalItems > 99 ? "99+" : String(totalItems);
-    elements["profile-cart-count"].hidden = totalItems === 0;
-    elements["profile-menu-toggle"].setAttribute(
-      "aria-label",
-      totalItems === 0
-        ? "Abrir menu do usuário"
-        : `Abrir menu do usuário, carrinho com ${totalItems} ${totalItems === 1 ? "item" : "itens"}`
-    );
-    elements["menu-open-cart"].setAttribute(
+    elements["cart-count"].textContent = totalItems > 99 ? "99+" : String(totalItems);
+    elements["header-cart-button"].setAttribute(
       "aria-label",
       `Abrir carrinho, ${totalItems} ${totalItems === 1 ? "item" : "itens"}`
     );
+    elements["profile-menu-toggle"].setAttribute("aria-label", "Abrir menu do usuário");
     elements["cart-total"].textContent =
       hasQuoteItems && total === 0 ? "Sob consulta" : money.format(total);
     elements["cart-total-label"].textContent = hasQuoteItems ? "Subtotal conhecido" : "Total do pedido";
@@ -703,6 +725,8 @@
     if (!file) return;
     if (!validateProductImage(file)) {
       input.value = "";
+      const label = input.form.querySelector("[data-image-label]");
+      if (label) label.textContent = input.form.dataset.productId ? "Trocar foto" : "Escolher foto";
       return;
     }
     const preview = input.form.querySelector("[data-product-preview], [data-new-product-preview]");
@@ -712,6 +736,8 @@
     preview.src = preview.dataset.previewUrl;
     preview.hidden = false;
     preview.classList.remove("hidden");
+    const label = input.form.querySelector("[data-image-label]");
+    if (label) label.textContent = file.name;
   }
 
   async function loadAdminData() {
@@ -720,7 +746,7 @@
     const [customersResult, productsResult] = await Promise.all([
       state.client
         .from("profiles")
-        .select("id,email,display_name,store_name,phone,city,status,created_at")
+      .select("id,email,display_name,store_name,cnpj,phone,city,status,created_at")
         .eq("role", "customer")
         .order("created_at", { ascending: false })
         .range(0, 999),
@@ -739,13 +765,19 @@
       elements["customer-list"].innerHTML = '<p class="text-sm text-[#737b74]">Nenhum cliente cadastrado ainda.</p>';
       return;
     }
+    const statusLabels = {
+      approved: "Aprovado",
+      rejected: "Recusado",
+      pending: "Aguardando aprovação",
+    };
     elements["customer-list"].innerHTML = customers.map((customer) => `
       <article class="flex flex-col gap-3 rounded-xl border border-[#eceae4] p-4 sm:flex-row sm:items-center sm:justify-between">
         <div class="min-w-0">
-          <p class="truncate text-sm font-bold text-[#28362d]">${escapeHtml(customer.display_name || "Cliente")}</p>
-            ${customer.store_name ? `<p class="truncate text-xs text-[#54735d]">${escapeHtml(customer.store_name)}</p>` : ""}
+          <p class="truncate text-sm font-bold text-[#28362d]">${escapeHtml(customer.store_name || "Empresa sem nome")}</p>
+            ${customer.cnpj ? `<p class="truncate text-xs text-[#54735d]">CNPJ: ${escapeHtml(formatCnpj(customer.cnpj))}</p>` : ""}
+            ${customer.display_name ? `<p class="truncate text-xs text-[#737b74]">Contato: ${escapeHtml(customer.display_name)}</p>` : ""}
             <p class="truncate text-xs text-[#737b74]">${escapeHtml(customer.email)}${customer.phone ? ` · ${escapeHtml(customer.phone)}` : ""}</p>
-            <p class="mt-1 text-xs text-[#85877f]">Situação: ${escapeHtml(customer.status)}${customer.city ? ` · ${escapeHtml(customer.city)}` : ""}</p>
+            <p class="mt-1 text-xs text-[#85877f]">Situação: ${escapeHtml(statusLabels[customer.status] || "Indefinida")}${customer.city ? ` · ${escapeHtml(customer.city)}` : ""}</p>
         </div>
         <div class="flex shrink-0 justify-center gap-2 sm:justify-start">
           ${customer.status !== "approved" ? `<button type="button" data-profile-id="${escapeHtml(customer.id)}" data-status="approved" class="rounded-lg bg-[#344c40] px-3 py-2 text-xs font-bold text-white">Aprovar</button>` : ""}
@@ -772,9 +804,9 @@
         <input name="name" required maxlength="200" aria-label="Nome do produto" value="${escapeHtml(product.nome)}" class="h-10 rounded-lg border border-[#e2e5e1] px-2 text-sm">
         <input name="sku" maxlength="80" aria-label="Referência" value="${escapeHtml(product.sku)}" placeholder="Referência" class="h-10 rounded-lg border border-[#e2e5e1] px-2 text-sm">
         <input name="price" type="number" required min="0" step="0.01" aria-label="Preço em reais" value="${product.preco === null ? "" : product.preco.toFixed(2)}" class="h-10 rounded-lg border border-[#e2e5e1] px-2 text-sm">
-        <label class="flex min-h-10 items-center gap-2 rounded-lg border border-[#e2e5e1] px-2 text-xs text-[#555c53]">
-          <span class="shrink-0 font-semibold">Trocar foto</span>
-          <input name="image-file" type="file" accept="image/jpeg,image/png,image/webp" aria-label="Escolher nova foto do produto" class="min-w-0 flex-1 text-xs file:mr-1 file:rounded-lg file:border-0 file:bg-[#e8ece8] file:px-2 file:py-1.5 file:text-[11px] file:font-bold file:text-[#344c40]">
+        <label class="inline-flex min-h-10 cursor-pointer items-center justify-center rounded-lg border border-[#d8ded8] px-3 text-xs font-bold text-[#344c40] hover:border-[#344c40] hover:bg-[#eff3ed]">
+          <span data-image-label>Trocar foto</span>
+          <input name="image-file" type="file" accept="image/jpeg,image/png,image/webp" aria-label="Escolher nova foto do produto" class="sr-only">
         </label>
         <img data-product-preview data-default-src="${escapeHtml(product.imagem)}" src="${escapeHtml(product.imagem)}" alt="Foto atual de ${escapeHtml(product.nome)}" class="h-14 w-14 rounded-lg bg-[#eeede7] object-cover">
         <input name="description" maxlength="1000" aria-label="Descrição" value="${escapeHtml(product.descricao)}" placeholder="Descrição" class="h-10 rounded-lg border border-[#e2e5e1] px-2 text-sm sm:col-span-2">
@@ -795,7 +827,7 @@
     if (state.session?.user) {
       const result = await state.client
         .from("profiles")
-        .select("id,email,display_name,store_name,phone,city,avatar_path,role,status")
+        .select("id,email,display_name,store_name,cnpj,phone,city,avatar_path,role,status")
         .eq("id", state.session.user.id)
         .single();
       if (result.error) {
@@ -835,14 +867,20 @@
       if (state.authMode === "signup") {
         const displayName = elements["display-name-input"].value.trim();
         const storeName = elements["signup-store-input"].value.trim();
+        const cnpj = formatCnpj(elements["signup-cnpj-input"].value);
         const phone = formatPhoneNumber(elements["signup-phone-input"].value);
         const city = elements["signup-city-input"].value.trim();
+        if (!isValidCnpj(cnpj)) {
+          setAuthMessage("Confira o CNPJ informado. Digite os 14 números válidos da empresa.", true);
+          elements["signup-cnpj-input"].focus();
+          return;
+        }
         const { data, error } = await state.client.auth.signUp({
           email,
           password,
           options: {
             emailRedirectTo: `${window.location.origin}${routeUrl("login")}`,
-            data: { display_name: displayName, store_name: storeName, phone, city },
+            data: { display_name: displayName, store_name: storeName, cnpj: cnpj.replace(/[^0-9A-Z]/g, ""), phone, city },
           },
         });
         if (error) throw error;
@@ -983,6 +1021,12 @@
     event.preventDefault();
     if (!state.session?.user || !state.profile) return;
     setAccountError("");
+    const cnpj = formatCnpj(elements["profile-cnpj"].value);
+    if (!isValidCnpj(cnpj)) {
+      setAccountError("Confira o CNPJ informado. Digite os 14 números válidos da empresa.");
+      elements["profile-cnpj"].focus();
+      return;
+    }
     elements["save-profile-button"].disabled = true;
     elements["save-profile-button"].textContent = "Salvando...";
     const userId = state.session.user.id;
@@ -1021,12 +1065,13 @@
         .update({
           display_name: elements["profile-display-name"].value.trim(),
           store_name: elements["profile-store-name"].value.trim(),
+          cnpj: cnpj.replace(/[^0-9A-Z]/g, ""),
           phone: formatPhoneNumber(elements["profile-phone"].value),
           city: elements["profile-city"].value.trim(),
           avatar_path: newAvatarPath,
         })
         .eq("id", userId)
-        .select("id,email,display_name,store_name,phone,city,avatar_path,role,status")
+        .select("id,email,display_name,store_name,cnpj,phone,city,avatar_path,role,status")
         .single();
       if (update.error) throw update.error;
 
@@ -1103,7 +1148,7 @@
     try {
       const result = await state.client
         .from("profiles")
-        .select("id,email,display_name,store_name,phone,city,status,created_at")
+        .select("id,email,display_name,store_name,cnpj,phone,city,status,created_at")
         .eq("role", "customer")
         .order("created_at", { ascending: false })
         .range(0, 999);
@@ -1207,6 +1252,7 @@
         throw error;
       }
       elements["product-create-form"].reset();
+      elements["product-create-form"].querySelector("[data-image-label]").textContent = "Escolher foto";
       const preview = elements["product-create-form"].querySelector("[data-new-product-preview]");
       if (preview?.dataset.previewUrl) URL.revokeObjectURL(preview.dataset.previewUrl);
       if (preview) {
@@ -1244,6 +1290,27 @@
         event.target.value = formatPhoneNumber(event.target.value);
       });
     }
+    for (const cnpjInput of [elements["signup-cnpj-input"], elements["profile-cnpj"]]) {
+      cnpjInput.addEventListener("input", (event) => {
+        event.target.value = formatCnpj(event.target.value);
+      });
+      cnpjInput.addEventListener("blur", (event) => {
+        event.target.value = formatCnpj(event.target.value);
+      });
+    }
+    elements["header-cart-button"].addEventListener("click", openCart);
+    elements["copy-signup-link"].addEventListener("click", async () => {
+      const signupUrl = new URL(routeUrl("cadastro"), window.location.origin).href;
+      try {
+        await navigator.clipboard.writeText(signupUrl);
+        showToast("Link de cadastro copiado. Envie-o ao cliente.");
+      } catch (error) {
+        console.error("Não foi possível copiar o link de cadastro:", error);
+        const adminError = elements["admin-error"];
+        adminError.textContent = `Não foi possível copiar o link automaticamente. Compartilhe este endereço: ${signupUrl}`;
+        adminError.classList.remove("hidden");
+      }
+    });
     elements["register-link"].addEventListener("click", (event) => {
       event.preventDefault();
       window.history.pushState({}, "", routeUrl("cadastro"));
@@ -1277,10 +1344,6 @@
     elements["profile-avatar"].addEventListener("error", () => {
       elements["profile-avatar"].hidden = true;
       elements["profile-avatar-fallback"].classList.remove("hidden");
-    });
-    elements["account-avatar"].addEventListener("error", () => {
-      elements["account-avatar"].hidden = true;
-      elements["account-avatar-fallback"].classList.remove("hidden");
     });
     elements["profile-photo-input"].addEventListener("change", (event) => {
       previewProfilePhoto(event.target.files?.[0]);
@@ -1324,10 +1387,6 @@
     });
     elements["profile-menu"].addEventListener("click", (event) => {
       if (event.target.closest("a")) closeProfileMenu();
-    });
-    elements["menu-open-cart"].addEventListener("click", () => {
-      closeProfileMenu();
-      openCart();
     });
     document.addEventListener("click", (event) => {
       if (!elements["profile-menu"].hidden && !event.target.closest("#profile-menu-toggle, #profile-menu")) {

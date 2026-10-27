@@ -8,12 +8,14 @@ Catálogo estático publicado no GitHub Pages, com autenticação, preços prote
 
 - `?rota=catalogo` (padrão): catálogo público sem preços, carrinho ou pedidos.
 - `?rota=login`: acesso à conta.
-- `?rota=cadastro`: solicitação de cadastro de cliente com nome, loja, celular e cidade. Novas contas começam pendentes até confirmarem o e-mail e receberem aprovação.
-- `?rota=conta`: atualizar contato, loja, cidade e foto do perfil.
+- `?rota=cadastro`: solicitação de cadastro da empresa com nome da loja, CNPJ, contato, celular e cidade. Novas contas começam pendentes até confirmarem o e-mail e receberem aprovação.
+- `?rota=conta`: atualizar os dados da empresa, CNPJ, contato, cidade e foto do perfil.
 - `?rota=senha`: recuperar o acesso ou definir uma nova senha pelo link enviado ao e-mail.
-- `?rota=admin`: painel para aprovar/recusar clientes e adicionar, editar ou desativar produtos. O painel exige uma conta promovida a administradora.
+- `?rota=admin`: painel para compartilhar o link de cadastro, aprovar/recusar clientes e adicionar, editar ou desativar produtos. O painel exige uma conta promovida a administradora.
 
 O pedido do cliente aprovado continua sendo preparado no WhatsApp; o cliente revisa e envia a mensagem. O cadastro não cria um pedido automaticamente.
+
+O CNPJ aceita o formato numérico tradicional e o formato alfanumérico. Para cadastrar clientes, o administrador compartilha o link do formulário; o próprio cliente cria a senha, confirma o e-mail e aguarda a aprovação. Execute novamente `supabase/schema.sql` no SQL Editor para adicionar o campo CNPJ aos projetos já configurados.
 
 ## Configuração inicial do Supabase
 

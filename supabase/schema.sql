@@ -3,6 +3,7 @@ create table if not exists public.profiles (
   email text not null,
   display_name text not null default '',
   store_name text not null default '',
+  cnpj text not null default '',
   phone text not null default '',
   city text not null default '',
   avatar_path text,
@@ -12,6 +13,7 @@ create table if not exists public.profiles (
 );
 
 alter table public.profiles add column if not exists store_name text not null default '';
+alter table public.profiles add column if not exists cnpj text not null default '';
 alter table public.profiles add column if not exists phone text not null default '';
 alter table public.profiles add column if not exists city text not null default '';
 alter table public.profiles add column if not exists avatar_path text;
@@ -38,9 +40,9 @@ revoke all on public.profiles from public, anon, authenticated;
 revoke all on public.products from public, anon, authenticated;
 
 grant usage on schema public to anon, authenticated;
-grant select (id, email, display_name, store_name, phone, city, avatar_path, role, status, created_at) on public.profiles to authenticated;
+grant select (id, email, display_name, store_name, cnpj, phone, city, avatar_path, role, status, created_at) on public.profiles to authenticated;
 revoke update (status) on public.profiles from authenticated;
-grant update (display_name, store_name, phone, city, avatar_path) on public.profiles to authenticated;
+grant update (display_name, store_name, cnpj, phone, city, avatar_path) on public.profiles to authenticated;
 grant select (id, name, sku, image, description, active) on public.products to anon, authenticated;
 grant insert (name, sku, price_cents, image, description, active) on public.products to authenticated;
 grant update (name, sku, price_cents, image, description, active) on public.products to authenticated;
@@ -210,11 +212,15 @@ security definer
 set search_path = ''
 as $$
 begin
-  insert into public.profiles (id, email, display_name, role, status)
+  insert into public.profiles (id, email, display_name, store_name, cnpj, phone, city, role, status)
   values (
     new.id,
     coalesce(new.email, ''),
     coalesce(nullif(trim(new.raw_user_meta_data ->> 'display_name'), ''), split_part(coalesce(new.email, ''), '@', 1)),
+    coalesce(nullif(trim(new.raw_user_meta_data ->> 'store_name'), ''), ''),
+    coalesce(nullif(upper(regexp_replace(new.raw_user_meta_data ->> 'cnpj', '[^0-9A-Za-z]', '', 'g')), ''), ''),
+    coalesce(nullif(trim(new.raw_user_meta_data ->> 'phone'), ''), ''),
+    coalesce(nullif(trim(new.raw_user_meta_data ->> 'city'), ''), ''),
     'customer',
     'pending'
   );
@@ -231,6 +237,7 @@ for each row execute function public.create_customer_profile();
 
 update public.profiles as profile
 set store_name = coalesce(nullif(profile.store_name, ''), nullif(user_record.raw_user_meta_data ->> 'store_name', ''), ''),
+    cnpj = coalesce(nullif(profile.cnpj, ''), nullif(upper(regexp_replace(user_record.raw_user_meta_data ->> 'cnpj', '[^0-9A-Za-z]', '', 'g')), ''), ''),
     phone = coalesce(nullif(profile.phone, ''), nullif(user_record.raw_user_meta_data ->> 'phone', ''), ''),
     city = coalesce(nullif(profile.city, ''), nullif(user_record.raw_user_meta_data ->> 'city', ''), '')
 from auth.users as user_record
@@ -243,12 +250,13 @@ security definer
 set search_path = ''
 as $$
 begin
-  insert into public.profiles (id, email, display_name, store_name, phone, city, role, status)
+  insert into public.profiles (id, email, display_name, store_name, cnpj, phone, city, role, status)
   values (
     new.id,
     coalesce(new.email, ''),
     coalesce(nullif(trim(new.raw_user_meta_data ->> 'display_name'), ''), split_part(coalesce(new.email, ''), '@', 1)),
     coalesce(nullif(trim(new.raw_user_meta_data ->> 'store_name'), ''), ''),
+    coalesce(nullif(upper(regexp_replace(new.raw_user_meta_data ->> 'cnpj', '[^0-9A-Za-z]', '', 'g')), ''), ''),
     coalesce(nullif(trim(new.raw_user_meta_data ->> 'phone'), ''), ''),
     coalesce(nullif(trim(new.raw_user_meta_data ->> 'city'), ''), ''),
     'customer',

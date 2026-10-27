@@ -16,18 +16,17 @@ test("static catalog routes load the Supabase app without publishing a price cat
   assert.doesNotThrow(() => new vm.Script(app));
   assert.match(html, /@supabase\/supabase-js@2/);
   assert.match(html, /src="\.\/supabase-config\.js"/);
-  assert.match(html, /src="\.\/app\.js\?v=20261020-5"/);
+  assert.match(html, /src="\.\/app\.js\?v=20261027-1"/);
   assert.match(html, /src="\.\/images\/lfi-tools-logo\.png\?v=20261020-3"/);
   assert.match(html, /id="catalog-view"/);
   assert.match(html, /id="login-view"/);
   assert.match(html, /id="admin-view"/);
   assert.match(html, /id="account-view"/);
   assert.match(html, /id="profile-menu-toggle"/);
-  assert.match(html, /id="profile-cart-count"/);
   assert.match(html, /id="profile-menu"/);
   assert.match(html, /id="profile-menu-account"[^>]*>Perfil<\/a>/);
-  assert.match(html, /id="profile-menu-catalog"[^>]*>Catálogo<\/a>/);
-  assert.match(html, /id="menu-open-cart"/);
+  assert.match(html, /id="header-cart-button"/);
+  assert.doesNotMatch(html, /id="profile-menu-catalog"|id="menu-open-cart"/);
   assert.match(html, /id="logout-button"[^>]*>Sair<\/button>/);
   assert.doesNotMatch(html, /id="open-cart"/);
   assert.match(html, /id="login-link"/);
@@ -43,6 +42,7 @@ test("static catalog routes load the Supabase app without publishing a price cat
   assert.match(app, /o limite de envio de e-mails foi atingido/i);
   assert.match(html, /autocapitalize="none" spellcheck="false" inputmode="email"/);
   assert.match(html, /id="signup-phone-input" type="tel" inputmode="tel" maxlength="16"/);
+  assert.match(html, /id="signup-cnpj-input"[^>]*required/);
   assert.match(html, /id="profile-phone" name="phone" type="tel" inputmode="tel" maxlength="16"/);
   assert.doesNotMatch(html, /catalog-products\.js/);
   assert.ok(!fs.existsSync(path.join(siteDirectory, "catalog-products.js")));
@@ -51,18 +51,20 @@ test("static catalog routes load the Supabase app without publishing a price cat
   assert.ok(fs.existsSync(path.join(siteDirectory, "images", "default-avatar.svg")));
   assert.ok(fs.existsSync(path.join(siteDirectory, "images", "lfi-tools-logo.png")));
   assert.match(html, /aria-label="LFI Tools, início">\s*<img src="\.\/images\/lfi-tools-logo\.png\?v=20261020-3"/);
-  assert.match(html, /id="account-avatar-fallback" src="\.\/images\/default-avatar\.svg"/);
+  assert.match(html, /id="profile-menu-toggle"[^>]*aria-label="Abrir menu"/);
+  assert.match(html, /<svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" aria-hidden="true">/);
   assert.match(html, /id="profile-avatar-fallback" src="\.\/images\/default-avatar\.svg"/);
   assert.match(rootPage, /url=\.\/docs\//);
 });
 
-test("approved customers can select product quantities and see the cart count by their avatar", () => {
+test("approved customers can select product quantities and see the cart outside the profile menu", () => {
   assert.match(app, /data-quantity-for="\$\{escapeHtml\(product\.id\)\}"/);
   assert.match(app, /type="number" min="1" max="9999" step="1" value="1"/);
   assert.match(app, /function addToCart\(id, quantity = 1\)/);
   assert.match(app, /item\.quantity \+ quantity > 9999/);
-  assert.match(app, /elements\["profile-cart-count"\]\.hidden = totalItems === 0/);
-  assert.match(app, /Abrir menu do usuário, carrinho com \$\{totalItems\}/);
+  assert.match(app, /elements\["cart-count"\]\.textContent = totalItems > 99 \? "99\+" : String\(totalItems\)/);
+  assert.match(html, /id="header-cart-button"[^>]*aria-label="Abrir carrinho"/);
+  assert.match(app, /elements\["header-cart-button"\]\.addEventListener\("click", openCart\)/);
 });
 
 test("adding a selected quantity merges it into the cart and rejects invalid totals", () => {
@@ -150,7 +152,8 @@ test("public catalog queries omit prices and protected roles use database functi
   assert.match(schema, /function public\.admin_list_products\(\)/);
   assert.match(schema, /function public\.set_customer_status\(p_profile_id uuid, p_status text\)/);
   assert.match(schema, /role in \('customer', 'admin'\)/);
-  assert.match(schema, /grant update \(display_name, store_name, phone, city, avatar_path\) on public\.profiles to authenticated/i);
+  assert.match(schema, /grant update \(display_name, store_name, cnpj, phone, city, avatar_path\) on public\.profiles to authenticated/i);
+  assert.match(schema, /cnpj text not null default ''/i);
   assert.match(schema, /revoke update \(status\) on public\.profiles from authenticated/i);
   assert.match(schema, /profile-photos/);
   assert.match(app, /storage\.from\("profile-photos"\)/);
@@ -218,6 +221,7 @@ test("email addresses and Brazilian phone numbers are normalized consistently", 
 test("account form exposes customer profile fields and email confirmation recovery", () => {
   assert.match(html, /id="profile-phone"/);
   assert.match(html, /id="profile-store-name"/);
+  assert.match(html, /id="profile-cnpj"/);
   assert.match(html, /id="profile-city"/);
   assert.match(html, /id="profile-photo-input"/);
   assert.match(app, /auth\.resend/);
@@ -225,6 +229,30 @@ test("account form exposes customer profile fields and email confirmation recove
   assert.match(app, /PASSWORD_RECOVERY/);
   assert.match(app, /profile-display-name/);
   assert.match(app, /profile-photo-input/);
+});
+
+test("CNPJ values are formatted and validated before account registration or profile updates", () => {
+  const formatSource = app.match(/  function formatCnpj\(value\) \{[\s\S]*?\n  \}/)?.[0];
+  const validateSource = app.match(/  function isValidCnpj\(value\) \{[\s\S]*?\n  \}/)?.[0];
+  assert.ok(formatSource, "CNPJ formatter should exist");
+  assert.ok(validateSource, "CNPJ validator should exist");
+  const formatCnpj = vm.runInNewContext(`(${formatSource.trim()})`);
+  const isValidCnpj = vm.runInNewContext(`(${validateSource.trim()})`);
+
+  assert.equal(formatCnpj("11222333000181"), "11.222.333/0001-81");
+  assert.equal(isValidCnpj("11.222.333/0001-81"), true);
+  assert.equal(isValidCnpj("11.222.333/0001-80"), false);
+  assert.equal(isValidCnpj("00.000.000/0000-00"), false);
+  assert.equal(formatCnpj("12abc34501de35"), "12.ABC.345/01DE-35");
+  assert.equal(isValidCnpj("12.ABC.345/01DE-35"), true);
+});
+
+test("administrator can share the customer registration flow and customer name is secondary", () => {
+  assert.match(html, /id="copy-signup-link"/);
+  assert.match(html, /O cliente informa os dados da empresa, cria a própria senha/);
+  assert.match(app, /navigator\.clipboard\.writeText\(signupUrl\)/);
+  assert.match(app, /data: \{ display_name: displayName, store_name: storeName, cnpj:/);
+  assert.match(html, /Nome do contato responsável[^<]*<span[^>]*>\(opcional\)/);
 });
 
 test("public Supabase configuration contains no service-role credential", () => {
