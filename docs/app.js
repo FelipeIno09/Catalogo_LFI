@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const WHATSAPP_NUMBER = "5514991622498";
+  const WHATSAPP_NUMBER = "5514991533526";
   const STORAGE_KEY = "fvb-materiais-cart-v3";
   const PRODUCT_PAGE_SIZE = 48;
   const ADMIN_PRODUCT_PAGE_SIZE = 40;
@@ -14,8 +14,6 @@
       "admin-product-count",
       "admin-product-search",
       "admin-view",
-      "account-avatar",
-      "account-avatar-fallback",
       "account-error",
       "account-form",
       "account-status",
@@ -39,6 +37,7 @@
       "catalog-result-count",
       "checkout-button",
       "close-cart",
+      "copy-signup-link",
       "customer-list",
       "display-name-field",
       "display-name-input",
@@ -47,15 +46,16 @@
       "forgot-password-link",
       "google-login-button",
       "google-login-section",
+      "header-cart-button",
       "hero-view",
       "login-form",
       "login-link",
       "load-more-products",
       "logout-button",
-      "menu-open-cart",
       "profile-menu",
       "profile-menu-account",
       "profile-menu-toggle",
+      "profile-cnpj",
       "password-input",
       "password-field",
       "new-password-field",
@@ -78,6 +78,7 @@
       "profile-store-name",
       "save-profile-button",
       "search-input",
+      "signup-cnpj-input",
       "signup-city-input",
       "signup-extra-fields",
       "signup-phone-input",
@@ -142,6 +143,33 @@
       return `(${areaCode}) ${firstPart}${secondPart ? `-${secondPart}` : ""}`;
     }
     return `(${areaCode}) ${subscriber.slice(0, 5)}-${subscriber.slice(5)}`;
+  }
+
+  function formatCnpj(value) {
+    const characters = String(value ?? "").toLocaleUpperCase("pt-BR").replace(/[^0-9A-Z]/g, "").slice(0, 14);
+    const base = characters.slice(0, 12);
+    const checkDigits = characters.slice(12).replace(/\D/g, "");
+    const digits = `${base}${checkDigits}`.slice(0, 14);
+    return digits
+      .replace(/^([A-Z0-9]{2})([A-Z0-9])/, "$1.$2")
+      .replace(/^([A-Z0-9]{2})\.([A-Z0-9]{3})([A-Z0-9])/, "$1.$2.$3")
+      .replace(/\.([A-Z0-9]{3})([A-Z0-9])/, ".$1/$2")
+      .replace(/([A-Z0-9]{4})(\d)/, "$1-$2");
+  }
+
+  function isValidCnpj(value) {
+    const digits = String(value ?? "").toLocaleUpperCase("pt-BR").replace(/[^0-9A-Z]/g, "");
+    if (!/^[A-Z0-9]{12}\d{2}$/.test(digits) || /^(\w)\1{13}$/.test(digits)) return false;
+    const calculateDigit = (base, weights) => {
+      const remainder = base.split("").reduce(
+        (sum, character, index) => sum + (character.charCodeAt(0) - 48) * weights[index],
+        0
+      ) % 11;
+      return remainder < 2 ? 0 : 11 - remainder;
+    };
+    const firstDigit = calculateDigit(digits.slice(0, 12), [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]);
+    const secondDigit = calculateDigit(`${digits.slice(0, 12)}${firstDigit}`, [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]);
+    return digits.endsWith(`${firstDigit}${secondDigit}`);
   }
 
   function showToast(message) {
@@ -287,8 +315,10 @@
     elements["display-name-field"].classList.toggle("hidden", !isSignup);
     elements["signup-extra-fields"].classList.toggle("hidden", !isSignup);
     elements["google-login-section"].classList.toggle("hidden", !showGoogleLogin);
-    elements["display-name-input"].required = isSignup;
+    elements["display-name-input"].required = false;
     elements["display-name-input"].autocomplete = "name";
+    elements["signup-store-input"].required = isSignup;
+    elements["signup-cnpj-input"].required = isSignup;
     elements["password-field"].classList.toggle("hidden", passwordRecovery);
     elements["password-input"].required = !passwordRecovery;
     elements["new-password-field"].classList.toggle("hidden", !isRecovery);
@@ -321,6 +351,7 @@
     clearAvatarPreview();
     elements["profile-display-name"].value = state.profile.display_name || "";
     elements["profile-store-name"].value = state.profile.store_name || "";
+    elements["profile-cnpj"].value = formatCnpj(state.profile.cnpj);
     elements["profile-email"].value = state.profile.email || state.session.user.email || "";
     elements["profile-phone"].value = formatPhoneNumber(state.profile.phone);
     elements["profile-city"].value = state.profile.city || "";
@@ -350,13 +381,12 @@
     elements["logout-button"].classList.toggle("hidden", !loggedIn);
     elements["admin-link"].hidden = !isAdmin();
     elements["admin-link"].classList.toggle("hidden", !isAdmin());
-    elements["menu-open-cart"].hidden = !canOrder();
-    elements["menu-open-cart"].classList.toggle("hidden", !canOrder());
-    const avatarUrl = getAvatarUrl(state.profile?.avatar_path);
-    elements["account-avatar"].hidden = !avatarUrl;
-    elements["account-avatar-fallback"].classList.toggle("hidden", Boolean(avatarUrl));
-    if (avatarUrl) elements["account-avatar"].src = avatarUrl;
-    else elements["account-avatar"].removeAttribute("src");
+    elements["header-cart-button"].hidden = !canOrder();
+    elements["header-cart-button"].classList.toggle("hidden", !canOrder());
+    elements["profile-menu-account"].hidden = !loggedIn;
+    elements["profile-menu-account"].classList.toggle("hidden", !loggedIn);
+    elements["login-link"].hidden = loggedIn;
+    elements["login-link"].classList.toggle("hidden", loggedIn);
     if (!canOrder()) {
       state.cart = [];
       renderCart();
@@ -456,7 +486,12 @@
           ${isApproved() ? `
             <div class="mt-2.5 flex items-center justify-between gap-1 sm:mt-3">
               <span class="font-display text-sm font-extrabold tracking-[-.03em] text-[#344c40] sm:text-base">${formatPrice(product.preco)}</span>
-              ${canOrder() ? `<button type="button" data-add="${escapeHtml(product.id)}" class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#edf1ed] text-[#344c40] transition hover:bg-[#344c40] hover:text-white focus:outline-none focus:ring-4 focus:ring-[#344c40]/15 sm:flex sm:h-9 sm:w-auto sm:gap-1.5 sm:px-3" aria-label="Adicionar ${escapeHtml(product.nome)} ao carrinho"><span aria-hidden="true">+</span><span class="hidden text-xs font-bold sm:inline">Adicionar</span></button>` : ""}
+              ${canOrder() ? `
+                <div class="flex shrink-0 items-center gap-1.5">
+                  <label class="sr-only" for="product-quantity-${escapeHtml(product.id)}">Quantidade de ${escapeHtml(product.nome)}</label>
+                  <input id="product-quantity-${escapeHtml(product.id)}" data-quantity-for="${escapeHtml(product.id)}" type="number" min="1" max="9999" step="1" value="1" inputmode="numeric" class="h-9 w-14 rounded-lg border border-[#d8ded8] bg-white px-1 text-center text-xs font-semibold text-[#344c40] focus:border-[#78947e] focus:outline-none focus:ring-2 focus:ring-[#344c40]/10" aria-label="Quantidade de ${escapeHtml(product.nome)}">
+                  <button type="button" data-add="${escapeHtml(product.id)}" class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#edf1ed] text-[#344c40] transition hover:bg-[#344c40] hover:text-white focus:outline-none focus:ring-4 focus:ring-[#344c40]/15 sm:flex sm:h-9 sm:w-auto sm:gap-1.5 sm:px-3" aria-label="Adicionar ${escapeHtml(product.nome)} ao carrinho"><span aria-hidden="true">+</span><span class="hidden text-xs font-bold sm:inline">Adicionar</span></button>
+                </div>` : ""}
             </div>
           ` : `<p class="mt-3 text-xs font-semibold text-[#54735d]">Entre para consultar preços e fazer pedidos.</p>`}
           ${product.descricao ? `<p class="mt-2 line-clamp-2 text-center text-[10px] leading-4 text-[#92948d] sm:hidden">${escapeHtml(product.descricao)}</p>` : ""}
@@ -476,11 +511,12 @@
       0
     );
 
-    elements["cart-count"].textContent = String(totalItems);
-    elements["menu-open-cart"].setAttribute(
+    elements["cart-count"].textContent = totalItems > 99 ? "99+" : String(totalItems);
+    elements["header-cart-button"].setAttribute(
       "aria-label",
       `Abrir carrinho, ${totalItems} ${totalItems === 1 ? "item" : "itens"}`
     );
+    elements["profile-menu-toggle"].setAttribute("aria-label", "Abrir menu do usuário");
     elements["cart-total"].textContent =
       hasQuoteItems && total === 0 ? "Sob consulta" : money.format(total);
     elements["cart-total-label"].textContent = hasQuoteItems ? "Subtotal conhecido" : "Total do pedido";
@@ -530,19 +566,27 @@
     applyImageFallbacks(elements["cart-content"]);
   }
 
-  function addToCart(id) {
+  function addToCart(id, quantity = 1) {
     if (!canOrder()) {
       showToast("Para adicionar itens ao pedido, entre com uma conta de cliente aprovada pela equipe.");
+      return;
+    }
+    if (!Number.isInteger(quantity) || quantity < 1 || quantity > 9999) {
+      showToast("Escolha uma quantidade entre 1 e 9999.");
       return;
     }
     const product = state.products.find((item) => item.id === id);
     if (!product) return;
     const item = state.cart.find((entry) => entry.id === id);
-    if (item) item.quantity += 1;
-    else state.cart.push({ id, quantity: 1 });
+    if (item && item.quantity + quantity > 9999) {
+      showToast("A quantidade máxima por produto no carrinho é 9999.");
+      return;
+    }
+    if (item) item.quantity += quantity;
+    else state.cart.push({ id, quantity });
     saveCart();
     renderCart();
-    showToast(`${product.nome} adicionado ao carrinho`);
+    showToast(`${quantity} ${quantity === 1 ? "unidade adicionada" : "unidades adicionadas"}: ${product.nome}`);
   }
 
   function openCart() {
@@ -623,9 +667,77 @@
   }
 
   function reportAdminError(error) {
-    console.error("Falha ao carregar o painel administrativo:", error);
-    elements["admin-error"].textContent = `Não foi possível carregar o painel: ${error.message || error}`;
+    console.error("Falha na operação administrativa:", error);
+    elements["admin-error"].textContent = `Não foi possível concluir a operação: ${error.message || error}`;
     elements["admin-error"].classList.remove("hidden");
+  }
+
+  function validateProductImage(file) {
+    if (!file || file.size === 0) return true;
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      showToast("A foto precisa estar no formato JPG, PNG ou WebP.");
+      return false;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      showToast("A foto deve ter no máximo 5 MB.");
+      return false;
+    }
+    return true;
+  }
+
+  async function uploadProductImage(file) {
+    const extensions = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
+    if (!validateProductImage(file)) throw new Error("Selecione uma foto JPG, PNG ou WebP de até 5 MB.");
+    const path = `${state.session.user.id}/${crypto.randomUUID()}.${extensions[file.type]}`;
+    const { error } = await state.client.storage
+      .from("product-images")
+      .upload(path, file, {
+        cacheControl: "3600",
+        contentType: file.type,
+        upsert: false,
+      });
+    if (error) throw error;
+    const { data } = state.client.storage.from("product-images").getPublicUrl(path);
+    return { path, url: data.publicUrl };
+  }
+
+  function productImageStoragePath(imageUrl) {
+    try {
+      const pathname = new URL(imageUrl, window.location.href).pathname;
+      const marker = "/storage/v1/object/public/product-images/";
+      const markerIndex = pathname.indexOf(marker);
+      return markerIndex === -1 ? null : decodeURIComponent(pathname.slice(markerIndex + marker.length));
+    } catch (error) {
+      console.error("Não foi possível interpretar o endereço da foto antiga do produto:", error);
+      return null;
+    }
+  }
+
+  async function removeProductImage(path) {
+    const { error } = await state.client.storage.from("product-images").remove([path]);
+    if (error) throw error;
+  }
+
+  function previewProductImage(event) {
+    const input = event.target.closest('input[name="image-file"]');
+    if (!input) return;
+    const file = input.files?.[0];
+    if (!file) return;
+    if (!validateProductImage(file)) {
+      input.value = "";
+      const label = input.form.querySelector("[data-image-label]");
+      if (label) label.textContent = input.form.dataset.productId ? "Trocar foto" : "Escolher foto";
+      return;
+    }
+    const preview = input.form.querySelector("[data-product-preview], [data-new-product-preview]");
+    if (!preview) return;
+    if (preview.dataset.previewUrl) URL.revokeObjectURL(preview.dataset.previewUrl);
+    preview.dataset.previewUrl = URL.createObjectURL(file);
+    preview.src = preview.dataset.previewUrl;
+    preview.hidden = false;
+    preview.classList.remove("hidden");
+    const label = input.form.querySelector("[data-image-label]");
+    if (label) label.textContent = file.name;
   }
 
   async function loadAdminData() {
@@ -634,7 +746,7 @@
     const [customersResult, productsResult] = await Promise.all([
       state.client
         .from("profiles")
-        .select("id,email,display_name,store_name,phone,city,status,created_at")
+      .select("id,email,display_name,store_name,cnpj,phone,city,status,created_at")
         .eq("role", "customer")
         .order("created_at", { ascending: false })
         .range(0, 999),
@@ -653,13 +765,19 @@
       elements["customer-list"].innerHTML = '<p class="text-sm text-[#737b74]">Nenhum cliente cadastrado ainda.</p>';
       return;
     }
+    const statusLabels = {
+      approved: "Aprovado",
+      rejected: "Recusado",
+      pending: "Aguardando aprovação",
+    };
     elements["customer-list"].innerHTML = customers.map((customer) => `
       <article class="flex flex-col gap-3 rounded-xl border border-[#eceae4] p-4 sm:flex-row sm:items-center sm:justify-between">
         <div class="min-w-0">
-          <p class="truncate text-sm font-bold text-[#28362d]">${escapeHtml(customer.display_name || "Cliente")}</p>
-            ${customer.store_name ? `<p class="truncate text-xs text-[#54735d]">${escapeHtml(customer.store_name)}</p>` : ""}
+          <p class="truncate text-sm font-bold text-[#28362d]">${escapeHtml(customer.store_name || "Empresa sem nome")}</p>
+            ${customer.cnpj ? `<p class="truncate text-xs text-[#54735d]">CNPJ: ${escapeHtml(formatCnpj(customer.cnpj))}</p>` : ""}
+            ${customer.display_name ? `<p class="truncate text-xs text-[#737b74]">Contato: ${escapeHtml(customer.display_name)}</p>` : ""}
             <p class="truncate text-xs text-[#737b74]">${escapeHtml(customer.email)}${customer.phone ? ` · ${escapeHtml(customer.phone)}` : ""}</p>
-            <p class="mt-1 text-xs text-[#85877f]">Situação: ${escapeHtml(customer.status)}${customer.city ? ` · ${escapeHtml(customer.city)}` : ""}</p>
+            <p class="mt-1 text-xs text-[#85877f]">Situação: ${escapeHtml(statusLabels[customer.status] || "Indefinida")}${customer.city ? ` · ${escapeHtml(customer.city)}` : ""}</p>
         </div>
         <div class="flex shrink-0 justify-center gap-2 sm:justify-start">
           ${customer.status !== "approved" ? `<button type="button" data-profile-id="${escapeHtml(customer.id)}" data-status="approved" class="rounded-lg bg-[#344c40] px-3 py-2 text-xs font-bold text-white">Aprovar</button>` : ""}
@@ -678,12 +796,19 @@
     elements["admin-product-count"].textContent =
       `${matching.length.toLocaleString("pt-BR")} produtos`;
     elements["admin-load-more"].classList.toggle("hidden", visible.length >= matching.length);
+    elements["product-admin-list"].querySelectorAll("[data-product-preview][data-preview-url]").forEach((preview) => {
+      URL.revokeObjectURL(preview.dataset.previewUrl);
+    });
     elements["product-admin-list"].innerHTML = visible.map((product) => `
       <form data-product-id="${escapeHtml(product.id)}" class="grid gap-2 rounded-xl border border-[#eceae4] p-3 sm:grid-cols-2 lg:grid-cols-4">
         <input name="name" required maxlength="200" aria-label="Nome do produto" value="${escapeHtml(product.nome)}" class="h-10 rounded-lg border border-[#e2e5e1] px-2 text-sm">
         <input name="sku" maxlength="80" aria-label="Referência" value="${escapeHtml(product.sku)}" placeholder="Referência" class="h-10 rounded-lg border border-[#e2e5e1] px-2 text-sm">
         <input name="price" type="number" required min="0" step="0.01" aria-label="Preço em reais" value="${product.preco === null ? "" : product.preco.toFixed(2)}" class="h-10 rounded-lg border border-[#e2e5e1] px-2 text-sm">
-        <input name="image" required maxlength="1000" aria-label="Imagem" value="${escapeHtml(product.imagem)}" class="h-10 rounded-lg border border-[#e2e5e1] px-2 text-sm">
+        <label class="inline-flex min-h-10 cursor-pointer items-center justify-center rounded-lg border border-[#d8ded8] px-3 text-xs font-bold text-[#344c40] hover:border-[#344c40] hover:bg-[#eff3ed]">
+          <span data-image-label>Trocar foto</span>
+          <input name="image-file" type="file" accept="image/jpeg,image/png,image/webp" aria-label="Escolher nova foto do produto" class="sr-only">
+        </label>
+        <img data-product-preview data-default-src="${escapeHtml(product.imagem)}" src="${escapeHtml(product.imagem)}" alt="Foto atual de ${escapeHtml(product.nome)}" class="h-14 w-14 rounded-lg bg-[#eeede7] object-cover">
         <input name="description" maxlength="1000" aria-label="Descrição" value="${escapeHtml(product.descricao)}" placeholder="Descrição" class="h-10 rounded-lg border border-[#e2e5e1] px-2 text-sm sm:col-span-2">
         <label class="flex items-center gap-2 px-2 text-sm text-[#555c53]">
           <input name="active" type="checkbox" ${product.ativo ? "checked" : ""}> Ativo
@@ -702,7 +827,7 @@
     if (state.session?.user) {
       const result = await state.client
         .from("profiles")
-        .select("id,email,display_name,store_name,phone,city,avatar_path,role,status")
+        .select("id,email,display_name,store_name,cnpj,phone,city,avatar_path,role,status")
         .eq("id", state.session.user.id)
         .single();
       if (result.error) {
@@ -742,14 +867,20 @@
       if (state.authMode === "signup") {
         const displayName = elements["display-name-input"].value.trim();
         const storeName = elements["signup-store-input"].value.trim();
+        const cnpj = formatCnpj(elements["signup-cnpj-input"].value);
         const phone = formatPhoneNumber(elements["signup-phone-input"].value);
         const city = elements["signup-city-input"].value.trim();
+        if (!isValidCnpj(cnpj)) {
+          setAuthMessage("Confira o CNPJ informado. Digite os 14 números válidos da empresa.", true);
+          elements["signup-cnpj-input"].focus();
+          return;
+        }
         const { data, error } = await state.client.auth.signUp({
           email,
           password,
           options: {
             emailRedirectTo: `${window.location.origin}${routeUrl("login")}`,
-            data: { display_name: displayName, store_name: storeName, phone, city },
+            data: { display_name: displayName, store_name: storeName, cnpj: cnpj.replace(/[^0-9A-Z]/g, ""), phone, city },
           },
         });
         if (error) throw error;
@@ -890,6 +1021,12 @@
     event.preventDefault();
     if (!state.session?.user || !state.profile) return;
     setAccountError("");
+    const cnpj = formatCnpj(elements["profile-cnpj"].value);
+    if (!isValidCnpj(cnpj)) {
+      setAccountError("Confira o CNPJ informado. Digite os 14 números válidos da empresa.");
+      elements["profile-cnpj"].focus();
+      return;
+    }
     elements["save-profile-button"].disabled = true;
     elements["save-profile-button"].textContent = "Salvando...";
     const userId = state.session.user.id;
@@ -928,12 +1065,13 @@
         .update({
           display_name: elements["profile-display-name"].value.trim(),
           store_name: elements["profile-store-name"].value.trim(),
+          cnpj: cnpj.replace(/[^0-9A-Z]/g, ""),
           phone: formatPhoneNumber(elements["profile-phone"].value),
           city: elements["profile-city"].value.trim(),
           avatar_path: newAvatarPath,
         })
         .eq("id", userId)
-        .select("id,email,display_name,store_name,phone,city,avatar_path,role,status")
+        .select("id,email,display_name,store_name,cnpj,phone,city,avatar_path,role,status")
         .single();
       if (update.error) throw update.error;
 
@@ -1010,7 +1148,7 @@
     try {
       const result = await state.client
         .from("profiles")
-        .select("id,email,display_name,store_name,phone,city,status,created_at")
+        .select("id,email,display_name,store_name,cnpj,phone,city,status,created_at")
         .eq("role", "customer")
         .order("created_at", { ascending: false })
         .range(0, 999);
@@ -1033,25 +1171,50 @@
     }
     const button = form.querySelector('button[type="submit"]');
     button.disabled = true;
-    const result = await state.client
-      .from("products")
-      .update({
-        name: String(values.get("name")).trim(),
-        sku: String(values.get("sku") || "").trim(),
-        price_cents: Math.round(price * 100),
-        image: String(values.get("image")).trim(),
-        description: String(values.get("description") || "").trim(),
-        active: values.has("active"),
-      })
-      .eq("id", form.dataset.productId)
-      .select("id");
-    button.disabled = false;
-    if (result.error) {
-      reportAdminError(result.error);
-      return;
+    let uploadedImage = null;
+    try {
+      const file = values.get("image-file");
+      if (file && file.size > 0) uploadedImage = await uploadProductImage(file);
+      const product = state.products.find((item) => item.id === form.dataset.productId);
+      const result = await state.client
+        .from("products")
+        .update({
+          name: String(values.get("name")).trim(),
+          sku: String(values.get("sku") || "").trim(),
+          price_cents: Math.round(price * 100),
+          image: uploadedImage?.url || product?.imagem || "./images/products/generic.svg",
+          description: String(values.get("description") || "").trim(),
+          active: values.has("active"),
+        })
+        .eq("id", form.dataset.productId)
+        .select("id");
+      if (result.error) {
+        if (uploadedImage) {
+          try {
+            await removeProductImage(uploadedImage.path);
+          } catch (cleanupError) {
+            console.error("Falha ao remover a foto após erro ao salvar o produto:", cleanupError);
+            showToast("A alteração falhou e a foto enviada não pôde ser removida do armazenamento.");
+          }
+        }
+        throw result.error;
+      }
+      if (uploadedImage && product) {
+        const oldImagePath = productImageStoragePath(product.imagem);
+        if (oldImagePath) {
+          try {
+            await removeProductImage(oldImagePath);
+          } catch (cleanupError) {
+            console.error("Falha ao remover a foto antiga do produto:", cleanupError);
+            showToast("Produto atualizado, mas a foto antiga não pôde ser removida.");
+          }
+        }
+      }
+      showToast("Produto atualizado.");
+      await loadAdminData();
+    } finally {
+      button.disabled = false;
     }
-    showToast("Produto atualizado.");
-    await loadAdminData();
   }
 
   async function handleProductCreate(event) {
@@ -1065,23 +1228,44 @@
     }
     const button = elements["product-create-form"].querySelector('button[type="submit"]');
     button.disabled = true;
-    const { error } = await state.client.from("products").insert({
-      name: String(values.get("name")).trim(),
-      sku: String(values.get("sku") || "").trim(),
-      price_cents: Math.round(price * 100),
-      image: String(values.get("image") || "./images/products/generic.svg").trim(),
-      description: String(values.get("description") || "").trim(),
-      active: true,
-    });
-    button.disabled = false;
-    if (error) {
-      reportAdminError(error);
-      return;
+    let uploadedImage = null;
+    try {
+      const file = values.get("image-file");
+      if (file && file.size > 0) uploadedImage = await uploadProductImage(file);
+      const { error } = await state.client.from("products").insert({
+        name: String(values.get("name")).trim(),
+        sku: String(values.get("sku") || "").trim(),
+        price_cents: Math.round(price * 100),
+        image: uploadedImage?.url || "./images/products/generic.svg",
+        description: String(values.get("description") || "").trim(),
+        active: true,
+      });
+      if (error) {
+        if (uploadedImage) {
+          try {
+            await removeProductImage(uploadedImage.path);
+          } catch (cleanupError) {
+            console.error("Falha ao remover a foto após erro ao criar o produto:", cleanupError);
+            showToast("O cadastro falhou e a foto enviada não pôde ser removida do armazenamento.");
+          }
+        }
+        throw error;
+      }
+      elements["product-create-form"].reset();
+      elements["product-create-form"].querySelector("[data-image-label]").textContent = "Escolher foto";
+      const preview = elements["product-create-form"].querySelector("[data-new-product-preview]");
+      if (preview?.dataset.previewUrl) URL.revokeObjectURL(preview.dataset.previewUrl);
+      if (preview) {
+        delete preview.dataset.previewUrl;
+        preview.src = "./images/products/generic.svg";
+        preview.hidden = true;
+        preview.classList.add("hidden");
+      }
+      showToast("Produto adicionado.");
+      await loadAdminData();
+    } finally {
+      button.disabled = false;
     }
-    elements["product-create-form"].reset();
-    elements["product-create-form"].elements.image.value = "./images/products/generic.svg";
-    showToast("Produto adicionado.");
-    await loadAdminData();
   }
 
   function initializeEvents() {
@@ -1106,6 +1290,27 @@
         event.target.value = formatPhoneNumber(event.target.value);
       });
     }
+    for (const cnpjInput of [elements["signup-cnpj-input"], elements["profile-cnpj"]]) {
+      cnpjInput.addEventListener("input", (event) => {
+        event.target.value = formatCnpj(event.target.value);
+      });
+      cnpjInput.addEventListener("blur", (event) => {
+        event.target.value = formatCnpj(event.target.value);
+      });
+    }
+    elements["header-cart-button"].addEventListener("click", openCart);
+    elements["copy-signup-link"].addEventListener("click", async () => {
+      const signupUrl = new URL(routeUrl("cadastro"), window.location.origin).href;
+      try {
+        await navigator.clipboard.writeText(signupUrl);
+        showToast("Link de cadastro copiado. Envie-o ao cliente.");
+      } catch (error) {
+        console.error("Não foi possível copiar o link de cadastro:", error);
+        const adminError = elements["admin-error"];
+        adminError.textContent = `Não foi possível copiar o link automaticamente. Compartilhe este endereço: ${signupUrl}`;
+        adminError.classList.remove("hidden");
+      }
+    });
     elements["register-link"].addEventListener("click", (event) => {
       event.preventDefault();
       window.history.pushState({}, "", routeUrl("cadastro"));
@@ -1140,10 +1345,6 @@
       elements["profile-avatar"].hidden = true;
       elements["profile-avatar-fallback"].classList.remove("hidden");
     });
-    elements["account-avatar"].addEventListener("error", () => {
-      elements["account-avatar"].hidden = true;
-      elements["account-avatar-fallback"].classList.remove("hidden");
-    });
     elements["profile-photo-input"].addEventListener("change", (event) => {
       previewProfilePhoto(event.target.files?.[0]);
     });
@@ -1160,7 +1361,17 @@
     });
     elements["product-grid"].addEventListener("click", (event) => {
       const button = event.target.closest("[data-add]");
-      if (button) addToCart(button.dataset.add);
+      if (!button) return;
+      const quantityInput = [...elements["product-grid"].querySelectorAll("[data-quantity-for]")]
+        .find((input) => input.dataset.quantityFor === button.dataset.add);
+      const quantity = Number(quantityInput?.value);
+      if (!Number.isInteger(quantity) || quantity < 1 || quantity > 9999) {
+        showToast("Escolha uma quantidade entre 1 e 9999.");
+        quantityInput?.focus();
+        return;
+      }
+      addToCart(button.dataset.add, quantity);
+      quantityInput.value = "1";
     });
     elements["load-more-products"].addEventListener("click", () => {
       state.visibleProductLimit += PRODUCT_PAGE_SIZE;
@@ -1176,10 +1387,6 @@
     });
     elements["profile-menu"].addEventListener("click", (event) => {
       if (event.target.closest("a")) closeProfileMenu();
-    });
-    elements["menu-open-cart"].addEventListener("click", () => {
-      closeProfileMenu();
-      openCart();
     });
     document.addEventListener("click", (event) => {
       if (!elements["profile-menu"].hidden && !event.target.closest("#profile-menu-toggle, #profile-menu")) {
@@ -1224,9 +1431,11 @@
     elements["product-admin-list"].addEventListener("submit", (event) => {
       handleProductSave(event).catch(reportAdminError);
     });
+    elements["product-admin-list"].addEventListener("change", previewProductImage);
     elements["product-create-form"].addEventListener("submit", (event) => {
       handleProductCreate(event).catch(reportAdminError);
     });
+    elements["product-create-form"].addEventListener("change", previewProductImage);
     elements["admin-product-search"].addEventListener("input", (event) => {
       state.adminProductSearch = event.target.value.trim();
       state.adminProductLimit = ADMIN_PRODUCT_PAGE_SIZE;
