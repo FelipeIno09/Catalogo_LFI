@@ -20,7 +20,7 @@ test("static catalog routes load the Supabase app without publishing a price cat
   assert.doesNotThrow(() => new vm.Script(app));
   assert.match(html, /@supabase\/supabase-js@2/);
   assert.match(html, /src="\.\/supabase-config\.js"/);
-  assert.match(html, /src="\.\/app\.js\?v=20261027-2"/);
+  assert.match(html, /src="\.\/app\.js\?v=20261027-3"/);
   assert.match(html, /src="\.\/images\/lfi-tools-logo\.png\?v=20261020-3"/);
   assert.match(html, /id="catalog-view"/);
   assert.match(html, /id="login-view"/);
@@ -29,6 +29,8 @@ test("static catalog routes load the Supabase app without publishing a price cat
   assert.match(html, /id="profile-menu-toggle"/);
   assert.match(html, /id="profile-menu"/);
   assert.match(html, /id="profile-menu-account"[^>]*>Perfil<\/a>/);
+  assert.match(html, /id="contact-link" href="https:\/\/wa\.me\/5514991212375"/);
+  assert.match(html, /Entrar em contato/);
   assert.match(html, /id="header-cart-button"/);
   assert.match(html, /id="header-catalog-link" href="\.\/#catalogo"/);
   assert.doesNotMatch(html, /id="profile-menu-catalog"|id="menu-open-cart"/);
@@ -63,6 +65,7 @@ test("static catalog routes load the Supabase app without publishing a price cat
 });
 
 test("approved customers can select product quantities and see the cart outside the profile menu", () => {
+  assert.match(app, /const WHATSAPP_NUMBER = "5514991212375"/);
   assert.match(app, /data-quantity-for="\$\{escapeHtml\(product\.id\)\}"/);
   assert.match(app, /type="number" min="1" max="9999" step="1" value="1"/);
   assert.match(app, /function addToCart\(id, quantity = 1\)/);
